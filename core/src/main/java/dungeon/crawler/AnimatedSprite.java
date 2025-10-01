@@ -63,4 +63,5 @@ public class AnimatedSprite {
 	public Sprite getSprite() {
 		return sprite;
 	}
+	
 }
