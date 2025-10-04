@@ -98,13 +98,9 @@ public class WorldScreen extends ScreenAdapter {
     	
     	// movement speed will be different for towns and overworld
     	this.movementSpeed = 100f;
-
-    	
-    	
+   	
     	
     	// build collision layers
-    	
-    	
     	this.collisionLayer = (TiledMapTileLayer) map.getLayers().get("Ground");
 
     	
@@ -197,7 +193,7 @@ public class WorldScreen extends ScreenAdapter {
 
         	
         if(this.characterSprite.getState() == "walkUp") {
-        	yAdjust = newY + (sprite.getHeight() / 2);
+        	yAdjust = newY + (sprite.getHeight() / 2 - 2);
         } else {
         	yAdjust = newY - (sprite.getHeight() / 2);
         }
@@ -209,15 +205,21 @@ public class WorldScreen extends ScreenAdapter {
             xAdjust = newX - ((sprite.getWidth() / 2) - 3);
         }
         Cell tile = getTileCellAtCoord(xAdjust, yAdjust, collisionLayer);
-        if (tile.getTile().getProperties().containsKey("blocked")){
+
+        if(
+            tile == null ||
+            tile.getTile() == null ||
+            tile.getTile().getProperties() == null
+        ) {
+            isPlayerBlocked = true;
+        } else if (tile.getTile().getProperties().containsKey("blocked")){
         	isPlayerBlocked = true;
         }
-        
+
         if(!isPlayerBlocked && characterSprite.walking == true) {
         	camera.position.x = newX;
         	camera.position.y = newY;
         }
-
         
     }
     // TODO: Make utility
