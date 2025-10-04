@@ -45,6 +45,10 @@ public class AnimatedSprite {
 		}
 	}
 	
+	public String getState() {
+		return currentState;
+	}
+	
 	public void update(float delta) {
 		stateTime += delta;
         Animation<TextureRegion> currentAnimation = animations.get(currentState);

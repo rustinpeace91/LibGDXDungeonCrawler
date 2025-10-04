@@ -11,7 +11,9 @@ public class MainGame extends Game {
         spriteBatch = new SpriteBatch();
     	setScreen(new WorldScreen(
     		this,
-    		spriteBatch
+    		spriteBatch,
+    		200f,
+    		200f
     	));
 
 //    	setScreen(new WalkExample(
