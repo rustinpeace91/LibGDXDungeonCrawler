@@ -7,6 +7,7 @@ import java.util.Map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -46,6 +47,7 @@ public class WorldScreen extends ScreenAdapter {
 	// map bounderies
 	private float mapPixelWidth;
 	private float mapPixelHeight;
+	
 	
 	float frameDuration = .15f;
     public WorldScreen(
@@ -94,20 +96,21 @@ public class WorldScreen extends ScreenAdapter {
     	
     	
     	this.collisionLayer = (TiledMapTileLayer) map.getLayers().get("Ground");
-
+    	
 
 	}
     
-  private void logic() {
+  private void updateCharacterSprite() {
   	float delta = Gdx.graphics.getDeltaTime();
 	Sprite sprite = characterSprite.getSprite();
 	
 
-	spriteCenterX = camera.position.x  - characterSprite.getSprite().getWidth() / 2f;
-	spriteCenterY = camera.position.y  - characterSprite.getSprite().getHeight() / 2f;
-	
-	sprite.setX(spriteCenterX);
-	sprite.setY(spriteCenterY);
+//	spriteCenterX = camera.position.x  - characterSprite.getSprite().getWidth() / 2f;
+//	spriteCenterY = camera.position.y  - characterSprite.getSprite().getHeight() / 2f;
+//	
+//	sprite.setX(spriteCenterX);
+//	sprite.setY(spriteCenterY);
+	sprite.setCenter(camera.position.x, camera.position.y);
 	// update animation if walking
 	if (characterSprite.walking) {
 	    characterSprite.update(delta);
@@ -123,29 +126,19 @@ public class WorldScreen extends ScreenAdapter {
 	    Gdx.gl.glClearColor(0, 0, 0, 1);
 	    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 	    
-	    
 		camera.update();
 		renderer.setView(camera);
-		
 		renderer.render();
-	   
-	    
 	    spriteBatch.setProjectionMatrix(camera.combined);
 		spriteBatch.begin();
-		if (characterSprite.walking) {
-	    	characterSprite.update(delta);
-		}
 	    characterSprite.render(spriteBatch);	
 		spriteBatch.end();
-
-	    
-
     }
 	@Override
 	public void render(float delta) {
 
 		input();
-		logic();
+		updateCharacterSprite();
 		draw();
 		
 
@@ -185,6 +178,8 @@ public class WorldScreen extends ScreenAdapter {
         // 1. Clamp to map edges
         newX = MathUtils.clamp(newX, sprite.getWidth() / 2, mapPixelWidth - sprite.getWidth() / 2);
         newY = MathUtils.clamp(newY, sprite.getWidth() / 2, mapPixelHeight - sprite.getHeight() / 2);
+//        Gdx.app.log("state", characterSprite.getState());
+        
 
         Rectangle playerBlock = new Rectangle(
         	newX,
@@ -195,8 +190,10 @@ public class WorldScreen extends ScreenAdapter {
         // check for collision here
         // adjust for sprite height and length
         float yAdjust = newY - (sprite.getHeight() / 2);
-        // TODO: figure out how to adjust for direction
-        float xAdjust = newX + (sprite.getWidth() / 2);
+        float xAdjust = newX - ((sprite.getWidth() / 2) - 3);
+        if(this.characterSprite.getState() == "walkRight") {
+            xAdjust = newX + ((sprite.getWidth() / 2) - 3);
+        }
         Cell tile = getTileCellAtCoord(xAdjust, yAdjust, collisionLayer);
         if (tile.getTile().getProperties().containsKey("blocked")){
         	isPlayerBlocked = true;
@@ -206,10 +203,11 @@ public class WorldScreen extends ScreenAdapter {
         	camera.position.x = newX;
         	camera.position.y = newY;
         }
-        
+
         
     }
     // TODO: Make utility
+    // Tile based movement?
     public Cell getTileCellAtCoord(float x, float y, TiledMapTileLayer layer) {
         int tileWidth = (int) layer.getTileWidth();
         int tileHeight = (int) layer.getTileHeight();
