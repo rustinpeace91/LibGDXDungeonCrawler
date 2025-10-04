@@ -48,11 +48,15 @@ public class WorldScreen extends ScreenAdapter {
 	private float mapPixelWidth;
 	private float mapPixelHeight;
 	
+	private float movementSpeed;
+	
 	
 	float frameDuration = .15f;
     public WorldScreen(
     	MainGame game,
-    	SpriteBatch spriteBatch
+    	SpriteBatch spriteBatch,
+    	float startingX,
+    	float startingY
     ) {
         this.game = game;
         this.spriteBatch = spriteBatch;
@@ -89,6 +93,12 @@ public class WorldScreen extends ScreenAdapter {
         );
     	this.spriteCenterX = screenCenterX - characterSprite.getSprite().getWidth() / 2f;
     	this.spriteCenterY = screenCenterY - characterSprite.getSprite().getHeight() / 2f;
+    	camera.position.x = startingX;
+    	camera.position.y = startingY;
+    	
+    	// movement speed will be different for towns and overworld
+    	this.movementSpeed = 100f;
+
     	
     	
     	
@@ -96,6 +106,8 @@ public class WorldScreen extends ScreenAdapter {
     	
     	
     	this.collisionLayer = (TiledMapTileLayer) map.getLayers().get("Ground");
+
+    	
     	
 
 	}
@@ -105,11 +117,7 @@ public class WorldScreen extends ScreenAdapter {
 	Sprite sprite = characterSprite.getSprite();
 	
 
-//	spriteCenterX = camera.position.x  - characterSprite.getSprite().getWidth() / 2f;
-//	spriteCenterY = camera.position.y  - characterSprite.getSprite().getHeight() / 2f;
-//	
-//	sprite.setX(spriteCenterX);
-//	sprite.setY(spriteCenterY);
+
 	sprite.setCenter(camera.position.x, camera.position.y);
 	// update animation if walking
 	if (characterSprite.walking) {
@@ -140,14 +148,17 @@ public class WorldScreen extends ScreenAdapter {
 		input();
 		updateCharacterSprite();
 		draw();
-		
-
 	}
 
     private void input() {
-    	// character speed 
+    	/*
+    	 * check for input, project camera to a new x
+    	 * set sprite animation
+    	 * project camera to a new X,Y coord and check for collisions taking into account player 
+    	 * 
+    	 */
     	boolean isPlayerBlocked = false;
-        float speed = 100 * Gdx.graphics.getDeltaTime(); // movement speed
+        float speed = movementSpeed * Gdx.graphics.getDeltaTime(); // movement speed
         Sprite sprite = characterSprite.getSprite();
         float newX = camera.position.x;
         float newY = camera.position.y;
@@ -178,21 +189,24 @@ public class WorldScreen extends ScreenAdapter {
         // 1. Clamp to map edges
         newX = MathUtils.clamp(newX, sprite.getWidth() / 2, mapPixelWidth - sprite.getWidth() / 2);
         newY = MathUtils.clamp(newY, sprite.getWidth() / 2, mapPixelHeight - sprite.getHeight() / 2);
-//        Gdx.app.log("state", characterSprite.getState());
-        
 
-        Rectangle playerBlock = new Rectangle(
-        	newX,
-        	newY,
-        	sprite.getWidth(),
-        	sprite.getHeight()
-        );
         // check for collision here
         // adjust for sprite height and length
-        float yAdjust = newY - (sprite.getHeight() / 2);
-        float xAdjust = newX - ((sprite.getWidth() / 2) - 3);
+        float xAdjust;
+        float yAdjust;
+
+        	
+        if(this.characterSprite.getState() == "walkUp") {
+        	yAdjust = newY + (sprite.getHeight() / 2);
+        } else {
+        	yAdjust = newY - (sprite.getHeight() / 2);
+        }
         if(this.characterSprite.getState() == "walkRight") {
+            // 3 is an offset to account for sprite width being less than sprite 'tile' width
+            // it's a hack and should probably be on the Player class somewhere
             xAdjust = newX + ((sprite.getWidth() / 2) - 3);
+        } else {
+            xAdjust = newX - ((sprite.getWidth() / 2) - 3);
         }
         Cell tile = getTileCellAtCoord(xAdjust, yAdjust, collisionLayer);
         if (tile.getTile().getProperties().containsKey("blocked")){
