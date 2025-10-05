@@ -13,7 +13,9 @@ public class MainGame extends Game {
     		this,
     		spriteBatch,
     		200f,
-    		200f
+    		200f,
+    		GameConstants.TEST_MAP,
+    		false
     	));
 
 //    	setScreen(new WalkExample(

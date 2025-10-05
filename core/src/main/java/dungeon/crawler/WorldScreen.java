@@ -38,9 +38,8 @@ public class WorldScreen extends ScreenAdapter {
 	
 	private Texture characterTexture;	
 	private AnimatedSprite characterSprite;
-	
-	private float spriteCenterX;
-	private float spriteCenterY;
+	private boolean overWorld;
+
 	
 	private TiledMapTileLayer collisionLayer;
 	
@@ -56,16 +55,19 @@ public class WorldScreen extends ScreenAdapter {
     	MainGame game,
     	SpriteBatch spriteBatch,
     	float startingX,
-    	float startingY
+    	float startingY,
+    	String mapFile,
+    	boolean overWorld
     ) {
         this.game = game;
         this.spriteBatch = spriteBatch;
-		this.map = new TmxMapLoader().load("Maps/testmap.tmx");
+		this.map = new TmxMapLoader().load(mapFile);
 		this.renderer = new OrthogonalTiledMapRenderer(map);
+		this.overWorld = overWorld;
 		
 		// set up camera
 		this.camera = new OrthographicCamera();
-		camera.setToOrtho(false, 800, 600);
+		camera.setToOrtho(false, GameConstants.RESOLUTION_WIDTH, GameConstants.RESOLUTION_HEIGHT);
 		camera.zoom=0.25f;
 		camera.update();
 		
@@ -88,22 +90,21 @@ public class WorldScreen extends ScreenAdapter {
         		"walkDown",
         		screenCenterX,
         		screenCenterY,
-        		16,
-        		16
+        		GameConstants.SPRITE_WIDTH,
+        		GameConstants.SPRITE_HEIGHT
         );
-    	this.spriteCenterX = screenCenterX - characterSprite.getSprite().getWidth() / 2f;
-    	this.spriteCenterY = screenCenterY - characterSprite.getSprite().getHeight() / 2f;
+
     	camera.position.x = startingX;
     	camera.position.y = startingY;
     	
     	// movement speed will be different for towns and overworld
-    	this.movementSpeed = 100f;
-   	
+
+    	this.movementSpeed = GameConstants.PLAYER_SPEED;
+
     	
     	// build collision layers
     	this.collisionLayer = (TiledMapTileLayer) map.getLayers().get("Ground");
 
-    	
     	
 
 	}

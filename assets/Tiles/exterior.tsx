@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset version="1.10" tiledversion="1.11.2" name="exterior" tilewidth="16" tileheight="16" tilecount="480" columns="30">
- <image source="exterior.png" width="480" height="256"/>
+ <image source="exterior.png" trans="ff678b" width="480" height="256"/>
  <tile id="90">
   <properties>
    <property name="blocked" type="bool" value="true"/>
@@ -72,6 +72,11 @@
   </properties>
  </tile>
  <tile id="212">
+  <properties>
+   <property name="blocked" type="bool" value="true"/>
+  </properties>
+ </tile>
+ <tile id="240">
   <properties>
    <property name="blocked" type="bool" value="true"/>
   </properties>
