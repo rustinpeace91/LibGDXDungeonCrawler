@@ -100,8 +100,7 @@ public class WorldScreen extends ScreenAdapter {
     	// movement speed will be different for towns and overworld
 
     	this.movementSpeed = GameConstants.PLAYER_SPEED;
-
-    	
+       	
     	// build collision layers
     	this.collisionLayer = (TiledMapTileLayer) map.getLayers().get("Ground");
 
