@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -26,8 +27,12 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class WorldScreen extends ScreenAdapter {
 	private MainGame game;
@@ -49,6 +54,10 @@ public class WorldScreen extends ScreenAdapter {
 	
 	private float movementSpeed;
 	
+	// menu stuff
+	private Skin skin;
+	private Stage uiStage;
+	
 	
 	float frameDuration = .15f;
     public WorldScreen(
@@ -65,14 +74,11 @@ public class WorldScreen extends ScreenAdapter {
 		this.renderer = new OrthogonalTiledMapRenderer(map);
 		this.overWorld = overWorld;
 		
-		// set up camera
-		this.camera = new OrthographicCamera();
-		camera.setToOrtho(false, GameConstants.RESOLUTION_WIDTH, GameConstants.RESOLUTION_HEIGHT);
-		camera.zoom=0.25f;
-		camera.update();
-		
+		setUpCamera();
     	float screenCenterX = camera.viewportWidth / 2f;
     	float screenCenterY = camera.viewportHeight / 2f;
+    	
+    	
     	
     	// set map bounderies
     	
@@ -104,9 +110,34 @@ public class WorldScreen extends ScreenAdapter {
     	// build collision layers
     	this.collisionLayer = (TiledMapTileLayer) map.getLayers().get("Ground");
 
-    	
+    	this.skin = new Skin(Gdx.files.internal(GameConstants.MENU_SKIN));
+		setUpMenu();
+
 
 	}
+    
+    private void setUpCamera() {
+		// set up camera
+		this.camera = new OrthographicCamera();
+		camera.setToOrtho(false, GameConstants.RESOLUTION_WIDTH, GameConstants.RESOLUTION_HEIGHT);
+		camera.zoom=0.25f;
+		camera.update();
+    	
+    }
+    
+    private void setUpMenu() {
+    	this.uiStage = new Stage(new ScreenViewport());
+    	Table menu = new OverworldMenu(this.skin);
+        float x = 50;
+        float y = Gdx.graphics.getHeight() - menu.getHeight() - 50;
+        menu.setPosition(x, y);
+        this.uiStage.addActor(menu);
+        // --- Configure the InputMultiplexer ---
+        InputMultiplexer multiplexer = new InputMultiplexer();
+        multiplexer.addProcessor(uiStage);
+        // 6. Tell LibGDX to use the multiplexer for all input events
+        Gdx.input.setInputProcessor(multiplexer);
+    }
     
   private void updateCharacterSprite() {
   	float delta = Gdx.graphics.getDeltaTime();
@@ -137,6 +168,8 @@ public class WorldScreen extends ScreenAdapter {
 		spriteBatch.begin();
 	    characterSprite.render(spriteBatch);	
 		spriteBatch.end();
+        uiStage.act(Gdx.graphics.getDeltaTime());
+        uiStage.draw();
     }
 	@Override
 	public void render(float delta) {
@@ -238,6 +271,8 @@ public class WorldScreen extends ScreenAdapter {
     public void dispose() {
         map.dispose();
         renderer.dispose();
+        uiStage.dispose();
+        skin.dispose();
     }
     
     // TODO Move out of world map

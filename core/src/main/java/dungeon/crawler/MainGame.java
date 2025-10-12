@@ -18,9 +18,7 @@ public class MainGame extends Game {
     		false
     	));
 
-//    	setScreen(new WalkExample(
-//    		this
-//    	));
+//    	setScreen(new MenuScreen());
     }
 
 }

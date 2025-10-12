@@ -3,8 +3,8 @@ package dungeon.crawler;
 public class GameConstants {
 	
 	// screen
-	public static final int RESOLUTION_WIDTH = 800;
-	public static final int RESOLUTION_HEIGHT = 600;
+	public static final int RESOLUTION_WIDTH = 1280;
+	public static final int RESOLUTION_HEIGHT = 800;
 	
 	// player
 	public static final float PLAYER_SPEED = 100f;
@@ -14,4 +14,5 @@ public class GameConstants {
 	
 	
 	public static final String TEST_MAP = "Maps/testmap.tmx";
+	public static final String MENU_SKIN = "skins/default/uiskin.json";
 }
