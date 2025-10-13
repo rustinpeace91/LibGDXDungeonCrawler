@@ -57,6 +57,12 @@ public class WorldScreen extends ScreenAdapter {
 	// menu stuff
 	private Skin skin;
 	private Stage uiStage;
+	private MenuInputHandler menuInputHanlder;
+	public enum GameState  {
+		PLAYER_CONTROL,
+		MENU_OPEN
+	}
+	private GameState currentState = GameState.PLAYER_CONTROL;
 	
 	
 	float frameDuration = .15f;
@@ -79,7 +85,7 @@ public class WorldScreen extends ScreenAdapter {
     	float screenCenterY = camera.viewportHeight / 2f;
     	
     	
-    	
+
     	// set map bounderies
     	
     	// Get map dimensions in pixels
@@ -109,7 +115,9 @@ public class WorldScreen extends ScreenAdapter {
        	
     	// build collision layers
     	this.collisionLayer = (TiledMapTileLayer) map.getLayers().get("Ground");
-
+    	// menu stuff
+    	
+    	
     	this.skin = new Skin(Gdx.files.internal(GameConstants.MENU_SKIN));
 		setUpMenu();
 
@@ -122,19 +130,22 @@ public class WorldScreen extends ScreenAdapter {
 		camera.setToOrtho(false, GameConstants.RESOLUTION_WIDTH, GameConstants.RESOLUTION_HEIGHT);
 		camera.zoom=0.25f;
 		camera.update();
-    	
     }
     
     private void setUpMenu() {
     	this.uiStage = new Stage(new ScreenViewport());
-    	Table menu = new OverworldMenu(this.skin);
+    	OverworldMenu menu = new OverworldMenu(this.skin);
         float x = 50;
         float y = Gdx.graphics.getHeight() - menu.getHeight() - 50;
         menu.setPosition(x, y);
         this.uiStage.addActor(menu);
+        this.menuInputHanlder = new MenuInputHandler(
+            uiStage,
+        	menu
+        );
         // --- Configure the InputMultiplexer ---
         InputMultiplexer multiplexer = new InputMultiplexer();
-        multiplexer.addProcessor(uiStage);
+        multiplexer.addProcessor(menuInputHanlder);
         // 6. Tell LibGDX to use the multiplexer for all input events
         Gdx.input.setInputProcessor(multiplexer);
     }
@@ -173,8 +184,8 @@ public class WorldScreen extends ScreenAdapter {
     }
 	@Override
 	public void render(float delta) {
-
-		input();
+		
+//		input();
 		updateCharacterSprite();
 		draw();
 	}

@@ -13,8 +13,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 
 public class OverworldMenu extends Table {
-	private TextButton[][] buttonList;
-	private int buttonIndex;
+	public TextButton[][] buttonList = new TextButton[10][3];
 	
 	public OverworldMenu(
 		Skin skin
@@ -41,7 +40,6 @@ public class OverworldMenu extends Table {
         
         this.buttonList[1][0] = inventoryButton;
         this.buttonList[1][1] = statusButton;
-        this.buttonIndex = 0;
         inventoryButton.addListener(new ChangeListener() {
         	@Override
         	public void changed(ChangeEvent event, Actor actor) {
@@ -59,16 +57,7 @@ public class OverworldMenu extends Table {
 		this.setPosition(50, Gdx.graphics.getHeight() - this.getHeight() - 50);
 	}
 	
-//	public void input() {
-//		if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
-//			if(buttonIndex > 1) {
-//				this.buttonIndex = 0;
-//			}
-//			TextButton currentButton = buttonList[buttonIndex][0];
-//			setKeyboardFocus(currentButton);
-//		}
-//		
-//	}
+
 
 
 }
