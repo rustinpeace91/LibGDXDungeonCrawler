@@ -137,9 +137,9 @@ public class WorldScreen extends ScreenAdapter implements MenuInputListener{
         this.uiStage.addActor(menu);
         this.menuInputHanlder = new MenuInputHandler(
             uiStage,
-        	menu,
-        	this
+        	menu
         );
+        this.menuInputHanlder.addListener(this);
         // --- Configure the InputMultiplexer ---
         InputMultiplexer multiplexer = new InputMultiplexer();
         multiplexer.addProcessor(menuInputHanlder);
@@ -303,7 +303,7 @@ public class WorldScreen extends ScreenAdapter implements MenuInputListener{
     	
     }
     
-    public void OnMenuToggled(boolean value) {
+    public void onMenuToggled(boolean value) {
     	menuVisible = value;
     }
 

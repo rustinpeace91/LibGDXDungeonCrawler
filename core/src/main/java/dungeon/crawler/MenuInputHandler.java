@@ -1,5 +1,8 @@
 package dungeon.crawler;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
@@ -16,18 +19,36 @@ public class MenuInputHandler extends InputAdapter{
 	public int menuColumnIndex = 0;
 	public int menuRowIndex = 0;
 	
-	private MenuInputListener listener;
-
+	private final List<MenuInputListener> listeners = new ArrayList<>();
+	
 	public MenuInputHandler(
 		Stage uiStage,
-		OverworldMenu menuTable,
-		MenuInputListener listener
+		OverworldMenu menuTable
 	) {
 		this.uiStage = uiStage;
 		this.menuTable = menuTable;
-		this.listener = listener;
 	}
 	
+	public void addListener(MenuInputListener listener) {
+		if(listener != null) {
+			listeners.add(listener);
+		}
+	}
+	
+	public void removeListener(MenuInputListener listener) {
+		if(listener != null) {
+			listeners.remove(listener);
+		}
+	}
+	
+	public void notifyOnMenuToggled(boolean showMenu) {
+
+        for (MenuInputListener listener : listeners) {
+        	Gdx.app.log("Menu", "Menu is toggled");
+            listener.onMenuToggled(showMenu);
+        }	
+	}
+
 	@Override
 	public boolean keyUp(int keyCode) {
 		if(keyCode == Input.Keys.E) {
@@ -35,8 +56,8 @@ public class MenuInputHandler extends InputAdapter{
 			menuColumnIndex = 0;
 			menuRowIndex = 0;
 			String openClosed = showMenu ? "open" : "closed";
-			Gdx.app.log("Menu", "Menu is " + openClosed);
-			listener.OnMenuToggled(showMenu);
+//			Gdx.app.log("Menu", "Menu is " + openClosed);
+			notifyOnMenuToggled(showMenu);
 
 			return true;
 

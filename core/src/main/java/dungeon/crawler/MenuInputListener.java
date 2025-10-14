@@ -1,5 +1,5 @@
 package dungeon.crawler;
 
 public interface MenuInputListener {
-	public void OnMenuToggled(boolean menuVisible);
+	public void onMenuToggled(boolean menuVisible);
 }
