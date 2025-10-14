@@ -34,7 +34,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-public class WorldScreen extends ScreenAdapter {
+public class WorldScreen extends ScreenAdapter implements MenuInputListener{
 	private MainGame game;
 	private SpriteBatch spriteBatch;
 	private TiledMap map;
@@ -58,11 +58,7 @@ public class WorldScreen extends ScreenAdapter {
 	private Skin skin;
 	private Stage uiStage;
 	private MenuInputHandler menuInputHanlder;
-	public enum GameState  {
-		PLAYER_CONTROL,
-		MENU_OPEN
-	}
-	private GameState currentState = GameState.PLAYER_CONTROL;
+	private boolean menuVisible;
 	
 	
 	float frameDuration = .15f;
@@ -141,7 +137,8 @@ public class WorldScreen extends ScreenAdapter {
         this.uiStage.addActor(menu);
         this.menuInputHanlder = new MenuInputHandler(
             uiStage,
-        	menu
+        	menu,
+        	this
         );
         // --- Configure the InputMultiplexer ---
         InputMultiplexer multiplexer = new InputMultiplexer();
@@ -179,13 +176,16 @@ public class WorldScreen extends ScreenAdapter {
 		spriteBatch.begin();
 	    characterSprite.render(spriteBatch);	
 		spriteBatch.end();
-        uiStage.act(Gdx.graphics.getDeltaTime());
-        uiStage.draw();
+		if(menuVisible) {
+			
+			uiStage.act(Gdx.graphics.getDeltaTime());
+			uiStage.draw();
+		}
     }
 	@Override
 	public void render(float delta) {
 		
-//		input();
+		input();
 		updateCharacterSprite();
 		draw();
 	}
@@ -204,66 +204,70 @@ public class WorldScreen extends ScreenAdapter {
         float newY = camera.position.y;
 
 		characterSprite.walking = false;
+		
+		if(!menuVisible) {
+			if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+				newX -= speed;
+				characterSprite.setState("walkLeft");
+				characterSprite.walking = true;
+			}
+			else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+				newX += speed;
+				characterSprite.setState("walkRight");
+				characterSprite.walking = true;
+			}
+			else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+				newY += speed;
+				characterSprite.setState("walkUp");
+				characterSprite.walking = true;
+			}
+			else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+				newY -= speed;
+				characterSprite.setState("walkDown");
+				characterSprite.walking = true;
+			}
+			
+			// 1. Clamp to map edges
+			newX = MathUtils.clamp(newX, sprite.getWidth() / 2, mapPixelWidth - sprite.getWidth() / 2);
+			newY = MathUtils.clamp(newY, sprite.getWidth() / 2, mapPixelHeight - sprite.getHeight() / 2);
+
+			// check for collision here
+			// adjust for sprite height and length
+			float xAdjust;
+			float yAdjust;
+
+				
+			if(this.characterSprite.getState() == "walkUp") {
+				yAdjust = newY + (sprite.getHeight() / 2 - 2);
+			} else {
+				yAdjust = newY - (sprite.getHeight() / 2);
+			}
+			if(this.characterSprite.getState() == "walkRight") {
+				// 3 is an offset to account for sprite width being less than sprite 'tile' width
+				// it's a hack and should probably be on the Player class somewhere
+				xAdjust = newX + ((sprite.getWidth() / 2) - 3);
+			} else {
+				xAdjust = newX - ((sprite.getWidth() / 2) - 3);
+			}
+			Cell tile = getTileCellAtCoord(xAdjust, yAdjust, collisionLayer);
+
+			if(
+				tile == null ||
+				tile.getTile() == null ||
+				tile.getTile().getProperties() == null
+			) {
+				isPlayerBlocked = true;
+			} else if (tile.getTile().getProperties().containsKey("blocked")){
+				isPlayerBlocked = true;
+			}
+
+			if(!isPlayerBlocked && characterSprite.walking == true) {
+				camera.position.x = newX;
+				camera.position.y = newY;
+			}		
+		}
         
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            newX -= speed;
-            characterSprite.setState("walkLeft");
-            characterSprite.walking = true;
-        }
-        else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            newX += speed;
-            characterSprite.setState("walkRight");
-            characterSprite.walking = true;
-        }
-        else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-        	newY += speed;
-            characterSprite.setState("walkUp");
-            characterSprite.walking = true;
-        }
-        else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-        	newY -= speed;
-            characterSprite.setState("walkDown");
-            characterSprite.walking = true;
-        }
-        
-        // 1. Clamp to map edges
-        newX = MathUtils.clamp(newX, sprite.getWidth() / 2, mapPixelWidth - sprite.getWidth() / 2);
-        newY = MathUtils.clamp(newY, sprite.getWidth() / 2, mapPixelHeight - sprite.getHeight() / 2);
 
-        // check for collision here
-        // adjust for sprite height and length
-        float xAdjust;
-        float yAdjust;
-
-        	
-        if(this.characterSprite.getState() == "walkUp") {
-        	yAdjust = newY + (sprite.getHeight() / 2 - 2);
-        } else {
-        	yAdjust = newY - (sprite.getHeight() / 2);
-        }
-        if(this.characterSprite.getState() == "walkRight") {
-            // 3 is an offset to account for sprite width being less than sprite 'tile' width
-            // it's a hack and should probably be on the Player class somewhere
-            xAdjust = newX + ((sprite.getWidth() / 2) - 3);
-        } else {
-            xAdjust = newX - ((sprite.getWidth() / 2) - 3);
-        }
-        Cell tile = getTileCellAtCoord(xAdjust, yAdjust, collisionLayer);
-
-        if(
-            tile == null ||
-            tile.getTile() == null ||
-            tile.getTile().getProperties() == null
-        ) {
-            isPlayerBlocked = true;
-        } else if (tile.getTile().getProperties().containsKey("blocked")){
-        	isPlayerBlocked = true;
-        }
-
-        if(!isPlayerBlocked && characterSprite.walking == true) {
-        	camera.position.x = newX;
-        	camera.position.y = newY;
-        }
         
     }
     // TODO: Make utility
@@ -297,6 +301,10 @@ public class WorldScreen extends ScreenAdapter {
     	animationMap.put("walkUp", AnimationBuilder.createAnimationByRow(fullSheet, 3, 4, 4, frameDuration));
     	return animationMap;
     	
+    }
+    
+    public void OnMenuToggled(boolean value) {
+    	menuVisible = value;
     }
 
 }

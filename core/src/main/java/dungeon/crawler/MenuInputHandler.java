@@ -15,13 +15,17 @@ public class MenuInputHandler extends InputAdapter{
 	public int menuRows = 0;
 	public int menuColumnIndex = 0;
 	public int menuRowIndex = 0;
+	
+	private MenuInputListener listener;
 
 	public MenuInputHandler(
 		Stage uiStage,
-		OverworldMenu menuTable
+		OverworldMenu menuTable,
+		MenuInputListener listener
 	) {
 		this.uiStage = uiStage;
 		this.menuTable = menuTable;
+		this.listener = listener;
 	}
 	
 	@Override
@@ -32,6 +36,7 @@ public class MenuInputHandler extends InputAdapter{
 			menuRowIndex = 0;
 			String openClosed = showMenu ? "open" : "closed";
 			Gdx.app.log("Menu", "Menu is " + openClosed);
+			listener.OnMenuToggled(showMenu);
 
 			return true;
 
