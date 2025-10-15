@@ -1,4 +1,4 @@
-package dungeon.crawler;
+package dungeon.crawler.Menu;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;

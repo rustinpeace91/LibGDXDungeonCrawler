@@ -34,7 +34,13 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-public class WorldScreen extends ScreenAdapter implements MenuInputListener{
+import dungeon.crawler.Menu.MenuInputHandler;
+import dungeon.crawler.Menu.MenuInputObserver;
+import dungeon.crawler.Menu.OverworldMenu;
+import dungeon.crawler.Sprites.AnimatedSprite;
+import dungeon.crawler.Sprites.AnimationBuilder;
+
+public class WorldScreen extends ScreenAdapter implements MenuInputObserver{
 	private MainGame game;
 	private SpriteBatch spriteBatch;
 	private TiledMap map;

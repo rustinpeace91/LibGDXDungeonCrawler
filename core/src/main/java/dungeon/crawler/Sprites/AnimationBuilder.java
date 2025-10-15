@@ -1,4 +1,4 @@
-package dungeon.crawler;
+package dungeon.crawler.Sprites;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;

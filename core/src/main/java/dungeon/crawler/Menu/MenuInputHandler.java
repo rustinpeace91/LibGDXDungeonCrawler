@@ -1,4 +1,4 @@
-package dungeon.crawler;
+package dungeon.crawler.Menu;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,7 @@ public class MenuInputHandler extends InputAdapter{
 	public int menuColumnIndex = 0;
 	public int menuRowIndex = 0;
 	
-	private final List<MenuInputListener> listeners = new ArrayList<>();
+	private final List<MenuInputObserver> listeners = new ArrayList<>();
 	
 	public MenuInputHandler(
 		Stage uiStage,
@@ -29,13 +29,13 @@ public class MenuInputHandler extends InputAdapter{
 		this.menuTable = menuTable;
 	}
 	
-	public void addListener(MenuInputListener listener) {
+	public void addListener(MenuInputObserver listener) {
 		if(listener != null) {
 			listeners.add(listener);
 		}
 	}
 	
-	public void removeListener(MenuInputListener listener) {
+	public void removeListener(MenuInputObserver listener) {
 		if(listener != null) {
 			listeners.remove(listener);
 		}
@@ -43,7 +43,7 @@ public class MenuInputHandler extends InputAdapter{
 	
 	public void notifyOnMenuToggled(boolean showMenu) {
 
-        for (MenuInputListener listener : listeners) {
+        for (MenuInputObserver listener : listeners) {
         	Gdx.app.log("Menu", "Menu is toggled");
             listener.onMenuToggled(showMenu);
         }	

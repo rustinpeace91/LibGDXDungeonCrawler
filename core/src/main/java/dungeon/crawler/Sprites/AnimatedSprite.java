@@ -1,4 +1,4 @@
-package dungeon.crawler;
+package dungeon.crawler.Sprites;
 
 import java.util.Map;
 
