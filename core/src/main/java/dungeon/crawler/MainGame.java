@@ -9,7 +9,7 @@ public class MainGame extends Game {
     @Override
     public void create() {
         spriteBatch = new SpriteBatch();
-    	setScreen(new WorldScreen(
+    	setScreen(new WorldScreenRefactor(
     		this,
     		spriteBatch,
     		200f,
@@ -18,9 +18,7 @@ public class MainGame extends Game {
     		false
     	));
 
-//    	setScreen(new WalkExample(
-//    		this
-//    	));
+//    	setScreen(new MenuScreen());
     }
 
 }

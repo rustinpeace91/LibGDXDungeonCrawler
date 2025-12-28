@@ -37,38 +37,44 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import dungeon.crawler.Menu.MenuInputHandler;
 import dungeon.crawler.Menu.MenuInputObserver;
 import dungeon.crawler.Menu.OverworldMenu;
+import dungeon.crawler.Player.PlayerDirection;
+import dungeon.crawler.Player.PlayerInputHandler;
+import dungeon.crawler.Player.PlayerPositionHandler;
 import dungeon.crawler.Sprites.AnimatedSprite;
 import dungeon.crawler.Sprites.AnimationBuilder;
 
-public class WorldScreen extends ScreenAdapter implements MenuInputObserver{
+public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObserver{
 	private MainGame game;
 	private SpriteBatch spriteBatch;
 	private TiledMap map;
 	private OrthogonalTiledMapRenderer renderer;
 	private OrthographicCamera camera;
-	
-	private Texture characterTexture;	
+
+	private Texture characterTexture;
 	private AnimatedSprite characterSprite;
 	private boolean overWorld;
 
-	
+
 	private TiledMapTileLayer collisionLayer;
-	
+
+	// movement stuff
+	private PlayerInputHandler playerInput;
+	private PlayerPositionHandler playerPosition;
 	// map bounderies
 	private float mapPixelWidth;
 	private float mapPixelHeight;
-	
+
 	private float movementSpeed;
-	
+
 	// menu stuff
 	private Skin skin;
 	private Stage uiStage;
 	private MenuInputHandler menuInputHanlder;
 	private boolean menuVisible;
-	
-	
+
+
 	float frameDuration = .15f;
-    public WorldScreen(
+    public WorldScreenRefactor(
     	MainGame game,
     	SpriteBatch spriteBatch,
     	float startingX,
@@ -81,15 +87,18 @@ public class WorldScreen extends ScreenAdapter implements MenuInputObserver{
 		this.map = new TmxMapLoader().load(mapFile);
 		this.renderer = new OrthogonalTiledMapRenderer(map);
 		this.overWorld = overWorld;
-		
+
+		this.playerInput = new PlayerInputHandler(PlayerDirection.DOWN);
+
+
 		setUpCamera();
     	float screenCenterX = camera.viewportWidth / 2f;
     	float screenCenterY = camera.viewportHeight / 2f;
-    	
-    	
+
+
 
     	// set map bounderies
-    	
+
     	// Get map dimensions in pixels
     	int mapWidth = map.getProperties().get("width", Integer.class);
     	int mapHeight = map.getProperties().get("height", Integer.class);
@@ -98,7 +107,7 @@ public class WorldScreen extends ScreenAdapter implements MenuInputObserver{
 
     	this.mapPixelWidth = mapWidth * tileWidth;
     	this.mapPixelHeight = mapHeight * tileHeight;
-    	
+
     	this.characterSprite = new AnimatedSprite(
         		buildWalkAnim(),
         		"walkDown",
@@ -110,22 +119,35 @@ public class WorldScreen extends ScreenAdapter implements MenuInputObserver{
 
     	camera.position.x = startingX;
     	camera.position.y = startingY;
-    	
+
     	// movement speed will be different for towns and overworld
 
     	this.movementSpeed = GameConstants.PLAYER_SPEED;
-       	
+
     	// build collision layers
     	this.collisionLayer = (TiledMapTileLayer) map.getLayers().get("Ground");
     	// menu stuff
-    	
-    	
+		this.playerPosition = new PlayerPositionHandler(
+			map,
+			collisionLayer,
+			playerInput,
+			movementSpeed,
+			characterSprite.getSprite().getWidth(),
+			characterSprite.getSprite().getHeight(),
+			startingX,
+			startingY
+		);
+
     	this.skin = new Skin(Gdx.files.internal(GameConstants.MENU_SKIN));
 		setUpMenu();
 
+		//input
+		InputMultiplexer multiplexer = setUpInput();
+        Gdx.input.setInputProcessor(multiplexer);
+
 
 	}
-    
+
     private void setUpCamera() {
 		// set up camera
 		this.camera = new OrthographicCamera();
@@ -133,7 +155,7 @@ public class WorldScreen extends ScreenAdapter implements MenuInputObserver{
 		camera.zoom=0.25f;
 		camera.update();
     }
-    
+
     private void setUpMenu() {
     	this.uiStage = new Stage(new ScreenViewport());
     	OverworldMenu menu = new OverworldMenu(this.skin);
@@ -146,17 +168,20 @@ public class WorldScreen extends ScreenAdapter implements MenuInputObserver{
         	menu
         );
         this.menuInputHanlder.addListener(this);
-        // --- Configure the InputMultiplexer ---
+    }
+
+    public InputMultiplexer setUpInput() {
         InputMultiplexer multiplexer = new InputMultiplexer();
+        // --- Configure the InputMultiplexer ---
         multiplexer.addProcessor(menuInputHanlder);
         // 6. Tell LibGDX to use the multiplexer for all input events
-        Gdx.input.setInputProcessor(multiplexer);
+    	return multiplexer;
     }
-    
+
   private void updateCharacterSprite() {
   	float delta = Gdx.graphics.getDeltaTime();
 	Sprite sprite = characterSprite.getSprite();
-	
+
 
 
 	sprite.setCenter(camera.position.x, camera.position.y);
@@ -174,23 +199,23 @@ public class WorldScreen extends ScreenAdapter implements MenuInputObserver{
 
 	    Gdx.gl.glClearColor(0, 0, 0, 1);
 	    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-	    
+
 		camera.update();
 		renderer.setView(camera);
 		renderer.render();
 	    spriteBatch.setProjectionMatrix(camera.combined);
 		spriteBatch.begin();
-	    characterSprite.render(spriteBatch);	
+	    characterSprite.render(spriteBatch);
 		spriteBatch.end();
 		if(menuVisible) {
-			
+
 			uiStage.act(Gdx.graphics.getDeltaTime());
 			uiStage.draw();
 		}
     }
 	@Override
 	public void render(float delta) {
-		
+
 		input();
 		updateCharacterSprite();
 		draw();
@@ -200,92 +225,20 @@ public class WorldScreen extends ScreenAdapter implements MenuInputObserver{
     	/*
     	 * check for input, project camera to a new x
     	 * set sprite animation
-    	 * project camera to a new X,Y coord and check for collisions taking into account player 
-    	 * 
+    	 * project camera to a new X,Y coord and check for collisions taking into account player
+    	 *
     	 */
-    	boolean isPlayerBlocked = false;
-        float speed = movementSpeed * Gdx.graphics.getDeltaTime(); // movement speed
-        Sprite sprite = characterSprite.getSprite();
-        float newX = camera.position.x;
-        float newY = camera.position.y;
 
-		characterSprite.walking = false;
-		
 		if(!menuVisible) {
-			if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-				newX -= speed;
-				characterSprite.setState("walkLeft");
-				characterSprite.walking = true;
-			}
-			else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-				newX += speed;
-				characterSprite.setState("walkRight");
-				characterSprite.walking = true;
-			}
-			else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-				newY += speed;
-				characterSprite.setState("walkUp");
-				characterSprite.walking = true;
-			}
-			else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-				newY -= speed;
-				characterSprite.setState("walkDown");
-				characterSprite.walking = true;
-			}
-			
-			// 1. Clamp to map edges
-			newX = MathUtils.clamp(newX, sprite.getWidth() / 2, mapPixelWidth - sprite.getWidth() / 2);
-			newY = MathUtils.clamp(newY, sprite.getWidth() / 2, mapPixelHeight - sprite.getHeight() / 2);
+			playerInput.updateInput();
+			playerPosition.updateInput();
+			camera.position.x = playerPosition.x;
+			camera.position.y = playerPosition.y;
 
-			// check for collision here
-			// adjust for sprite height and length
-			float xAdjust;
-			float yAdjust;
-
-				
-			if(this.characterSprite.getState() == "walkUp") {
-				yAdjust = newY + (sprite.getHeight() / 2 - 2);
-			} else {
-				yAdjust = newY - (sprite.getHeight() / 2);
-			}
-			if(this.characterSprite.getState() == "walkRight") {
-				// 3 is an offset to account for sprite width being less than sprite 'tile' width
-				// it's a hack and should probably be on the Player class somewhere
-				xAdjust = newX + ((sprite.getWidth() / 2) - 3);
-			} else {
-				xAdjust = newX - ((sprite.getWidth() / 2) - 3);
-			}
-			Cell tile = getTileCellAtCoord(xAdjust, yAdjust, collisionLayer);
-
-			if(
-				tile == null ||
-				tile.getTile() == null ||
-				tile.getTile().getProperties() == null
-			) {
-				isPlayerBlocked = true;
-			} else if (tile.getTile().getProperties().containsKey("blocked")){
-				isPlayerBlocked = true;
-			}
-
-			if(!isPlayerBlocked && characterSprite.walking == true) {
-				camera.position.x = newX;
-				camera.position.y = newY;
-			}		
 		}
-        
 
-        
-    }
-    // TODO: Make utility
-    // Tile based movement?
-    public Cell getTileCellAtCoord(float x, float y, TiledMapTileLayer layer) {
-        int tileWidth = (int) layer.getTileWidth();
-        int tileHeight = (int) layer.getTileHeight();
 
-        int cellX = (int) (x / tileWidth);
-        int cellY = (int) (y / tileHeight);
-        
-        return layer.getCell(cellX, cellY);
+
     }
 
     @Override
@@ -295,20 +248,20 @@ public class WorldScreen extends ScreenAdapter implements MenuInputObserver{
         uiStage.dispose();
         skin.dispose();
     }
-    
+
     // TODO Move out of world map
     private Map<String, Animation<TextureRegion>> buildWalkAnim(){
     	Texture fullSheet = new Texture("Sprites/mc_male.png");
     	Map<String, Animation<TextureRegion>> animationMap = new HashMap<String, Animation<TextureRegion>>();
-    	
+
     	animationMap.put("walkDown", AnimationBuilder.createAnimationByRow(fullSheet, 3, 4, 1, frameDuration));
     	animationMap.put("walkLeft", AnimationBuilder.createAnimationByRow(fullSheet, 3, 4, 2, frameDuration));
     	animationMap.put("walkRight", AnimationBuilder.createAnimationByRow(fullSheet, 3, 4, 3, frameDuration));
     	animationMap.put("walkUp", AnimationBuilder.createAnimationByRow(fullSheet, 3, 4, 4, frameDuration));
     	return animationMap;
-    	
+
     }
-    
+
     public void onMenuToggled(boolean value) {
     	menuVisible = value;
     }
