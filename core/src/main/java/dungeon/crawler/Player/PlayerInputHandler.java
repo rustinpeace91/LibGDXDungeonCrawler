@@ -19,15 +19,15 @@ public class PlayerInputHandler {
 			this.isMoving = true;
 		}
 		else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-			this.direction = PlayerDirection.LEFT;
+			this.direction = PlayerDirection.RIGHT;
 			this.isMoving = true;
 		}
 		else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-			this.direction = PlayerDirection.LEFT;
+			this.direction = PlayerDirection.UP;
 			this.isMoving = true;
 		}
 		else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-			this.direction = PlayerDirection.LEFT;
+			this.direction = PlayerDirection.DOWN;
 			this.isMoving = true;
 		} else {
 			this.isMoving = false;

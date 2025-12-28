@@ -62,14 +62,12 @@ public class PlayerPositionHandler {
     public void updateInput() {
     	float newX; 
     	float newY;
-        if(!blocked){
+        if(playerInputHandler.isMoving){
             // Sprite sprite = playerSprite.getSprite();
             float speed = movementSpeed * Gdx.graphics.getDeltaTime(); // movement speed
-			Gdx.app.log("world", String.valueOf(playerInputHandler.direction));
 
-            // 1. Clamp to map edges
-            newX = MathUtils.clamp(x, spriteWidth / 2, mapPixelWidth - spriteWidth / 2);
-            newY = MathUtils.clamp(x, spriteWidth / 2, mapPixelHeight - spriteHeight / 2);
+            newX = x;
+            newY = y;
 
             // check for collision here
             // adjust for sprite height and length
@@ -77,18 +75,32 @@ public class PlayerPositionHandler {
             float yAdjust;
 
 
-            if(this.playerInputHandler.direction == PlayerDirection.LEFT) {
-                yAdjust = newY + (spriteHeight / 2 - 2);
-            } else {
-                yAdjust = newY - (spriteHeight / 2);
+            if(playerInputHandler.direction == PlayerDirection.LEFT) {
+				newX -= speed;
             }
-            if(this.playerInputHandler.direction == PlayerDirection.RIGHT) {
+            if(playerInputHandler.direction == PlayerDirection.RIGHT) {
+				newX += speed;
                 // 3 is an offset to account for sprite width being less than sprite 'tile' width
                 // it's a hack and should probably be on the Player class somewhere
                 xAdjust = newX + ((spriteWidth / 2) - 3);
             } else {
                 xAdjust = newX - ((spriteWidth / 2) - 3);
             }
+            yAdjust = newY - (spriteHeight / 2);
+            if(playerInputHandler.direction == PlayerDirection.UP) {
+				newY += speed;
+                yAdjust = newY + (spriteHeight / 2 - 2);
+
+            } 
+            if(playerInputHandler.direction == PlayerDirection.DOWN) {
+				newY -= speed;
+            }
+
+            // 1. Clamp to map edges
+            newX = MathUtils.clamp(newX, spriteWidth / 2, mapPixelWidth - spriteWidth / 2);
+            newY = MathUtils.clamp(newY, spriteWidth / 2, mapPixelHeight - spriteHeight / 2);
+            
+            blocked = false;
             Cell tile = MapUtils.getTileCellAtCoord(xAdjust, yAdjust, collisionLayer);
 
             if(
@@ -104,6 +116,8 @@ public class PlayerPositionHandler {
             if(!blocked && playerInputHandler.isMoving) {
                 x = newX;
                 y = newY;
+        		Gdx.app.log("world", String.valueOf(x));
+
             }
         }
     }
