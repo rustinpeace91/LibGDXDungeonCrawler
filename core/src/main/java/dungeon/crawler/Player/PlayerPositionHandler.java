@@ -13,7 +13,12 @@ import dungeon.crawler.Utils.MapUtils;
 public class PlayerPositionHandler {
     public float x;
     public float y;
-    private boolean blocked;
+    
+    // seems redundant from inPut handler but it won't be when tile based movement is implimented
+    // becasue the player could be moving independant of what input is being pressed
+    public PlayerDirection direction;
+    public boolean isMoving;
+    public boolean blocked;
     
     private PlayerInputHandler playerInputHandler;
     private float movementSpeed;
@@ -57,6 +62,11 @@ public class PlayerPositionHandler {
 
     	this.mapPixelWidth = mapWidth * tileWidth;
     	this.mapPixelHeight = mapHeight * tileHeight;
+    	
+    	this.isMoving = false;
+    	this.direction = PlayerDirection.DOWN;
+    	
+    	
     }
 
     public void updateInput() {
