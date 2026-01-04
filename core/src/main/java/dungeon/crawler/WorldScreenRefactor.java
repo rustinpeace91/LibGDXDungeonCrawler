@@ -37,6 +37,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import dungeon.crawler.Menu.MenuInputHandler;
 import dungeon.crawler.Menu.MenuInputObserver;
 import dungeon.crawler.Menu.OverworldMenu;
+import dungeon.crawler.Player.PlayerAnimatedSpriteFactory;
 import dungeon.crawler.Player.PlayerDirection;
 import dungeon.crawler.Player.PlayerInputHandler;
 import dungeon.crawler.Player.PlayerPositionHandler;
@@ -73,7 +74,6 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
 	private boolean menuVisible;
 
 
-	float frameDuration = .15f;
     public WorldScreenRefactor(
     	MainGame game,
     	SpriteBatch spriteBatch,
@@ -88,13 +88,11 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
 		this.renderer = new OrthogonalTiledMapRenderer(map);
 		this.overWorld = overWorld;
 
-		this.playerInput = new PlayerInputHandler(PlayerDirection.DOWN);
 
 
 		setUpCamera();
     	float screenCenterX = camera.viewportWidth / 2f;
     	float screenCenterY = camera.viewportHeight / 2f;
-
 
 
     	// set map bounderies
@@ -108,15 +106,6 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
     	this.mapPixelWidth = mapWidth * tileWidth;
     	this.mapPixelHeight = mapHeight * tileHeight;
 
-    	this.characterSprite = new AnimatedSprite(
-        		buildWalkAnim(),
-        		"walkDown",
-        		screenCenterX,
-        		screenCenterY,
-        		GameConstants.SPRITE_WIDTH,
-        		GameConstants.SPRITE_HEIGHT
-        );
-
     	camera.position.x = startingX;
     	camera.position.y = startingY;
 
@@ -126,18 +115,28 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
 
     	// build collision layers
     	this.collisionLayer = (TiledMapTileLayer) map.getLayers().get("Ground");
-    	// menu stuff
+    	// Player stuff
+    	
+		this.playerInput = new PlayerInputHandler(PlayerDirection.DOWN);
+
 		this.playerPosition = new PlayerPositionHandler(
 			map,
 			collisionLayer,
 			playerInput,
 			movementSpeed,
-			characterSprite.getSprite().getWidth(),
-			characterSprite.getSprite().getHeight(),
 			startingX,
 			startingY
 		);
-
+		PlayerAnimatedSpriteFactory factory = new PlayerAnimatedSpriteFactory();
+		this.characterSprite = factory.createAnimation(
+			screenCenterX,
+			screenCenterY,
+			GameConstants.WALK_ANIMATIONS.get(PlayerDirection.DOWN),
+			playerPosition
+		);
+		float sprWidth = characterSprite.getSprite().getWidth();
+		float sprHeight = characterSprite.getSprite().getHeight();
+		
     	this.skin = new Skin(Gdx.files.internal(GameConstants.MENU_SKIN));
 		setUpMenu();
 
@@ -178,20 +177,20 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
     	return multiplexer;
     }
 
-  private void updateCharacterSprite() {
-  	float delta = Gdx.graphics.getDeltaTime();
-	Sprite sprite = characterSprite.getSprite();
-
-
-
-	sprite.setCenter(camera.position.x, camera.position.y);
-	// update animation if walking
-	if (characterSprite.walking) {
-	    characterSprite.update(delta);
-	}
-
-
-  }
+//  private void updateCharacterSprite() {
+//  	float delta = Gdx.graphics.getDeltaTime();
+//	Sprite sprite = characterSprite.getSprite();
+//
+//
+//
+//	sprite.setCenter(camera.position.x, camera.position.y);
+//	// update animation if walking
+//	if (characterSprite.walking) {
+//	    characterSprite.update(delta);
+//	}
+//
+//
+//  }
 
 
     private void draw() {
@@ -203,6 +202,10 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
 		camera.update();
 		renderer.setView(camera);
 		renderer.render();
+		
+		characterSprite.update(
+			delta
+		);
 	    spriteBatch.setProjectionMatrix(camera.combined);
 		spriteBatch.begin();
 	    characterSprite.render(spriteBatch);
@@ -217,7 +220,6 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
 	public void render(float delta) {
 
 		input();
-		updateCharacterSprite();
 		draw();
 	}
 
@@ -236,9 +238,6 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
 			camera.position.y = playerPosition.y;
 
 		}
-
-
-
     }
 
     @Override
@@ -249,18 +248,6 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
         skin.dispose();
     }
 
-    // TODO Move out of world map
-    private Map<String, Animation<TextureRegion>> buildWalkAnim(){
-    	Texture fullSheet = new Texture("Sprites/mc_male.png");
-    	Map<String, Animation<TextureRegion>> animationMap = new HashMap<String, Animation<TextureRegion>>();
-
-    	animationMap.put("walkDown", AnimationBuilder.createAnimationByRow(fullSheet, 3, 4, 1, frameDuration));
-    	animationMap.put("walkLeft", AnimationBuilder.createAnimationByRow(fullSheet, 3, 4, 2, frameDuration));
-    	animationMap.put("walkRight", AnimationBuilder.createAnimationByRow(fullSheet, 3, 4, 3, frameDuration));
-    	animationMap.put("walkUp", AnimationBuilder.createAnimationByRow(fullSheet, 3, 4, 4, frameDuration));
-    	return animationMap;
-
-    }
 
     public void onMenuToggled(boolean value) {
     	menuVisible = value;

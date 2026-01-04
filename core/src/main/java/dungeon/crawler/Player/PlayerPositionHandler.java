@@ -36,8 +36,6 @@ public class PlayerPositionHandler {
         TiledMapTileLayer collisionLayer,
         PlayerInputHandler input,
         float movementSpeed,
-        float spriteWidth,
-        float spriteHeight,
         float initialX,
         float initialY
     ) {
@@ -46,10 +44,12 @@ public class PlayerPositionHandler {
         this.playerInputHandler = input;
         this.blocked = false;
         this.movementSpeed = movementSpeed;
-        this.spriteWidth = spriteWidth;
-        this.spriteHeight = spriteHeight;
+
         this.x = initialX;
         this.y = initialY;
+        
+        this.spriteWidth = 11f;
+        this.spriteHeight = 20f;
         
 
     	// Get map dimensions in pixels
