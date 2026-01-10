@@ -12,8 +12,8 @@ public class MainGame extends Game {
     	setScreen(new WorldScreenRefactor(
     		this,
     		spriteBatch,
-    		200f,
-    		200f,
+    		11f,
+    		11f,
     		GameConstants.TEST_MAP,
     		false
     	));
