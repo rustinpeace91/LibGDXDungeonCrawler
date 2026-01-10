@@ -6,7 +6,7 @@ import com.badlogic.gdx.InputAdapter;
 
 public class PlayerInputHandler {
 	public PlayerDirection direction;
-	public boolean isMoving = false;
+	public boolean movementInputPressed = false;
 	public PlayerInputHandler(
 		PlayerDirection direction
 	) {
@@ -16,21 +16,21 @@ public class PlayerInputHandler {
 	public void updateInput() {
 		if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
 			this.direction = PlayerDirection.LEFT;
-			this.isMoving = true;
+			this.movementInputPressed = true;
 		}
 		else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
 			this.direction = PlayerDirection.RIGHT;
-			this.isMoving = true;
+			this.movementInputPressed = true;
 		}
 		else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
 			this.direction = PlayerDirection.UP;
-			this.isMoving = true;
+			this.movementInputPressed = true;
 		}
 		else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
 			this.direction = PlayerDirection.DOWN;
-			this.isMoving = true;
+			this.movementInputPressed = true;
 		} else {
-			this.isMoving = false;
+			this.movementInputPressed = false;
 		}
 	}
 }

@@ -13,9 +13,11 @@ public class GameConstants {
 	// player
 	public static final float PLAYER_SPEED = 100f;
 	public static final float OVERWORLD_SPEED = 55f;
-	public static final int SPRITE_WIDTH = 16;
-	public static final int SPRITE_HEIGHT = 16;
-	
+	public static final float SPRITE_WIDTH = 16;
+	public static final float SPRITE_HEIGHT = 16;
+
+	public static final float TILE_WIDTH = 16;
+	public static final float TILE_HEIGHT = 16;
 
 	public static final float FRAME_DURATION = .15f;
 

@@ -5,19 +5,44 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;import com.badlogic.gdx.utils.Array;
 
+import dungeon.crawler.GameConstants;
+import dungeon.crawler.Observers.PlayerPositionObserver;
 import dungeon.crawler.Sprites.AnimatedSprite;
+import dungeon.crawler.Subject.GameSubject;
 import dungeon.crawler.Utils.MapUtils;
 
-public class PlayerPositionHandler {
+public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
     public float x;
     public float y;
     
+    protected final Array<PlayerPositionObserver> observers = new Array<>();
+
+
+    // tile number
+    public float tileX;
+    public float tileY;
+
+    // where the player intends to move based on input
+    public float targetTileX;
+    public float targetTileY;
+    public float movementProgress;
+    private Vector2 startVisualPos = new Vector2();
+
+
+
+    // TODO: make constant
+    private final float MOVE_DURATION = 0.15f; // Seconds to cross one tile
+
+
     // seems redundant from inPut handler but it won't be when tile based movement is implimented
     // becasue the player could be moving independant of what input is being pressed
     public PlayerDirection direction;
     public boolean isMoving;
+    public boolean moveInProgress;
     public boolean blocked;
     
     private PlayerInputHandler playerInputHandler;
@@ -25,8 +50,8 @@ public class PlayerPositionHandler {
     private float spriteWidth;
     private float spriteHeight;
   
-    private float mapPixelWidth;
-    private float mapPixelHeight;
+    private float mapWidth;
+    private float mapHeight;
 
     private TiledMap worldMap;
     private TiledMapTileLayer collisionLayer;
@@ -45,11 +70,22 @@ public class PlayerPositionHandler {
         this.blocked = false;
         this.movementSpeed = movementSpeed;
 
-        this.x = initialX;
-        this.y = initialY;
+        // where the player is on the screen. TODO: rename visualX
+        this.x = initialX * GameConstants.TILE_WIDTH;
+        this.y = initialY * GameConstants.TILE_WIDTH;
+        // the  coord of the tile the player is on
+        this.tileX = initialX;
+        this.tileY = initialY;
         
-        this.spriteWidth = 11f;
-        this.spriteHeight = 20f;
+        this.targetTileX = initialX;
+        this.targetTileY = initialY;
+        this.movementProgress = 0f;
+
+
+
+        // TODO: make a constant
+        this.spriteWidth = 16f;
+        this.spriteHeight = 16f;
         
 
     	// Get map dimensions in pixels
@@ -60,75 +96,133 @@ public class PlayerPositionHandler {
     	int tileWidth = worldMap.getProperties().get("tilewidth", Integer.class);
     	int tileHeight = worldMap.getProperties().get("tileheight", Integer.class);
 
-    	this.mapPixelWidth = mapWidth * tileWidth;
-    	this.mapPixelHeight = mapHeight * tileHeight;
+    	this.mapWidth = mapWidth;
+    	this.mapHeight = mapHeight;
     	
     	this.isMoving = false;
     	this.direction = PlayerDirection.DOWN;
     	
     	
     }
+    
+    @Override
+    public void addObserver(PlayerPositionObserver observer) { 
+    	observers.add(observer); 
+    }
 
-    public void updateInput() {
-    	float newX; 
-    	float newY;
-        if(playerInputHandler.isMoving){
-            // Sprite sprite = playerSprite.getSprite();
-            float speed = movementSpeed * Gdx.graphics.getDeltaTime(); // movement speed
-
-            newX = x;
-            newY = y;
-
-            // check for collision here
-            // adjust for sprite height and length
-            float xAdjust;
-            float yAdjust;
+    @Override
+    public void removeObserver(PlayerPositionObserver observer) {
+    	observers.removeValue(observer, true); 
+    }
+    
 
 
-            if(playerInputHandler.direction == PlayerDirection.LEFT) {
-				newX -= speed;
-            }
-            if(playerInputHandler.direction == PlayerDirection.RIGHT) {
-				newX += speed;
-                // 3 is an offset to account for sprite width being less than sprite 'tile' width
-                // it's a hack and should probably be on the Player class somewhere
-                xAdjust = newX + ((spriteWidth / 2) - 3);
-            } else {
-                xAdjust = newX - ((spriteWidth / 2) - 3);
-            }
-            yAdjust = newY - (spriteHeight / 2);
-            if(playerInputHandler.direction == PlayerDirection.UP) {
-				newY += speed;
-                yAdjust = newY + (spriteHeight / 2 - 2);
-
-            } 
-            if(playerInputHandler.direction == PlayerDirection.DOWN) {
-				newY -= speed;
-            }
-
-            // 1. Clamp to map edges
-            newX = MathUtils.clamp(newX, spriteWidth / 2, mapPixelWidth - spriteWidth / 2);
-            newY = MathUtils.clamp(newY, spriteWidth / 2, mapPixelHeight - spriteHeight / 2);
-            
-            blocked = false;
-            Cell tile = MapUtils.getTileCellAtCoord(xAdjust, yAdjust, collisionLayer);
-
-            if(
-                tile == null ||
-                tile.getTile() == null ||
-                tile.getTile().getProperties() == null
-            ) {
-                blocked = true;
-            } else if (tile.getTile().getProperties().containsKey("blocked")){
-                blocked = true;
-            }
-
-            if(!blocked && playerInputHandler.isMoving) {
-                x = newX;
-                y = newY;
-        		Gdx.app.log("world", String.valueOf(x));
-
-            }
+    public void update(float delta){
+        if(moveInProgress){
+            updateMoveFrames(delta);
+        } else {
+            updateInput(delta);
         }
     }
+
+
+    public void updateMoveFrames(float delta){
+        movementProgress += delta / MOVE_DURATION;
+
+        if (movementProgress >= 1f) {
+            // Arrived at destination
+            isMoving = false;
+            moveInProgress= false;
+            tileX = targetTileX;
+            tileY = targetTileY;
+            x = tileX * GameConstants.TILE_WIDTH;
+            y = tileY * GameConstants.TILE_HEIGHT;
+            this.movementProgress = 0f;
+        } else {
+            // Apply smoothing: Interpolation.linear or Interpolation.smooth
+            float alpha = Interpolation.linear.apply(movementProgress);
+            // Lerp from the starting pixel position to the target pixel position
+            float targetPixelX = targetTileX * GameConstants.TILE_WIDTH;
+            float targetPixelY = targetTileY * GameConstants.TILE_HEIGHT;           
+ 
+            x = MathUtils.lerp(startVisualPos.x, targetPixelX, alpha);
+            y = MathUtils.lerp(startVisualPos.y, targetPixelY, alpha);
+        }
+    }
+
+    public void handleDirectionChange(PlayerDirection newDirection){
+        if(newDirection != direction){
+            // handle notify logic here
+            this.direction = newDirection;
+
+            onDirectionChange(newDirection);
+        }
+    }
+    
+    public void onDirectionChange(PlayerDirection newDirection) {
+        for (PlayerPositionObserver obs : observers) {
+
+            obs.onDirectionChange(newDirection);
+        }    
+    }
+    
+    public void updateInput(float delta){
+
+        float tempTileX = tileX;
+        float tempTileY = tileY; 
+
+        if(moveInProgress){
+            return;
+        }
+
+        if(playerInputHandler.movementInputPressed == false){
+            return;
+        }
+
+        if(playerInputHandler.direction == PlayerDirection.LEFT) {
+            tempTileX = tileX - 1;
+            tempTileY = tileY;
+            handleDirectionChange(PlayerDirection.LEFT);
+        }
+
+        else if(playerInputHandler.direction == PlayerDirection.RIGHT) {
+            tempTileX = tileX + 1;
+            tempTileY = tileY;
+            handleDirectionChange(PlayerDirection.RIGHT);
+        }
+        else if(playerInputHandler.direction == PlayerDirection.UP) {
+            tempTileX = tileX;
+            tempTileY = tileY + 1;
+            handleDirectionChange(PlayerDirection.UP);
+
+        }
+        else if(playerInputHandler.direction == PlayerDirection.DOWN) {
+            tempTileX = tileX;
+            tempTileY = tileY -1;
+            handleDirectionChange(PlayerDirection.DOWN);
+        }
+        
+        if(!isTileBlocked(tempTileX, tempTileY)){
+            targetTileX = tempTileX;
+            targetTileY = tempTileY;
+            startVisualPos.set(x, y);
+            moveInProgress = true;
+            isMoving = true;
+            movementProgress = 0f;
+        }
+
+    }
+
+    private boolean isTileBlocked(float tileX, float tileY) {
+
+        if (tileX < 0 || tileY < 0 || tileX >= mapWidth || tileY >= mapHeight) {
+            return true; // Treat "off-map" as blocked
+        }
+        TiledMapTileLayer layer = (TiledMapTileLayer) worldMap.getLayers().get("Ground");
+        TiledMapTileLayer.Cell cell = layer.getCell((int) tileX, (int) tileY);
+        
+        // Check if cell exists and has the "blocked" property
+        return cell != null && cell.getTile().getProperties().containsKey("blocked");
+    }
+
 }

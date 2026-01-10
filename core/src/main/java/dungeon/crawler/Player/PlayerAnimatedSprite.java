@@ -11,8 +11,9 @@ import dungeon.crawler.Sprites.AnimatedSprite;
 import dungeon.crawler.Player.PlayerPositionHandler;
 import dungeon.crawler.Player.PlayerDirection;
 import dungeon.crawler.GameConstants;
+import dungeon.crawler.Observers.PlayerPositionObserver;
 
-public class PlayerAnimatedSprite extends AnimatedSprite{
+public class PlayerAnimatedSprite extends AnimatedSprite implements PlayerPositionObserver{
 	private PlayerPositionHandler playerPosition;
 	
 
@@ -33,15 +34,19 @@ public class PlayerAnimatedSprite extends AnimatedSprite{
 	@Override
 	public void update(float delta) {
 		Sprite sprite = super.getSprite();
-		sprite.setCenter(playerPosition.x, playerPosition.y);
+		sprite.setPosition(playerPosition.x, playerPosition.y);
+
 		if(playerPosition.isMoving) {
 			super.update(delta);
+
 		}
 	}
 	
 	
-	public void changeDirection(PlayerDirection direction) {
+	public void onDirectionChange(PlayerDirection direction) {
 		String animation = GameConstants.WALK_ANIMATIONS.get(direction);
+		System.out.print("Changing Direction to ");
+		System.out.print(animation);
 		super.setState(animation);
 	}
 	

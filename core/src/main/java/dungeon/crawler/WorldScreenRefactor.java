@@ -37,6 +37,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import dungeon.crawler.Menu.MenuInputHandler;
 import dungeon.crawler.Menu.MenuInputObserver;
 import dungeon.crawler.Menu.OverworldMenu;
+import dungeon.crawler.Player.PlayerAnimatedSprite;
 import dungeon.crawler.Player.PlayerAnimatedSpriteFactory;
 import dungeon.crawler.Player.PlayerDirection;
 import dungeon.crawler.Player.PlayerInputHandler;
@@ -52,7 +53,7 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
 	private OrthographicCamera camera;
 
 	private Texture characterTexture;
-	private AnimatedSprite characterSprite;
+	private PlayerAnimatedSprite characterSprite;
 	private boolean overWorld;
 
 
@@ -62,8 +63,7 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
 	private PlayerInputHandler playerInput;
 	private PlayerPositionHandler playerPosition;
 	// map bounderies
-	private float mapPixelWidth;
-	private float mapPixelHeight;
+
 
 	private float movementSpeed;
 
@@ -103,8 +103,8 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
     	int tileWidth = map.getProperties().get("tilewidth", Integer.class);
     	int tileHeight = map.getProperties().get("tileheight", Integer.class);
 
-    	this.mapPixelWidth = mapWidth * tileWidth;
-    	this.mapPixelHeight = mapHeight * tileHeight;
+//    	this.mapPixelWidth = mapWidth * tileWidth;
+//    	this.mapPixelHeight = mapHeight * tileHeight;
 
     	camera.position.x = startingX;
     	camera.position.y = startingY;
@@ -134,8 +134,9 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
 			GameConstants.WALK_ANIMATIONS.get(PlayerDirection.DOWN),
 			playerPosition
 		);
-		float sprWidth = characterSprite.getSprite().getWidth();
-		float sprHeight = characterSprite.getSprite().getHeight();
+		
+		playerPosition.addObserver(characterSprite);
+
 		
     	this.skin = new Skin(Gdx.files.internal(GameConstants.MENU_SKIN));
 		setUpMenu();
@@ -177,22 +178,6 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
     	return multiplexer;
     }
 
-//  private void updateCharacterSprite() {
-//  	float delta = Gdx.graphics.getDeltaTime();
-//	Sprite sprite = characterSprite.getSprite();
-//
-//
-//
-//	sprite.setCenter(camera.position.x, camera.position.y);
-//	// update animation if walking
-//	if (characterSprite.walking) {
-//	    characterSprite.update(delta);
-//	}
-//
-//
-//  }
-
-
     private void draw() {
     	float delta = Gdx.graphics.getDeltaTime();
 
@@ -219,11 +204,11 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
 	@Override
 	public void render(float delta) {
 
-		input();
+		input(delta);
 		draw();
 	}
 
-    private void input() {
+    private void input(float delta) {
     	/*
     	 * check for input, project camera to a new x
     	 * set sprite animation
@@ -233,8 +218,8 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
 
 		if(!menuVisible) {
 			playerInput.updateInput();
-			playerPosition.updateInput();
-			camera.position.x = playerPosition.x;
+			playerPosition.update(delta);
+			camera.position.x = playerPosition.x + 8;
 			camera.position.y = playerPosition.y;
 
 		}
