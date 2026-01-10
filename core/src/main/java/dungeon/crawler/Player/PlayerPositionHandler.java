@@ -33,11 +33,6 @@ public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
     private Vector2 startVisualPos = new Vector2();
 
 
-
-    // TODO: make constant
-    private final float MOVE_DURATION = 0.15f; // Seconds to cross one tile
-
-
     // seems redundant from inPut handler but it won't be when tile based movement is implimented
     // becasue the player could be moving independant of what input is being pressed
     public PlayerDirection direction;
@@ -46,7 +41,7 @@ public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
     public boolean blocked;
     
     private PlayerInputHandler playerInputHandler;
-    private float movementSpeed;
+    private float movementDuration;
     private float spriteWidth;
     private float spriteHeight;
   
@@ -60,7 +55,7 @@ public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
         TiledMap worldMap,
         TiledMapTileLayer collisionLayer,
         PlayerInputHandler input,
-        float movementSpeed,
+        float movementDuration,
         float initialX,
         float initialY
     ) {
@@ -68,7 +63,6 @@ public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
         this.collisionLayer = collisionLayer;
         this.playerInputHandler = input;
         this.blocked = false;
-        this.movementSpeed = movementSpeed;
 
         // where the player is on the screen. TODO: rename visualX
         this.x = initialX * GameConstants.TILE_WIDTH;
@@ -80,6 +74,7 @@ public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
         this.targetTileX = initialX;
         this.targetTileY = initialY;
         this.movementProgress = 0f;
+        this.movementDuration = movementDuration;
 
 
 
@@ -127,7 +122,7 @@ public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
 
 
     public void updateMoveFrames(float delta){
-        movementProgress += delta / MOVE_DURATION;
+        movementProgress += delta / movementDuration;
 
         if (movementProgress >= 1f) {
             // Arrived at destination

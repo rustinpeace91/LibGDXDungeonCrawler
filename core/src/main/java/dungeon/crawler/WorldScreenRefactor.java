@@ -52,7 +52,6 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
 	private OrthogonalTiledMapRenderer renderer;
 	private OrthographicCamera camera;
 
-	private Texture characterTexture;
 	private PlayerAnimatedSprite characterSprite;
 	private boolean overWorld;
 
@@ -65,7 +64,7 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
 	// map bounderies
 
 
-	private float movementSpeed;
+	private float movementDuration;
 
 	// menu stuff
 	private Skin skin;
@@ -95,23 +94,11 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
     	float screenCenterY = camera.viewportHeight / 2f;
 
 
-    	// set map bounderies
-
-    	// Get map dimensions in pixels
-    	int mapWidth = map.getProperties().get("width", Integer.class);
-    	int mapHeight = map.getProperties().get("height", Integer.class);
-    	int tileWidth = map.getProperties().get("tilewidth", Integer.class);
-    	int tileHeight = map.getProperties().get("tileheight", Integer.class);
-
-//    	this.mapPixelWidth = mapWidth * tileWidth;
-//    	this.mapPixelHeight = mapHeight * tileHeight;
-
     	camera.position.x = startingX;
     	camera.position.y = startingY;
 
-    	// movement speed will be different for towns and overworld
 
-    	this.movementSpeed = GameConstants.PLAYER_SPEED;
+    	this.movementDuration = GameConstants.TOWN_MOVEMENT_DURATION;
 
     	// build collision layers
     	this.collisionLayer = (TiledMapTileLayer) map.getLayers().get("Ground");
@@ -123,7 +110,7 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
 			map,
 			collisionLayer,
 			playerInput,
-			movementSpeed,
+			movementDuration,
 			startingX,
 			startingY
 		);
@@ -134,7 +121,6 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
 			GameConstants.WALK_ANIMATIONS.get(PlayerDirection.DOWN),
 			playerPosition
 		);
-		
 		playerPosition.addObserver(characterSprite);
 
 		
@@ -188,9 +174,7 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
 		renderer.setView(camera);
 		renderer.render();
 		
-		characterSprite.update(
-			delta
-		);
+
 	    spriteBatch.setProjectionMatrix(camera.combined);
 		spriteBatch.begin();
 	    characterSprite.render(spriteBatch);
@@ -221,7 +205,9 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
 			playerPosition.update(delta);
 			camera.position.x = playerPosition.x + 8;
 			camera.position.y = playerPosition.y;
-
+			characterSprite.update(
+				delta
+			);
 		}
     }
 

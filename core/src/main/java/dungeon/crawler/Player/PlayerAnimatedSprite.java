@@ -45,8 +45,6 @@ public class PlayerAnimatedSprite extends AnimatedSprite implements PlayerPositi
 	
 	public void onDirectionChange(PlayerDirection direction) {
 		String animation = GameConstants.WALK_ANIMATIONS.get(direction);
-		System.out.print("Changing Direction to ");
-		System.out.print(animation);
 		super.setState(animation);
 	}
 	
