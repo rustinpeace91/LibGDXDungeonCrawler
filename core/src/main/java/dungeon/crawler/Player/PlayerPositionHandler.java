@@ -37,30 +37,26 @@ public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
     // becasue the player could be moving independant of what input is being pressed
     public PlayerDirection direction;
     public boolean isMoving;
-    public boolean moveInProgress;
     public boolean blocked;
     
     private PlayerInputHandler playerInputHandler;
     private float movementDuration;
-    private float spriteWidth;
-    private float spriteHeight;
-  
+
     private float mapWidth;
     private float mapHeight;
 
     private TiledMap worldMap;
     private TiledMapTileLayer collisionLayer;
-
+    TiledMapTileLayer groundLayer;
+ 
     public PlayerPositionHandler(
         TiledMap worldMap,
-        TiledMapTileLayer collisionLayer,
         PlayerInputHandler input,
         float movementDuration,
         float initialX,
         float initialY
     ) {
         this.worldMap = worldMap;
-        this.collisionLayer = collisionLayer;
         this.playerInputHandler = input;
         this.blocked = false;
 
@@ -73,23 +69,21 @@ public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
         
         this.targetTileX = initialX;
         this.targetTileY = initialY;
+        
         this.movementProgress = 0f;
         this.movementDuration = movementDuration;
 
 
-
-        // TODO: make a constant
-        this.spriteWidth = 16f;
-        this.spriteHeight = 16f;
-        
 
     	// Get map dimensions in pixels
         
         // move to util file
     	int mapWidth = worldMap.getProperties().get("width", Integer.class);
     	int mapHeight = worldMap.getProperties().get("height", Integer.class);
-    	int tileWidth = worldMap.getProperties().get("tilewidth", Integer.class);
-    	int tileHeight = worldMap.getProperties().get("tileheight", Integer.class);
+
+    	
+    	this.groundLayer = (TiledMapTileLayer) worldMap.getLayers().get("Ground");
+
 
     	this.mapWidth = mapWidth;
     	this.mapHeight = mapHeight;
@@ -113,7 +107,7 @@ public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
 
 
     public void update(float delta){
-        if(moveInProgress){
+        if(isMoving){
             updateMoveFrames(delta);
         } else {
             updateInput(delta);
@@ -127,7 +121,6 @@ public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
         if (movementProgress >= 1f) {
             // Arrived at destination
             isMoving = false;
-            moveInProgress= false;
             tileX = targetTileX;
             tileY = targetTileY;
             x = tileX * GameConstants.TILE_WIDTH;
@@ -166,7 +159,7 @@ public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
         float tempTileX = tileX;
         float tempTileY = tileY; 
 
-        if(moveInProgress){
+        if(isMoving){
             return;
         }
 
@@ -201,7 +194,7 @@ public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
             targetTileX = tempTileX;
             targetTileY = tempTileY;
             startVisualPos.set(x, y);
-            moveInProgress = true;
+            isMoving = true;
             isMoving = true;
             movementProgress = 0f;
         }
@@ -213,8 +206,7 @@ public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
         if (tileX < 0 || tileY < 0 || tileX >= mapWidth || tileY >= mapHeight) {
             return true; // Treat "off-map" as blocked
         }
-        TiledMapTileLayer layer = (TiledMapTileLayer) worldMap.getLayers().get("Ground");
-        TiledMapTileLayer.Cell cell = layer.getCell((int) tileX, (int) tileY);
+        TiledMapTileLayer.Cell cell = groundLayer.getCell((int) tileX, (int) tileY);
         
         // Check if cell exists and has the "blocked" property
         return cell != null && cell.getTile().getProperties().containsKey("blocked");

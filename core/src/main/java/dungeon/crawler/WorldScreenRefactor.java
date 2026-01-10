@@ -108,7 +108,6 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
 
 		this.playerPosition = new PlayerPositionHandler(
 			map,
-			collisionLayer,
 			playerInput,
 			movementDuration,
 			startingX,
