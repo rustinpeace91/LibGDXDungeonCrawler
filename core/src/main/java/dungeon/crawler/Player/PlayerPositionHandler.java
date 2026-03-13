@@ -1,19 +1,15 @@
 package dungeon.crawler.Player;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 
 import dungeon.crawler.GameConstants;
 import dungeon.crawler.Observers.PlayerPositionObserver;
-import dungeon.crawler.Sprites.AnimatedSprite;
 import dungeon.crawler.Subject.GameSubject;
-import dungeon.crawler.Utils.MapUtils;
 
 public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
     public float x;

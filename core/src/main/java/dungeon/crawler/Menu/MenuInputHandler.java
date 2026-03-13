@@ -7,7 +7,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
 public class MenuInputHandler extends InputAdapter{
@@ -57,6 +56,8 @@ public class MenuInputHandler extends InputAdapter{
 			menuRowIndex = 0;
 			String openClosed = showMenu ? "open" : "closed";
 //			Gdx.app.log("Menu", "Menu is " + openClosed);
+			uiStage.setKeyboardFocus(menuTable.buttonList.getFirst());
+
 			notifyOnMenuToggled(showMenu);
 
 			return true;
@@ -64,25 +65,27 @@ public class MenuInputHandler extends InputAdapter{
 		}
 		if(showMenu) {
 			if(keyCode == Input.Keys.DOWN) {
-				int nextRow = menuRowIndex++;
-				if(menuTable.buttonList.length > nextRow) {
+				int nextRow = ++menuRowIndex;
+				if(menuTable.buttonList.size() > nextRow) {
 					menuRowIndex = nextRow;
-					TextButton currentButton = menuTable.buttonList[menuRowIndex][menuColumnIndex];
+					TextButton currentButton = menuTable.buttonList.get(nextRow);
 					uiStage.setKeyboardFocus(currentButton);
 					Gdx.app.log("Menu", "Down key");
-
+					Gdx.app.log("Menu", "Focused: " + currentButton.getText());
+					uiStage.setKeyboardFocus(currentButton);
 				}
 			}
 			if(keyCode == Input.Keys.UP) {
-				int nextRow = menuRowIndex--;
+				int nextRow = --menuRowIndex;
 				if(nextRow >=0) {
 					menuRowIndex = nextRow;
-					TextButton currentButton = menuTable.buttonList[menuRowIndex][menuColumnIndex];
+					TextButton currentButton = menuTable.buttonList.get(nextRow);
 					uiStage.setKeyboardFocus(currentButton);
 					Gdx.app.log("Menu", "Up key");
-
+					Gdx.app.log("Menu", "Focused: " + currentButton.getText());
 				}
 			}
+
 		}
 		return false;
 	}
