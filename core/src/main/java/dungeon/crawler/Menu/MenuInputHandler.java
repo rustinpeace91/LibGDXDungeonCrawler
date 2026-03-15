@@ -6,8 +6,12 @@ import java.util.List;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+
+import dungeon.crawler.Observers.MenuInputObserver;
 
 public class MenuInputHandler extends InputAdapter{
 	public Stage uiStage;
@@ -49,19 +53,26 @@ public class MenuInputHandler extends InputAdapter{
 	}
 
 	@Override
-	public boolean keyUp(int keyCode) {
+	public boolean keyDown(int keyCode) {
 		if(keyCode == Input.Keys.E) {
 			showMenu = !showMenu;
 			menuColumnIndex = 0;
 			menuRowIndex = 0;
 			String openClosed = showMenu ? "open" : "closed";
 //			Gdx.app.log("Menu", "Menu is " + openClosed);
-			uiStage.setKeyboardFocus(menuTable.buttonList.getFirst());
+			uiStage.setKeyboardFocus(menuTable.buttonList.get(0));
 
 			notifyOnMenuToggled(showMenu);
 
 			return true;
 
+		}
+		if(keyCode == Input.Keys.ENTER){
+    		Actor focused = uiStage.getKeyboardFocus();
+			if (focused instanceof Button) {
+				Gdx.app.log("Button", "BTTTN clicked");
+				((Button) focused).toggle(); // Toggles isChecked and fires the listener
+			}
 		}
 		if(showMenu) {
 			if(keyCode == Input.Keys.DOWN) {
@@ -69,9 +80,6 @@ public class MenuInputHandler extends InputAdapter{
 				if(menuTable.buttonList.size() > nextRow) {
 					menuRowIndex = nextRow;
 					TextButton currentButton = menuTable.buttonList.get(nextRow);
-					uiStage.setKeyboardFocus(currentButton);
-					Gdx.app.log("Menu", "Down key");
-					Gdx.app.log("Menu", "Focused: " + currentButton.getText());
 					uiStage.setKeyboardFocus(currentButton);
 				}
 			}
@@ -81,8 +89,6 @@ public class MenuInputHandler extends InputAdapter{
 					menuRowIndex = nextRow;
 					TextButton currentButton = menuTable.buttonList.get(nextRow);
 					uiStage.setKeyboardFocus(currentButton);
-					Gdx.app.log("Menu", "Up key");
-					Gdx.app.log("Menu", "Focused: " + currentButton.getText());
 				}
 			}
 

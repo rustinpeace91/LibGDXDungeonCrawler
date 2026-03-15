@@ -3,8 +3,8 @@ package dungeon.crawler;
 import java.util.Map;
 
 import dungeon.crawler.Player.PlayerDirection;
-
 public class GameConstants {
+	public enum GAME_SCREEN { MENU, WALK_OVERWORLD, WALK_TOWN, COMBAT };
 
 	// screen
 	public static final int RESOLUTION_WIDTH = 1280;
@@ -12,7 +12,7 @@ public class GameConstants {
 
 	// player
 	public static final float TOWN_MOVEMENT_DURATION = 0.15f;
-	public static final float OVERWORLD_MOVEMENT_DURATION = 0.35f;
+	public static final float OVERWORLD_MOVEMENT_DURATION = 0.25f;
 	public static final float SPRITE_WIDTH = 16;
 	public static final float SPRITE_HEIGHT = 16;
 
@@ -20,6 +20,7 @@ public class GameConstants {
 	public static final float TILE_HEIGHT = 16;
 
 	public static final float FRAME_DURATION = .15f;
+
 
 
 	public static final String TEST_MAP = "Maps/testmap.tmx";

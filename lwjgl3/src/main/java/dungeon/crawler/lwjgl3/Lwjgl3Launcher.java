@@ -2,6 +2,7 @@ package dungeon.crawler.lwjgl3;
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+
 import dungeon.crawler.MainGame;
 
 /** Launches the desktop (LWJGL3) application. */

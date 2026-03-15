@@ -16,8 +16,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import dungeon.crawler.Menu.MenuInputHandler;
-import dungeon.crawler.Menu.MenuInputObserver;
 import dungeon.crawler.Menu.OverworldMenu;
+import dungeon.crawler.Observers.MenuInputObserver;
 import dungeon.crawler.Player.PlayerAnimatedSprite;
 import dungeon.crawler.Player.PlayerAnimatedSpriteFactory;
 import dungeon.crawler.Player.PlayerDirection;
@@ -76,8 +76,11 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
     	camera.position.x = startingX;
     	camera.position.y = startingY;
 
-
-    	this.movementDuration = GameConstants.TOWN_MOVEMENT_DURATION;
+		if(this.overWorld){
+    		this.movementDuration = GameConstants.OVERWORLD_MOVEMENT_DURATION;
+		} else {
+	    	this.movementDuration = GameConstants.TOWN_MOVEMENT_DURATION;
+		}
 
     	// build collision layers
     	this.collisionLayer = (TiledMapTileLayer) map.getLayers().get("Ground");
@@ -126,6 +129,7 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
         float x = 50;
         float y = Gdx.graphics.getHeight() - menu.getHeight() - 50;
         menu.setPosition(x, y);
+		menu.addScreenChangeObserver(game);
         this.uiStage.addActor(menu);
         this.menuInputHanlder = new MenuInputHandler(
             uiStage,
