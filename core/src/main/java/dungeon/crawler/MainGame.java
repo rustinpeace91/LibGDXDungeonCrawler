@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import dungeon.crawler.Observers.ScreenChangeObserver;
+import dungeon.crawler.GameConstants;
 
 public class MainGame extends Game implements ScreenChangeObserver {
 	SpriteBatch spriteBatch;
@@ -17,7 +18,7 @@ public class MainGame extends Game implements ScreenChangeObserver {
     		9f,
     		21f,
     		"Maps/overworld.tmx",
-    		true
+    		GameConstants.GAME_SCREEN.WALK_OVERWORLD
     	));
 
 		// setScreen(new CombatScreen(this));

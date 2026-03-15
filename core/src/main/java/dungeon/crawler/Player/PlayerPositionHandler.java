@@ -2,6 +2,7 @@ package dungeon.crawler.Player;
 
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -122,6 +123,8 @@ public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
             x = tileX * GameConstants.TILE_WIDTH;
             y = tileY * GameConstants.TILE_HEIGHT;
             this.movementProgress = 0f;
+            Cell tileCell = returnTileCell(x, y);
+            onEnteredNewTile(tileCell);
         } else {
             // Apply smoothing: Interpolation.linear or Interpolation.smooth
             float alpha = Interpolation.linear.apply(movementProgress);
@@ -147,6 +150,12 @@ public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
         for (PlayerPositionObserver obs : observers) {
 
             obs.onDirectionChange(newDirection);
+        }    
+    }
+
+    public void onEnteredNewTile(Cell tileCell){
+        for (PlayerPositionObserver obs : observers) {
+            obs.onEnteredNewTile(tileCell);
         }    
     }
     
@@ -206,6 +215,11 @@ public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
         
         // Check if cell exists and has the "blocked" property
         return cell != null && cell.getTile().getProperties().containsKey("blocked");
+    }
+
+    private Cell returnTileCell(float tileX, float tileY){
+        TiledMapTileLayer.Cell cell = groundLayer.getCell((int) tileX, (int) tileY);
+        return cell;
     }
 
 }
