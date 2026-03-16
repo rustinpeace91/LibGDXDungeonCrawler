@@ -49,5 +49,7 @@ public class PlayerAnimatedSprite extends AnimatedSprite implements PlayerPositi
 	@Override
 	public void onEnteredNewTile(Cell tileCell){}
 	
+	@Override
+	public void onTransition(int screenID){};
 
 }

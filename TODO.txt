@@ -1,0 +1,7 @@
+3/16/22
+- Clean up Notifier vs Observer nomenclature, pick one
+- Upgrade from Java 8 to Java 17 without breaking everything
+- Make MenuInputHandler cleaner and lighter, handle focus in OverWorldMenu class
+- Animate Sword in Blender and use it for menu pointer (for colorblindness and ease of sight)
+- Make class system
+- Make combat system

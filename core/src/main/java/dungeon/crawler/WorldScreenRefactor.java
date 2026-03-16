@@ -241,6 +241,7 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
 	@Override
 	public void onEnteredNewTile(Cell tileCell){
 
+
 		if(overWorld){
 	        Gdx.app.log("Tile", "Entered New Tile");
 			float roll = MathUtils.random();
@@ -251,6 +252,13 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
 			}
 		}
 
+	};
+
+	@Override
+	public void onTransition(int screenID){
+        for (ScreenChangeObserver observer : screenChangeObservers) {
+            observer.onMapChange(screenID);
+        }
 	};
 
 }

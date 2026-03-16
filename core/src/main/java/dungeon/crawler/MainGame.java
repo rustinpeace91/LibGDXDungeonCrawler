@@ -3,11 +3,13 @@ package dungeon.crawler;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import dungeon.crawler.Data.Maps.MapRegistry;
+import dungeon.crawler.Data.Maps.ScreenTransitionProperties;
 import dungeon.crawler.Observers.ScreenChangeObserver;
-import dungeon.crawler.GameConstants;
 
 public class MainGame extends Game implements ScreenChangeObserver {
 	SpriteBatch spriteBatch;
+
 
     @Override
     public void create() {
@@ -15,10 +17,10 @@ public class MainGame extends Game implements ScreenChangeObserver {
     	setScreen(new WorldScreenRefactor(
     		this,
     		spriteBatch,
-    		9f,
-    		21f,
-    		"Maps/overworld.tmx",
-    		GameConstants.GAME_SCREEN.WALK_OVERWORLD
+            13f,
+            12f,
+    		"Maps/testmap.tmx",
+    		GameConstants.GAME_SCREEN.WALK_TOWN
     	));
 
 		// setScreen(new CombatScreen(this));
@@ -30,5 +32,20 @@ public class MainGame extends Game implements ScreenChangeObserver {
 	public void onScreenChange(GameConstants.GAME_SCREEN screen){
 		setScreen(new CombatScreen(this));
 	}
+
+	@Override
+	public void onMapChange(int ScreenId){
+		ScreenTransitionProperties worldScreenData = MapRegistry.WORLD_MAP_DATA.get(ScreenId);
+
+    	setScreen(new WorldScreenRefactor(
+    		this,
+    		spriteBatch,
+    		worldScreenData.startingX,
+    		worldScreenData.startingY,
+    		worldScreenData.mapFile,
+    		worldScreenData.screen
+    	));
+
+	};
 
 }

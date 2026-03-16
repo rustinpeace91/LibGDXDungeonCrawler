@@ -1,5 +1,6 @@
 package dungeon.crawler.Player;
 
+import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
@@ -45,6 +46,7 @@ public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
     private TiledMap worldMap;
     private TiledMapTileLayer collisionLayer;
     TiledMapTileLayer groundLayer;
+    TiledMapTileLayer transitionLayer;
  
     public PlayerPositionHandler(
         TiledMap worldMap,
@@ -80,6 +82,7 @@ public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
 
     	
     	this.groundLayer = (TiledMapTileLayer) worldMap.getLayers().get("Ground");
+    	this.transitionLayer = (TiledMapTileLayer) worldMap.getLayers().get("Transition");
 
 
     	this.mapWidth = mapWidth;
@@ -154,9 +157,25 @@ public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
     }
 
     public void onEnteredNewTile(Cell tileCell){
-        for (PlayerPositionObserver obs : observers) {
-            obs.onEnteredNewTile(tileCell);
-        }    
+        Cell actionCell = transitionLayer.getCell((int)tileX, (int)tileY);
+
+        if (actionCell != null && actionCell.getTile() != null) {
+            // 2. Check the properties of the "Yellow Square" tile
+            MapProperties props = actionCell.getTile().getProperties();
+            
+            if (props.containsKey("world_screen")) {
+                int screenId = props.get("world_screen", Integer.class);
+                
+                // 3. Notify your observers (MainGame, etc.)
+                for (PlayerPositionObserver obs : observers) {
+                    obs.onTransition(screenId);
+                }
+            }
+        } else {
+            for (PlayerPositionObserver obs : observers) {
+                obs.onEnteredNewTile(tileCell);
+            }
+        }
     }
     
     public void updateInput(float delta){
