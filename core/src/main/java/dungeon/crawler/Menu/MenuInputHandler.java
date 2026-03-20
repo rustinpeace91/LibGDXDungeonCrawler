@@ -47,7 +47,6 @@ public class MenuInputHandler extends InputAdapter{
 	public void notifyOnMenuToggled(boolean showMenu) {
 
         for (MenuInputObserver listener : listeners) {
-        	Gdx.app.log("Menu", "Menu is toggled");
             listener.onMenuToggled(showMenu);
         }	
 	}
@@ -59,13 +58,9 @@ public class MenuInputHandler extends InputAdapter{
 			menuColumnIndex = 0;
 			menuRowIndex = 0;
 			String openClosed = showMenu ? "open" : "closed";
-//			Gdx.app.log("Menu", "Menu is " + openClosed);
 			uiStage.setKeyboardFocus(menuTable.buttonList.get(0));
-
 			notifyOnMenuToggled(showMenu);
-
 			return true;
-
 		}
 		if(keyCode == Input.Keys.ENTER){
     		Actor focused = uiStage.getKeyboardFocus();
@@ -76,7 +71,7 @@ public class MenuInputHandler extends InputAdapter{
 		}
 		if(showMenu) {
 			if(keyCode == Input.Keys.DOWN) {
-				int nextRow = ++menuRowIndex;
+				int nextRow = menuRowIndex + 1;
 				if(menuTable.buttonList.size() > nextRow) {
 					menuRowIndex = nextRow;
 					TextButton currentButton = menuTable.buttonList.get(nextRow);
@@ -84,7 +79,7 @@ public class MenuInputHandler extends InputAdapter{
 				}
 			}
 			if(keyCode == Input.Keys.UP) {
-				int nextRow = --menuRowIndex;
+				int nextRow = menuRowIndex -1;
 				if(nextRow >=0) {
 					menuRowIndex = nextRow;
 					TextButton currentButton = menuTable.buttonList.get(nextRow);
