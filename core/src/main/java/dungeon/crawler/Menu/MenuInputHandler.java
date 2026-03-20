@@ -15,7 +15,7 @@ import dungeon.crawler.Observers.MenuInputObserver;
 
 public class MenuInputHandler extends InputAdapter{
 	public Stage uiStage;
-	public OverworldMenu menuTable;
+	public BaseMenu menuTable;
 	public boolean showMenu = false;
 	public int menuColumns = 0;
 	public int menuRows = 0;
@@ -26,7 +26,7 @@ public class MenuInputHandler extends InputAdapter{
 	
 	public MenuInputHandler(
 		Stage uiStage,
-		OverworldMenu menuTable
+		BaseMenu menuTable
 	) {
 		this.uiStage = uiStage;
 		this.menuTable = menuTable;
