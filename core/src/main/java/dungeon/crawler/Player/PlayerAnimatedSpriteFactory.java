@@ -19,7 +19,6 @@ public class PlayerAnimatedSpriteFactory {
 		PlayerPositionHandler playerPositionHandler
 	) {	
 		Map<String, Animation<TextureRegion>> animations = buildWalkAnim();
-		System.out.print("fooo");
 		PlayerAnimatedSprite sprite = new PlayerAnimatedSprite(        		
 				animations,
 				playerPositionHandler,

@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import dungeon.crawler.GameConstants;
 import dungeon.crawler.Observers.ScreenChangeObserver;
 
-public class OverworldMenu extends BaseMenu {
+public class OverworldMenu extends BaseMenu implements Toggleable {
 
 	public OverworldMenu (
 		Skin skin

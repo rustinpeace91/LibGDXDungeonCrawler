@@ -86,5 +86,10 @@ public class BaseMenu extends Table {
 		}
     }
 
+    public void resize(int width, int height) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'resize'");
+    }
+
     
 }

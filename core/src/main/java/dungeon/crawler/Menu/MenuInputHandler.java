@@ -17,6 +17,7 @@ public class MenuInputHandler extends InputAdapter{
 	public Stage uiStage;
 	public BaseMenu menuTable;
 	public boolean showMenu = false;
+
 	public int menuColumns = 0;
 	public int menuRows = 0;
 	public int menuColumnIndex = 0;
@@ -53,23 +54,21 @@ public class MenuInputHandler extends InputAdapter{
 
 	@Override
 	public boolean keyDown(int keyCode) {
-		if(keyCode == Input.Keys.E) {
+		if(keyCode == Input.Keys.E && menuTable instanceof Toggleable) {
 			showMenu = !showMenu;
-			menuColumnIndex = 0;
-			menuRowIndex = 0;
-			String openClosed = showMenu ? "open" : "closed";
-			uiStage.setKeyboardFocus(menuTable.buttonList.get(0));
 			notifyOnMenuToggled(showMenu);
+			reinitializeMenu();
 			return true;
 		}
-		if(keyCode == Input.Keys.ENTER){
-    		Actor focused = uiStage.getKeyboardFocus();
-			if (focused instanceof Button) {
-				Gdx.app.log("Button", "BTTTN clicked");
-				((Button) focused).toggle(); // Toggles isChecked and fires the listener
-			}
-		}
+
 		if(showMenu) {
+			if(keyCode == Input.Keys.ENTER){
+				Actor focused = uiStage.getKeyboardFocus();
+				if (focused instanceof Button) {
+					Gdx.app.log("Button", "BTTTN clicked");
+					((Button) focused).toggle(); // Toggles isChecked and fires the listener
+				}
+			}
 			if(keyCode == Input.Keys.DOWN) {
 				int nextRow = menuRowIndex + 1;
 				if(menuTable.buttonList.size() > nextRow) {
@@ -91,6 +90,14 @@ public class MenuInputHandler extends InputAdapter{
 		return false;
 	}
 	
-	
+	public void reinitializeMenu(){
+		menuColumnIndex = 0;
+		menuRowIndex = 0;
+		uiStage.setKeyboardFocus(menuTable.buttonList.get(0));
+	}
+	public void setShowMenu(boolean showMenu) {
+		this.showMenu = showMenu;
+		reinitializeMenu();
+	}
 
 }

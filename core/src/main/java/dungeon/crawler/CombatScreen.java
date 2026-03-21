@@ -9,9 +9,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import dungeon.crawler.Menu.CombatMenu;
@@ -42,9 +42,6 @@ public class CombatScreen extends ScreenAdapter implements MenuInputObserver {
         // 2. Load your Skin (ensure path is correct)
         this.skin = new Skin(Gdx.files.internal(GameConstants.MENU_SKIN));
 
-        // 3. Create the Title Label
-        Label title = new Label("You just entered the combat zone brother", skin);
-        title.setFontScale(2.0f); // Make it big
 
         this.batch = new SpriteBatch();
         this.backgroundTexture = new Texture(Gdx.files.internal("libgdungeonPOC.png"));
@@ -55,11 +52,15 @@ public class CombatScreen extends ScreenAdapter implements MenuInputObserver {
         Image imageActor = new Image(texture);
 
         // 3. Position and add it
-        imageActor.setPosition(100, 100);
+        // imageActor.setPosition(100, 100);
+        imageActor.setScaling(Scaling.stretch); // This forces it to stretch to the actor's bounds
+
+        // 2. Tell it to fill the entire stage
+        imageActor.setFillParent(true); 
+
         uiStage.addActor(imageActor);
 
         // 4. Add to Table
-        table.add(title).expand().center(); 
         uiStage.addActor(table);
 
 	}
@@ -100,20 +101,18 @@ public class CombatScreen extends ScreenAdapter implements MenuInputObserver {
 		InputMultiplexer multiplexer = setUpInput();
         Gdx.input.setInputProcessor(multiplexer);
     }
-    @Override
-    public void dispose() {
-        // Always clean up!
-        uiStage.dispose();
-        skin.dispose();
-    }
 
     private void setUpMenu() {
-    	this.uiStage = new Stage(new ScreenViewport());
+    	// this.uiStage = new Stage(new ScreenViewport());
     	CombatMenu menu = new CombatMenu(this.skin);
+
+		menu.addScreenChangeObserver(game);
+        // menu.setOrigin(Align.right); 
+        // menu.setOrigin(Align.bottom);
+
         float x = Gdx.graphics.getWidth() - menu.getWidth();
         float y = 0;
         menu.setPosition(x, y);
-		menu.addScreenChangeObserver(game);
         this.uiStage.addActor(menu);
 
         this.menuInputHanlder = new MenuInputHandler(
@@ -121,6 +120,7 @@ public class CombatScreen extends ScreenAdapter implements MenuInputObserver {
         	menu
         );
         this.menuInputHanlder.addListener(this);
+        this.menuInputHanlder.setShowMenu(true);
     }
 
     public InputMultiplexer setUpInput() {
@@ -130,6 +130,12 @@ public class CombatScreen extends ScreenAdapter implements MenuInputObserver {
         // 6. Tell LibGDX to use the multiplexer for all input events
     	return multiplexer;
     }
+
+    // @Override
+    // public void resize(int width, int height) {
+    //     // This updates the Stage's internal coordinate system to match the window
+    //     uiStage.getViewport().update(width, height, true);
+    // }
 
     // TODO: untangle this from menuInputHanlder
     @Override

@@ -24,7 +24,7 @@ public class CombatMenu extends BaseMenu {
 
 		// addMenuListeners(defendButton, inventoryButton, runButton);
 
-		this.add(fightButton).row();
+		this.add(fightButton).fillX().row();
 		this.add(magicButton).row();
 		
 		this.add(defendButton).row();
@@ -62,7 +62,6 @@ public class CombatMenu extends BaseMenu {
 	// public void addScreenChangeObserver(ScreenChangeObserver observer){
 	// 	screenChangeObservers.add(observer);
 	// }
-
 
 
 }
