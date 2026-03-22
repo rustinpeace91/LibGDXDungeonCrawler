@@ -1,4 +1,4 @@
-package dungeon.crawler.Menu;
+package dungeon.crawler.Observers;
 
 public interface MenuInputObserver {
 	public void onMenuToggled(boolean menuVisible);

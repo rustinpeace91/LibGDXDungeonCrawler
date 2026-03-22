@@ -1,51 +1,36 @@
 package dungeon.crawler;
 
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.MapLayer;
-import com.badlogic.gdx.maps.MapLayers;
-import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import dungeon.crawler.Menu.MenuInputHandler;
-import dungeon.crawler.Menu.MenuInputObserver;
 import dungeon.crawler.Menu.OverworldMenu;
+import dungeon.crawler.Observers.MenuInputObserver;
+import dungeon.crawler.Observers.PlayerPositionObserver;
+import dungeon.crawler.Observers.ScreenChangeObserver;
 import dungeon.crawler.Player.PlayerAnimatedSprite;
 import dungeon.crawler.Player.PlayerAnimatedSpriteFactory;
 import dungeon.crawler.Player.PlayerDirection;
 import dungeon.crawler.Player.PlayerInputHandler;
 import dungeon.crawler.Player.PlayerPositionHandler;
-import dungeon.crawler.Sprites.AnimatedSprite;
-import dungeon.crawler.Sprites.AnimationBuilder;
 
-public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObserver{
+public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObserver, PlayerPositionObserver{
 	private MainGame game;
 	private SpriteBatch spriteBatch;
 	private TiledMap map;
@@ -72,6 +57,9 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
 	private MenuInputHandler menuInputHanlder;
 	private boolean menuVisible;
 
+	// observers
+	public ArrayList<ScreenChangeObserver> screenChangeObservers;
+
 
     public WorldScreenRefactor(
     	MainGame game,
@@ -79,13 +67,13 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
     	float startingX,
     	float startingY,
     	String mapFile,
-    	boolean overWorld
+    	GameConstants.GAME_SCREEN screen
     ) {
         this.game = game;
         this.spriteBatch = spriteBatch;
 		this.map = new TmxMapLoader().load(mapFile);
 		this.renderer = new OrthogonalTiledMapRenderer(map);
-		this.overWorld = overWorld;
+		this.overWorld = screen.equals(GameConstants.GAME_SCREEN.WALK_OVERWORLD) ? true : false;
 
 
 
@@ -97,8 +85,11 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
     	camera.position.x = startingX;
     	camera.position.y = startingY;
 
-
-    	this.movementDuration = GameConstants.TOWN_MOVEMENT_DURATION;
+		if(this.overWorld){
+    		this.movementDuration = GameConstants.OVERWORLD_MOVEMENT_DURATION;
+		} else {
+	    	this.movementDuration = GameConstants.TOWN_MOVEMENT_DURATION;
+		}
 
     	// build collision layers
     	this.collisionLayer = (TiledMapTileLayer) map.getLayers().get("Ground");
@@ -129,6 +120,10 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
 		//input
 		InputMultiplexer multiplexer = setUpInput();
         Gdx.input.setInputProcessor(multiplexer);
+		
+		// screen change
+		this.screenChangeObservers = new ArrayList<ScreenChangeObserver>();
+		this.screenChangeObservers.add(game);
 
 
 	}
@@ -147,6 +142,7 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
         float x = 50;
         float y = Gdx.graphics.getHeight() - menu.getHeight() - 50;
         menu.setPosition(x, y);
+		menu.addScreenChangeObserver(game);
         this.uiStage.addActor(menu);
         this.menuInputHanlder = new MenuInputHandler(
             uiStage,
@@ -162,6 +158,12 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
         // 6. Tell LibGDX to use the multiplexer for all input events
     	return multiplexer;
     }
+
+	@Override
+	public void show() {
+		// The object is fully built now, so it's safe to share 'this'
+		playerPosition.addObserver(this);
+	}
 
     private void draw() {
     	float delta = Gdx.graphics.getDeltaTime();
@@ -222,5 +224,41 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
     public void onMenuToggled(boolean value) {
     	menuVisible = value;
     }
+
+	public void notifyScreenChange(GameConstants.GAME_SCREEN screen){
+        for (ScreenChangeObserver observer : screenChangeObservers) {
+            observer.onScreenChange(screen);
+        }
+	}
+
+	public void addScreenChangeObserver(ScreenChangeObserver observer){
+		screenChangeObservers.add(observer);
+	}
+
+	@Override
+	public void onDirectionChange(PlayerDirection newDirection){}
+
+	@Override
+	public void onEnteredNewTile(Cell tileCell){
+
+
+		if(overWorld){
+	        Gdx.app.log("Tile", "Entered New Tile");
+			float roll = MathUtils.random();
+			if ( roll < 0.16f) { 
+
+	        	Gdx.app.log("Tile", "FIIIIIIIGHT");	
+				notifyScreenChange(GameConstants.GAME_SCREEN.COMBAT);
+			}
+		}
+
+	};
+
+	@Override
+	public void onTransition(int screenID){
+        for (ScreenChangeObserver observer : screenChangeObservers) {
+            observer.onMapChange(screenID);
+        }
+	};
 
 }

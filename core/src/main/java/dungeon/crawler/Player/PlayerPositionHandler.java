@@ -1,19 +1,17 @@
 package dungeon.crawler.Player;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 
 import dungeon.crawler.GameConstants;
 import dungeon.crawler.Observers.PlayerPositionObserver;
-import dungeon.crawler.Sprites.AnimatedSprite;
 import dungeon.crawler.Subject.GameSubject;
-import dungeon.crawler.Utils.MapUtils;
 
 public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
     public float x;
@@ -48,6 +46,7 @@ public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
     private TiledMap worldMap;
     private TiledMapTileLayer collisionLayer;
     TiledMapTileLayer groundLayer;
+    TiledMapTileLayer transitionLayer;
  
     public PlayerPositionHandler(
         TiledMap worldMap,
@@ -83,6 +82,7 @@ public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
 
     	
     	this.groundLayer = (TiledMapTileLayer) worldMap.getLayers().get("Ground");
+    	this.transitionLayer = (TiledMapTileLayer) worldMap.getLayers().get("Transition");
 
 
     	this.mapWidth = mapWidth;
@@ -126,6 +126,8 @@ public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
             x = tileX * GameConstants.TILE_WIDTH;
             y = tileY * GameConstants.TILE_HEIGHT;
             this.movementProgress = 0f;
+            Cell tileCell = returnTileCell(x, y);
+            onEnteredNewTile(tileCell);
         } else {
             // Apply smoothing: Interpolation.linear or Interpolation.smooth
             float alpha = Interpolation.linear.apply(movementProgress);
@@ -152,6 +154,28 @@ public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
 
             obs.onDirectionChange(newDirection);
         }    
+    }
+
+    public void onEnteredNewTile(Cell tileCell){
+        Cell actionCell = transitionLayer.getCell((int)tileX, (int)tileY);
+
+        if (actionCell != null && actionCell.getTile() != null) {
+            // 2. Check the properties of the "Yellow Square" tile
+            MapProperties props = actionCell.getTile().getProperties();
+            
+            if (props.containsKey("world_screen")) {
+                int screenId = props.get("world_screen", Integer.class);
+                
+                // 3. Notify your observers (MainGame, etc.)
+                for (PlayerPositionObserver obs : observers) {
+                    obs.onTransition(screenId);
+                }
+            }
+        } else {
+            for (PlayerPositionObserver obs : observers) {
+                obs.onEnteredNewTile(tileCell);
+            }
+        }
     }
     
     public void updateInput(float delta){
@@ -210,6 +234,11 @@ public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
         
         // Check if cell exists and has the "blocked" property
         return cell != null && cell.getTile().getProperties().containsKey("blocked");
+    }
+
+    private Cell returnTileCell(float tileX, float tileY){
+        TiledMapTileLayer.Cell cell = groundLayer.getCell((int) tileX, (int) tileY);
+        return cell;
     }
 
 }
