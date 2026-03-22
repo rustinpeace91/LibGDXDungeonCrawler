@@ -16,11 +16,6 @@
 
 package dungeon.crawler.lwjgl3;
 
-import com.badlogic.gdx.Version;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3NativesLoader;
-import org.lwjgl.system.macosx.LibC;
-import org.lwjgl.system.macosx.ObjCRuntime;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
@@ -29,8 +24,13 @@ import java.util.ArrayList;
 
 import static org.lwjgl.system.JNI.invokePPP;
 import static org.lwjgl.system.JNI.invokePPZ;
+import org.lwjgl.system.macosx.LibC;
+import org.lwjgl.system.macosx.ObjCRuntime;
 import static org.lwjgl.system.macosx.ObjCRuntime.objc_getClass;
 import static org.lwjgl.system.macosx.ObjCRuntime.sel_getUid;
+
+import com.badlogic.gdx.Version;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3NativesLoader;
 
 /**
  * Adds some utilities to ensure that the JVM was started with the
@@ -61,8 +61,8 @@ public class StartupHelper {
      *
      * <pre><code>
      * public static void main(String... args) {
-     * 	if (StartupHelper.startNewJvmIfRequired(true)) return; // This handles macOS support and helps on Windows.
-     * 	// after this is the actual main method code
+     * if (StartupHelper.startNewJvmIfRequired(true)) return; // This handles macOS support and helps on Windows.
+     * // after this is the actual main method code
      * }
      * </code></pre>
      *
@@ -190,8 +190,8 @@ public class StartupHelper {
      *
      * <pre>
      * public static void main(String... args) {
-     * 	if (StartupHelper.startNewJvmIfRequired()) return; // This handles macOS support and helps on Windows.
-     * 	// the actual main method code
+     * if (StartupHelper.startNewJvmIfRequired()) return; // This handles macOS support and helps on Windows.
+     * // the actual main method code
      * }
      * </pre>
      *

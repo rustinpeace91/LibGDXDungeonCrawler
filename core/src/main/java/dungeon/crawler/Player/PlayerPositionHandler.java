@@ -74,34 +74,34 @@ public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
 
 
 
-    	// Get map dimensions in pixels
+    // Get map dimensions in pixels
         
         // move to util file
-    	int mapWidth = worldMap.getProperties().get("width", Integer.class);
-    	int mapHeight = worldMap.getProperties().get("height", Integer.class);
+    int mapWidth = worldMap.getProperties().get("width", Integer.class);
+    int mapHeight = worldMap.getProperties().get("height", Integer.class);
 
-    	
-    	this.groundLayer = (TiledMapTileLayer) worldMap.getLayers().get("Ground");
-    	this.transitionLayer = (TiledMapTileLayer) worldMap.getLayers().get("Transition");
+    
+    this.groundLayer = (TiledMapTileLayer) worldMap.getLayers().get("Ground");
+    this.transitionLayer = (TiledMapTileLayer) worldMap.getLayers().get("Transition");
 
 
-    	this.mapWidth = mapWidth;
-    	this.mapHeight = mapHeight;
-    	
-    	this.isMoving = false;
-    	this.direction = PlayerDirection.DOWN;
-    	
-    	
+    this.mapWidth = mapWidth;
+    this.mapHeight = mapHeight;
+    
+    this.isMoving = false;
+    this.direction = PlayerDirection.DOWN;
+    
+    
     }
     
     @Override
     public void addObserver(PlayerPositionObserver observer) { 
-    	observers.add(observer); 
+    observers.add(observer); 
     }
 
     @Override
     public void removeObserver(PlayerPositionObserver observer) {
-    	observers.removeValue(observer, true); 
+    observers.removeValue(observer, true); 
     }
     
 
