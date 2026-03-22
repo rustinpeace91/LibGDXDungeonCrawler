@@ -14,7 +14,7 @@ public class CombatMenu extends BaseMenu {
         TextButton defendButton = new TextButton("Defend", skin);
         TextButton inventoryButton = new TextButton("Inventory", skin);
 		TextButton runButton = new TextButton("Run", skin);
-
+		this.defaults().size(110f, 30f).pad(5f);
         this.buttonList.add(fightButton);
         this.buttonList.add(magicButton);
         this.buttonList.add(defendButton);

@@ -24,6 +24,7 @@ public class GameConstants {
 
 
 	public static final String TEST_MAP = "Maps/testmap.tmx";
+	// public static final String MENU_SKIN = "skins/plainjames_modded/plainjames.json";
 	public static final String MENU_SKIN = "skins/default/uiskin.json";
 	public static final Map<PlayerDirection, String> WALK_ANIMATIONS = Map.of(
 		PlayerDirection.UP, "WalkUp",

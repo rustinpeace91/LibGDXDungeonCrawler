@@ -10,11 +10,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import dungeon.crawler.Menu.CombatEventScreen;
 import dungeon.crawler.Menu.CombatMenu;
+import dungeon.crawler.Menu.CombatPartyOrderScreen;
+import dungeon.crawler.Menu.CurrentFighterStatusScreen;
 import dungeon.crawler.Menu.MenuInputHandler;
 import dungeon.crawler.Observers.MenuInputObserver;
 
@@ -22,7 +24,6 @@ public class CombatScreen extends ScreenAdapter implements MenuInputObserver {
 	private MainGame game;
 
     private Stage uiStage;
-    private Table table;
     private Skin skin;
 
     private MenuInputHandler menuInputHanlder;
@@ -36,9 +37,7 @@ public class CombatScreen extends ScreenAdapter implements MenuInputObserver {
     	this.game = game;
         // 1. Setup Stage and Table
         this.uiStage = new Stage(new ScreenViewport());
-        this.table = new Table();
-        table.setFillParent(true); // Make table the size of the screen
-        
+
         // 2. Load your Skin (ensure path is correct)
         this.skin = new Skin(Gdx.files.internal(GameConstants.MENU_SKIN));
 
@@ -51,6 +50,8 @@ public class CombatScreen extends ScreenAdapter implements MenuInputObserver {
         // 2. Wrap it in an Image actor
         Image imageActor = new Image(texture);
 
+
+
         // 3. Position and add it
         // imageActor.setPosition(100, 100);
         imageActor.setScaling(Scaling.stretch); // This forces it to stretch to the actor's bounds
@@ -60,8 +61,14 @@ public class CombatScreen extends ScreenAdapter implements MenuInputObserver {
 
         uiStage.addActor(imageActor);
 
+
+        Texture ratTexture = new Texture(Gdx.files.internal("Sprites/Enemies/testrat.png"));
+        Image testRatImage = new Image(ratTexture );
+        testRatImage.setPosition(250, 100);
+        testRatImage.setScale(0.5f);
+        uiStage.addActor(testRatImage);
         // 4. Add to Table
-        uiStage.addActor(table);
+        // uiStage.addActor(table);
 
 	}
 
@@ -106,14 +113,40 @@ public class CombatScreen extends ScreenAdapter implements MenuInputObserver {
     	// this.uiStage = new Stage(new ScreenViewport());
     	CombatMenu menu = new CombatMenu(this.skin);
 
+
+
 		menu.addScreenChangeObserver(game);
         // menu.setOrigin(Align.right); 
         // menu.setOrigin(Align.bottom);
-
+        
+        // consider making these mwnua  properties
         float x = Gdx.graphics.getWidth() - menu.getWidth();
         float y = 0;
         menu.setPosition(x, y);
         this.uiStage.addActor(menu);
+
+        CombatEventScreen eventScreen = new CombatEventScreen(this.skin);
+        eventScreen.setText("The Golden Elf lifts up thy sword and strikes at thee" );
+        eventScreen.setPosition(
+            (uiStage.getWidth() - eventScreen.getWidth()) / 2f, 
+            10f
+        );
+        this.uiStage.addActor(eventScreen);
+
+        CombatPartyOrderScreen partyScreen = new CombatPartyOrderScreen(skin);
+
+        partyScreen.setText("FGHT \n HP: 20 \n MP: 0 \n\nWIZR \n HP: 10 \n MP: 10 ");
+        partyScreen.setPosition(0, 0);
+        this.uiStage.addActor(partyScreen);
+
+        float statusScreenHeight = Math.abs(menu.getHeight() - uiStage.getHeight());
+        CurrentFighterStatusScreen currentFighterScreen = new CurrentFighterStatusScreen(skin, statusScreenHeight);
+        currentFighterScreen.setText("Edmund\n-poisoned\n-blighted\n-famished\n-in cover\n-blinded");
+        currentFighterScreen.setPosition(
+            (uiStage.getWidth() - currentFighterScreen.getWidth()),
+            menu.getHeight()
+        );
+        this.uiStage.addActor(currentFighterScreen);
 
         this.menuInputHanlder = new MenuInputHandler(
             uiStage,
