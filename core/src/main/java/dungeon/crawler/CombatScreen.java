@@ -21,7 +21,7 @@ import dungeon.crawler.Menu.MenuInputHandler;
 import dungeon.crawler.Observers.MenuInputObserver;
 
 public class CombatScreen extends ScreenAdapter implements MenuInputObserver {
-	private MainGame game;
+    private MainGame game;
 
     private Stage uiStage;
     private Skin skin;
@@ -32,9 +32,9 @@ public class CombatScreen extends ScreenAdapter implements MenuInputObserver {
 
     private Texture backgroundTexture;
     public CombatScreen(
-    	MainGame game
+        MainGame game
     ) {
-    	this.game = game;
+        this.game = game;
         // 1. Setup Stage and Table
         this.uiStage = new Stage(new ScreenViewport());
 
@@ -70,15 +70,15 @@ public class CombatScreen extends ScreenAdapter implements MenuInputObserver {
         // 4. Add to Table
         // uiStage.addActor(table);
 
-	}
+    }
 
     private void draw() {
-	}
-	@Override
-	public void render(float delta) {
+    }
+    @Override
+    public void render(float delta) {
 
-	    Gdx.gl.glClearColor(0, 0, 0, 1);
-	    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         // 2. Draw directly to the screen (Manual Layer)
         batch.begin();
@@ -88,34 +88,34 @@ public class CombatScreen extends ScreenAdapter implements MenuInputObserver {
         // Update and Draw the Stage
         uiStage.act(delta);
         uiStage.draw();
-		// input(delta);
-		draw();
-	}
+        // input(delta);
+        draw();
+    }
 
     // private void input(float delta) {
-    // 	/*
-    // 	 * check for input, project camera to a new x
-    // 	 * set sprite animatisdfa new X,Y coord and check for collisions taking into account player
-    // 	 *
-    // 	 */
+    // /*
+    //  * check for input, project camera to a new x
+    //  * set sprite animatisdfa new X,Y coord and check for collisions taking into account player
+    //  *
+    //  */
 
     // }
 
     @Override
     public void show() {
-		setUpMenu();
-		//input
-		InputMultiplexer multiplexer = setUpInput();
+        setUpMenu();
+        //input
+        InputMultiplexer multiplexer = setUpInput();
         Gdx.input.setInputProcessor(multiplexer);
     }
 
     private void setUpMenu() {
-    	// this.uiStage = new Stage(new ScreenViewport());
-    	CombatMenu menu = new CombatMenu(this.skin);
+        // this.uiStage = new Stage(new ScreenViewport());
+        CombatMenu menu = new CombatMenu(this.skin);
 
 
 
-		menu.addScreenChangeObserver(game);
+        menu.addScreenChangeObserver(game);
         // menu.setOrigin(Align.right); 
         // menu.setOrigin(Align.bottom);
         
@@ -150,7 +150,7 @@ public class CombatScreen extends ScreenAdapter implements MenuInputObserver {
 
         this.menuInputHanlder = new MenuInputHandler(
             uiStage,
-        	menu
+            menu
         );
         this.menuInputHanlder.addListener(this);
         this.menuInputHanlder.setShowMenu(true);
@@ -161,7 +161,7 @@ public class CombatScreen extends ScreenAdapter implements MenuInputObserver {
         // --- Configure the InputMultiplexer ---
         multiplexer.addProcessor(menuInputHanlder);
         // 6. Tell LibGDX to use the multiplexer for all input events
-    	return multiplexer;
+        return multiplexer;
     }
 
     // @Override

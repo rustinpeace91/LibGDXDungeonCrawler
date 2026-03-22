@@ -1,8 +1,8 @@
 package dungeon.crawler.Player;
 
 public enum PlayerDirection {
-	UP,
-	DOWN,
-	LEFT,
-	RIGHT,
+UP,
+DOWN,
+LEFT,
+RIGHT,
 }
