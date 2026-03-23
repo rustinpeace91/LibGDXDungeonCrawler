@@ -1,0 +1,33 @@
+package dungeon.crawler.GameSystem.GameState;
+
+import java.util.ArrayList;
+import java.util.Map;
+
+import com.badlogic.gdx.math.Vector2;
+
+import dungeon.crawler.GameSystem.TestData.EnemyCombatant;
+import dungeon.crawler.GameSystem.TestData.PlayerCharacter;
+import dungeon.crawler.GameSystem.TestData.PlayerFactory;
+
+public class GameState {
+    public PlayerCharacter player;
+    public Map<Integer, PlayerCharacter> party;
+    public Vector2 overWorldCoordinates;
+    public ArrayList<EnemyCombatant> currentEnemyRoster;
+    public int gold;
+    public boolean isPlayerDead;
+
+    public GameState(){
+        // TODO: make an actual constructor
+        setUpTestData();
+    }
+
+    public void setUpTestData(){
+        player = PlayerFactory.generate();
+        party = Map.of(1, player);
+        overWorldCoordinates = new Vector2(0,0);
+        currentEnemyRoster = new ArrayList<EnemyCombatant>();
+        gold = 0;
+        isPlayerDead = false;
+    }
+}

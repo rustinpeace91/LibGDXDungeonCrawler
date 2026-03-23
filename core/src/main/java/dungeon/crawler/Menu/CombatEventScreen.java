@@ -1,6 +1,11 @@
 package dungeon.crawler.Menu;
 
+import java.util.LinkedList;
+
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -9,6 +14,7 @@ import com.badlogic.gdx.utils.Align;
 // Extend Table directly
 public class CombatEventScreen extends Table {
     private Label messageLabel;
+    public LinkedList<String> messageQueue;
 
     public CombatEventScreen(Skin skin) {
         super(skin); // Pass skin to parent Table
@@ -23,11 +29,33 @@ public class CombatEventScreen extends Table {
         messageLabel.setAlignment(Align.center); 
         // Add the label to 'this' table
         this.add(messageLabel).width(300f).pad(30f);
-        
+        this.messageQueue = new LinkedList<>();
         this.pack();
+        // Listen for the Enter key
+        this.addListener(new InputListener() {
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                if (keycode == Keys.ENTER) {
+                    showNextMessage();
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
+    public void showNextMessage() {
+        if(!messageQueue.isEmpty()){
+            messageLabel.setText(messageQueue.poll());
+        }
+    }
     public void setText(String text) {
         messageLabel.setText(text);
+    }
+
+    public void addMessages(String[] messages){
+        for(String s: messages){
+            messageQueue.add(s);
+        }
     }
 }

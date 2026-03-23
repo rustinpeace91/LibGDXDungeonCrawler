@@ -15,6 +15,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -227,6 +228,7 @@ delta
 
 public void notifyScreenChange(GameConstants.GAME_SCREEN screen){
         for (ScreenChangeObserver observer : screenChangeObservers) {
+            game.gameState.overWorldCoordinates = new Vector2(playerPosition.x, playerPosition.y);
             observer.onScreenChange(screen);
         }
 }

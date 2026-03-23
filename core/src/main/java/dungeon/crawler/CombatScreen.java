@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import dungeon.crawler.GameSystem.GameState.CombatPhase;
 import dungeon.crawler.Menu.CombatEventScreen;
 import dungeon.crawler.Menu.CombatMenu;
 import dungeon.crawler.Menu.CombatPartyOrderScreen;
@@ -29,12 +30,16 @@ public class CombatScreen extends ScreenAdapter implements MenuInputObserver {
     private MenuInputHandler menuInputHanlder;
 
     private SpriteBatch batch;
+    private CombatPhase phase;
+
+    private CombatEventScreen  eventScreen;
 
     private Texture backgroundTexture;
     public CombatScreen(
         MainGame game
     ) {
         this.game = game;
+
         // 1. Setup Stage and Table
         this.uiStage = new Stage(new ScreenViewport());
 
@@ -107,6 +112,14 @@ public class CombatScreen extends ScreenAdapter implements MenuInputObserver {
         //input
         InputMultiplexer multiplexer = setUpInput();
         Gdx.input.setInputProcessor(multiplexer);
+
+
+        phase = CombatPhase.INTRO;
+        String enemyName = game.gameState.currentEnemyRoster.get(0).name;
+        String[] introText = new String[] {String.format("A %s pops up!", enemyName), "prepare to fight"};
+        eventScreen.addMessages(introText);
+        eventScreen.showNextMessage();
+        this.uiStage.setKeyboardFocus(eventScreen);
     }
 
     private void setUpMenu() {
@@ -125,8 +138,8 @@ public class CombatScreen extends ScreenAdapter implements MenuInputObserver {
         menu.setPosition(x, y);
         this.uiStage.addActor(menu);
 
-        CombatEventScreen eventScreen = new CombatEventScreen(this.skin);
-        eventScreen.setText("The Golden Elf lifts up thy sword and strikes at thee" );
+        eventScreen = new CombatEventScreen(this.skin);
+        
         eventScreen.setPosition(
             (uiStage.getWidth() - eventScreen.getWidth()) / 2f, 
             10f
@@ -159,6 +172,9 @@ public class CombatScreen extends ScreenAdapter implements MenuInputObserver {
     public InputMultiplexer setUpInput() {
         InputMultiplexer multiplexer = new InputMultiplexer();
         // --- Configure the InputMultiplexer ---
+        this.menuInputHanlder.addListener(this);
+        this.menuInputHanlder.setShowMenu(false);
+        multiplexer.addProcessor(uiStage); 
         multiplexer.addProcessor(menuInputHanlder);
         // 6. Tell LibGDX to use the multiplexer for all input events
         return multiplexer;

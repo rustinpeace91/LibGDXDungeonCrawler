@@ -1,18 +1,25 @@
 package dungeon.crawler;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import dungeon.crawler.Data.Maps.MapRegistry;
 import dungeon.crawler.Data.Maps.ScreenTransitionProperties;
+import dungeon.crawler.GameSystem.GameState.GameState;
+import dungeon.crawler.GameSystem.TestData.EnemyCombatant;
+import dungeon.crawler.GameSystem.TestData.EnemyFactory;
 import dungeon.crawler.Observers.ScreenChangeObserver;
 
 public class MainGame extends Game implements ScreenChangeObserver {
 SpriteBatch spriteBatch;
+GameState gameState;
 
 
     @Override
     public void create() {
+        gameState = new GameState();
         spriteBatch = new SpriteBatch();
     setScreen(new WorldScreenRefactor(
     this,
@@ -30,7 +37,13 @@ SpriteBatch spriteBatch;
 
 @Override
 public void onScreenChange(GameConstants.GAME_SCREEN screen){
-setScreen(new CombatScreen(this));
+    EnemyCombatant enemy = EnemyFactory.generate();
+    this.gameState.currentEnemyRoster = new ArrayList<EnemyCombatant>();
+    this.gameState.currentEnemyRoster.add(enemy);
+    if(screen == GameConstants.GAME_SCREEN.COMBAT){
+        setScreen(new CombatScreen(this));
+    }
+
 }
 
 @Override

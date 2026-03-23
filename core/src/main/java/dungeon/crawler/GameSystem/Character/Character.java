@@ -3,6 +3,7 @@ package dungeon.crawler.GameSystem.Character;
 import java.util.ArrayList;
 
 public class Character {
+    public String name;
     public int maxHp;
     public int maxMP;
     public int hp;
@@ -15,22 +16,22 @@ public class Character {
     public boolean isDead;
 
     public Character(
+        String name,
         int maxHp,
         int maxMP,
         int hp,
         int mp,
         int defense,
-        int initiative,
         Stance stance,
         ArrayList<Condition> conditions,
         boolean isDead
     ) {
+        this.name = name;
         this.maxHp = maxHp;
         this.maxMP = maxMP;
         this.hp = hp;
         this.mp = mp;
         this.defense = defense;
-        this.initiative = initiative;
         this.stance = stance;
         this.conditions = conditions;
         this.isDead = isDead;

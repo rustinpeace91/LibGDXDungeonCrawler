@@ -4,6 +4,6 @@ import dungeon.crawler.GameSystem.Combat.AttackDamage;
 
 public interface Combatant {
     AttackDamage  attack();
-    void defend(AttackDamage attack);
+    int defend(AttackDamage attack);
     int takeHit(AttackDamage attack);
 }
