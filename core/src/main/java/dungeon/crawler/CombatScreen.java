@@ -67,10 +67,10 @@ public class CombatScreen extends ScreenAdapter implements MenuInputObserver {
         uiStage.addActor(imageActor);
 
 
-        Texture ratTexture = new Texture(Gdx.files.internal("Sprites/Enemies/testrat.png"));
+        Texture ratTexture = new Texture(Gdx.files.internal("Sprites/Enemies/testrat2.png"));
         Image testRatImage = new Image(ratTexture );
         testRatImage.setPosition(250, 100);
-        testRatImage.setScale(0.5f);
+        testRatImage.setScale(0.45f);
         uiStage.addActor(testRatImage);
         // 4. Add to Table
         // uiStage.addActor(table);
@@ -116,7 +116,12 @@ public class CombatScreen extends ScreenAdapter implements MenuInputObserver {
 
         phase = CombatPhase.INTRO;
         String enemyName = game.gameState.currentEnemyRoster.get(0).name;
-        String[] introText = new String[] {String.format("A %s pops up!", enemyName), "prepare to fight"};
+        String[] introText = new String[] {
+            String.format("A %s pops up!", enemyName),
+            String.format("It has %s HP!", game.gameState.currentEnemyRoster.get(0).hp),
+            String.format("It has a defense value of %s!", game.gameState.currentEnemyRoster.get(0).defense),
+            "prepare to fight"
+        };
         eventScreen.addMessages(introText);
         eventScreen.showNextMessage();
         this.uiStage.setKeyboardFocus(eventScreen);

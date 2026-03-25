@@ -32,122 +32,112 @@ import dungeon.crawler.Player.PlayerInputHandler;
 import dungeon.crawler.Player.PlayerPositionHandler;
 
 public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObserver, PlayerPositionObserver{
-private MainGame game;
-private SpriteBatch spriteBatch;
-private TiledMap map;
-private OrthogonalTiledMapRenderer renderer;
-private OrthographicCamera camera;
+    private MainGame game;
+    private SpriteBatch spriteBatch;
+    private TiledMap map;
+    private OrthogonalTiledMapRenderer renderer;
+    private OrthographicCamera camera;
 
-private PlayerAnimatedSprite characterSprite;
-private boolean overWorld;
-
-
-private TiledMapTileLayer collisionLayer;
-
-// movement stuff
-private PlayerInputHandler playerInput;
-private PlayerPositionHandler playerPosition;
-// map bounderies
+    private PlayerAnimatedSprite characterSprite;
+    private boolean overWorld;
 
 
-private float movementDuration;
+    private TiledMapTileLayer collisionLayer;
 
-// menu stuff
-private Skin skin;
-private Stage uiStage;
-private MenuInputHandler menuInputHanlder;
-private boolean menuVisible;
+    // movement stuff
+    private PlayerInputHandler playerInput;
+    private PlayerPositionHandler playerPosition;
+    // map bounderies
+
+
+    private float movementDuration;
+
+    // menu stuff
+    private Skin skin;
+    private Stage uiStage;
+    private MenuInputHandler menuInputHanlder;
+    private boolean menuVisible;
 
 // observers
-public ArrayList<ScreenChangeObserver> screenChangeObservers;
+    public ArrayList<ScreenChangeObserver> screenChangeObservers;
 
 
     public WorldScreenRefactor(
-    MainGame game,
-    SpriteBatch spriteBatch,
-    float startingX,
-    float startingY,
-    String mapFile,
-    GameConstants.GAME_SCREEN screen
+        MainGame game,
+        SpriteBatch spriteBatch,
+        float startingX,
+        float startingY,
+        String mapFile,
+        GameConstants.GAME_SCREEN screen
     ) {
         this.game = game;
         this.spriteBatch = spriteBatch;
-this.map = new TmxMapLoader().load(mapFile);
-this.renderer = new OrthogonalTiledMapRenderer(map);
-this.overWorld = screen.equals(GameConstants.GAME_SCREEN.WALK_OVERWORLD) ? true : false;
+        this.renderer = new OrthogonalTiledMapRenderer(map);
+        this.map = new TmxMapLoader().load(mapFile);
+        this.overWorld = screen.equals(GameConstants.GAME_SCREEN.WALK_OVERWORLD) ? true : false;
+        setUpCamera();
+        float screenCenterY = camera.viewportHeight / 2f;
+        float screenCenterX = camera.viewportWidth / 2f;
+        camera.position.y = startingY;
+        camera.position.x = startingX;
 
+        if(this.overWorld){
+            this.movementDuration = GameConstants.OVERWORLD_MOVEMENT_DURATION;
+        } else {
+            this.movementDuration = GameConstants.TOWN_MOVEMENT_DURATION;
+        }
 
+        // build collision layers
+        this.collisionLayer = (TiledMapTileLayer) map.getLayers().get("Ground");
+        // Player stuff
+        this.playerInput = new PlayerInputHandler(PlayerDirection.DOWN);
 
-setUpCamera();
-    float screenCenterX = camera.viewportWidth / 2f;
-    float screenCenterY = camera.viewportHeight / 2f;
+        this.playerPosition = new PlayerPositionHandler(
+            map,
+            playerInput,
+            movementDuration,
+            startingX,
+            startingY
+        );
+        PlayerAnimatedSpriteFactory factory = new PlayerAnimatedSpriteFactory();
 
-
-    camera.position.x = startingX;
-    camera.position.y = startingY;
-
-if(this.overWorld){
-    this.movementDuration = GameConstants.OVERWORLD_MOVEMENT_DURATION;
-} else {
-    this.movementDuration = GameConstants.TOWN_MOVEMENT_DURATION;
-}
-
-    // build collision layers
-    this.collisionLayer = (TiledMapTileLayer) map.getLayers().get("Ground");
-    // Player stuff
-    
-this.playerInput = new PlayerInputHandler(PlayerDirection.DOWN);
-
-this.playerPosition = new PlayerPositionHandler(
-map,
-playerInput,
-movementDuration,
-startingX,
-startingY
-);
-PlayerAnimatedSpriteFactory factory = new PlayerAnimatedSpriteFactory();
-this.characterSprite = factory.createAnimation(
-screenCenterX,
-screenCenterY,
-GameConstants.WALK_ANIMATIONS.get(PlayerDirection.DOWN),
-playerPosition
-);
-playerPosition.addObserver(characterSprite);
-
-
-    this.skin = new Skin(Gdx.files.internal(GameConstants.MENU_SKIN));
-setUpMenu();
-
-//input
-InputMultiplexer multiplexer = setUpInput();
+        this.characterSprite = factory.createAnimation(
+            screenCenterX,
+            screenCenterY,
+            GameConstants.WALK_ANIMATIONS.get(PlayerDirection.DOWN),
+            playerPosition
+        );
+        playerPosition.addObserver(characterSprite);
+        this.skin = new Skin(Gdx.files.internal(GameConstants.MENU_SKIN));
+        setUpMenu();
+        //input
+        InputMultiplexer multiplexer = setUpInput();
         Gdx.input.setInputProcessor(multiplexer);
 
-// screen change
-this.screenChangeObservers = new ArrayList<ScreenChangeObserver>();
-this.screenChangeObservers.add(game);
-
-
-}
+        // screen change
+        this.screenChangeObservers = new ArrayList<ScreenChangeObserver>();
+        this.screenChangeObservers.add(game);
+    }
 
     private void setUpCamera() {
-// set up camera
-this.camera = new OrthographicCamera();
-camera.setToOrtho(false, GameConstants.RESOLUTION_WIDTH, GameConstants.RESOLUTION_HEIGHT);
-camera.zoom=0.25f;
-camera.update();
+        // set up camera
+        this.camera = new OrthographicCamera();
+        camera.setToOrtho(false, GameConstants.RESOLUTION_WIDTH, GameConstants.RESOLUTION_HEIGHT);
+        camera.zoom=0.25f;
+        camera.update();
     }
 
     private void setUpMenu() {
-    this.uiStage = new Stage(new ScreenViewport());
-    OverworldMenu menu = new OverworldMenu(this.skin);
+        this.uiStage = new Stage(new ScreenViewport());
+        OverworldMenu menu = new OverworldMenu(this.skin);
         float x = 50;
         float y = Gdx.graphics.getHeight() - menu.getHeight() - 50;
         menu.setPosition(x, y);
-menu.addScreenChangeObserver(game);
+        menu.addScreenChangeObserver(game);
         this.uiStage.addActor(menu);
         this.menuInputHanlder = new MenuInputHandler(
             uiStage,
-        menu
+            menu
         );
         this.menuInputHanlder.addListener(this);
     }
@@ -157,60 +147,59 @@ menu.addScreenChangeObserver(game);
         // --- Configure the InputMultiplexer ---
         multiplexer.addProcessor(menuInputHanlder);
         // 6. Tell LibGDX to use the multiplexer for all input events
-    return multiplexer;
+        return multiplexer;
     }
 
-@Override
-public void show() {
-// The object is fully built now, so it's safe to share 'this'
-playerPosition.addObserver(this);
-}
+    @Override
+    public void show() {
+        // The object is fully built now, so it's safe to share 'this'
+        playerPosition.addObserver(this);
+    }
 
     private void draw() {
-    float delta = Gdx.graphics.getDeltaTime();
+        float delta = Gdx.graphics.getDeltaTime();
 
-    Gdx.gl.glClearColor(0, 0, 0, 1);
-    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-camera.update();
-renderer.setView(camera);
-renderer.render();
+        camera.update();
+        renderer.setView(camera);
+        renderer.render();
 
 
-    spriteBatch.setProjectionMatrix(camera.combined);
-spriteBatch.begin();
-    characterSprite.render(spriteBatch);
-spriteBatch.end();
-if(menuVisible) {
-
-uiStage.act(Gdx.graphics.getDeltaTime());
-uiStage.draw();
-}
+        spriteBatch.setProjectionMatrix(camera.combined);
+        spriteBatch.begin();
+        characterSprite.render(spriteBatch);
+        spriteBatch.end();
+        if(menuVisible) {
+            uiStage.act(Gdx.graphics.getDeltaTime());
+            uiStage.draw();
+        }
     }
-@Override
-public void render(float delta) {
 
-input(delta);
-draw();
-}
+    @Override
+    public void render(float delta) {
+        input(delta);
+        draw();
+    }
 
     private void input(float delta) {
-    /*
-     * check for input, project camera to a new x
-     * set sprite animation
-     * project camera to a new X,Y coord and check for collisions taking into account player
-     *
-     */
+        /*
+        * check for input, project camera to a new x
+        * set sprite animation
+        * project camera to a new X,Y coord and check for collisions taking into account player
+        *
+        */
 
-if(!menuVisible) {
-playerInput.updateInput();
-playerPosition.update(delta);
-camera.position.x = playerPosition.x + 8;
-camera.position.y = playerPosition.y;
-characterSprite.update(
-delta
-);
-}
+        if(!menuVisible) {
+            playerInput.updateInput();
+            playerPosition.update(delta);
+            camera.position.x = playerPosition.x + 8;
+            camera.position.y = playerPosition.y;
+            characterSprite.update(
+                delta
+            );
+        }
     }
 
     @Override
@@ -223,44 +212,39 @@ delta
 
 
     public void onMenuToggled(boolean value) {
-    menuVisible = value;
+        menuVisible = value;
     }
 
-public void notifyScreenChange(GameConstants.GAME_SCREEN screen){
-        for (ScreenChangeObserver observer : screenChangeObservers) {
-            game.gameState.overWorldCoordinates = new Vector2(playerPosition.x, playerPosition.y);
-            observer.onScreenChange(screen);
+    public void notifyScreenChange(GameConstants.GAME_SCREEN screen){
+            for (ScreenChangeObserver observer : screenChangeObservers) {
+                game.gameState.overWorldCoordinates = new Vector2(playerPosition.x, playerPosition.y);
+                observer.onScreenChange(screen);
+            }
+    }
+
+    public void addScreenChangeObserver(ScreenChangeObserver observer){
+        screenChangeObservers.add(observer);
+    }
+
+    @Override
+    public void onDirectionChange(PlayerDirection newDirection){}
+
+    @Override
+    public void onEnteredNewTile(Cell tileCell){
+        if(overWorld){
+            Gdx.app.log("Tile", "Entered New Tile");
+            float roll = MathUtils.random();
+            if ( roll < 0.16f) { 
+                Gdx.app.log("Tile", "FIIIIIIIGHT");
+                notifyScreenChange(GameConstants.GAME_SCREEN.COMBAT);
+            }
         }
-}
+    };
 
-public void addScreenChangeObserver(ScreenChangeObserver observer){
-screenChangeObservers.add(observer);
-}
-
-@Override
-public void onDirectionChange(PlayerDirection newDirection){}
-
-@Override
-public void onEnteredNewTile(Cell tileCell){
-
-
-if(overWorld){
-        Gdx.app.log("Tile", "Entered New Tile");
-float roll = MathUtils.random();
-if ( roll < 0.16f) { 
-
-        Gdx.app.log("Tile", "FIIIIIIIGHT");
-notifyScreenChange(GameConstants.GAME_SCREEN.COMBAT);
-}
-}
-
-};
-
-@Override
-public void onTransition(int screenID){
-        for (ScreenChangeObserver observer : screenChangeObservers) {
-            observer.onMapChange(screenID);
-        }
-};
-
+    @Override
+    public void onTransition(int screenID){
+            for (ScreenChangeObserver observer : screenChangeObservers) {
+                observer.onMapChange(screenID);
+            }
+    };
 }
