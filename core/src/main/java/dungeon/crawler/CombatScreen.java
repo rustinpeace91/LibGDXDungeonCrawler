@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import dungeon.crawler.GameSystem.Combat.CombatLogic;
 import dungeon.crawler.GameSystem.GameState.CombatPhase;
 import dungeon.crawler.Menu.CombatEventScreen;
 import dungeon.crawler.Menu.CombatMenu;
@@ -30,7 +31,7 @@ public class CombatScreen extends ScreenAdapter implements MenuInputObserver {
     private MenuInputHandler menuInputHanlder;
 
     private SpriteBatch batch;
-    private CombatPhase phase;
+    private CombatLogic logicHandler;
 
     private CombatEventScreen  eventScreen;
 
@@ -90,6 +91,9 @@ public class CombatScreen extends ScreenAdapter implements MenuInputObserver {
         // Draws the image at x=100, y=100 with its original size
         batch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()); 
         batch.end();
+
+        advanceCombat();
+
         // Update and Draw the Stage
         uiStage.act(delta);
         uiStage.draw();
@@ -114,7 +118,8 @@ public class CombatScreen extends ScreenAdapter implements MenuInputObserver {
         Gdx.input.setInputProcessor(multiplexer);
 
 
-        phase = CombatPhase.INTRO;
+
+        // phase = CombatPhase.INTRO;
         String enemyName = game.gameState.currentEnemyRoster.get(0).name;
         String[] introText = new String[] {
             String.format("A %s pops up!", enemyName),
@@ -125,6 +130,8 @@ public class CombatScreen extends ScreenAdapter implements MenuInputObserver {
         eventScreen.addMessages(introText);
         eventScreen.showNextMessage();
         this.uiStage.setKeyboardFocus(eventScreen);
+        this.logicHandler = new CombatLogic(eventScreen);
+        this.logicHandler.handleState(CombatPhase.INTRO);
     }
 
     private void setUpMenu() {
@@ -183,6 +190,10 @@ public class CombatScreen extends ScreenAdapter implements MenuInputObserver {
         multiplexer.addProcessor(menuInputHanlder);
         // 6. Tell LibGDX to use the multiplexer for all input events
         return multiplexer;
+    }
+
+    public void advanceCombat(){
+        logicHandler.advanceCombat();
     }
 
     // @Override

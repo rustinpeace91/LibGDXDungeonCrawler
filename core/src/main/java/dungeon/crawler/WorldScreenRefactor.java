@@ -72,8 +72,8 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
     ) {
         this.game = game;
         this.spriteBatch = spriteBatch;
-        this.renderer = new OrthogonalTiledMapRenderer(map);
         this.map = new TmxMapLoader().load(mapFile);
+        this.renderer = new OrthogonalTiledMapRenderer(map);
         this.overWorld = screen.equals(GameConstants.GAME_SCREEN.WALK_OVERWORLD) ? true : false;
         setUpCamera();
         float screenCenterY = camera.viewportHeight / 2f;

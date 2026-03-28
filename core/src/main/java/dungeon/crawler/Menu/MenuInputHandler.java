@@ -22,6 +22,7 @@ public int menuColumns = 0;
 public int menuRows = 0;
 public int menuColumnIndex = 0;
 public int menuRowIndex = 0;
+public TextButton currentButton;
 
 private final List<MenuInputObserver> listeners = new ArrayList<>();
 
@@ -73,7 +74,7 @@ private final List<MenuInputObserver> listeners = new ArrayList<>();
                 int nextRow = menuRowIndex + 1;
                 if(menuTable.buttonList.size() > nextRow) {
                     menuRowIndex = nextRow;
-                    TextButton currentButton = menuTable.buttonList.get(nextRow);
+                    currentButton = menuTable.buttonList.get(nextRow);
                     uiStage.setKeyboardFocus(currentButton);
                 }
             }
@@ -81,7 +82,7 @@ private final List<MenuInputObserver> listeners = new ArrayList<>();
                 int nextRow = menuRowIndex -1;
                 if(nextRow >=0) {
                     menuRowIndex = nextRow;
-                    TextButton currentButton = menuTable.buttonList.get(nextRow);
+                    currentButton = menuTable.buttonList.get(nextRow);
                     uiStage.setKeyboardFocus(currentButton);
                 }
             }
@@ -92,7 +93,8 @@ private final List<MenuInputObserver> listeners = new ArrayList<>();
     public void reinitializeMenu(){
         menuColumnIndex = 0;
         menuRowIndex = 0;
-        uiStage.setKeyboardFocus(menuTable.buttonList.get(0));
+        currentButton = this.menuTable.buttonList.get(0);
+        uiStage.setKeyboardFocus(currentButton);
     }
     public void setShowMenu(boolean showMenu) {
         this.showMenu = showMenu;

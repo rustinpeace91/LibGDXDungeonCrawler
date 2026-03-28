@@ -21,11 +21,11 @@ public class OverworldMenu extends BaseMenu implements Toggleable {
         TextButton partyButton = new TextButton("Party", skin);
         TextButton searchButton = new TextButton("Options", skin);
         TextButton testCombat = new TextButton("Test Combat", skin);
-
+        // BAD! make a fucking for loop ffs!
+        this.buttonList.add(inventoryButton);
         this.buttonList.add(statusButton);
         this.buttonList.add(partyButton);
         this.buttonList.add(searchButton);
-        this.buttonList.add(inventoryButton);
         this.buttonList.add(testCombat);
 
 
