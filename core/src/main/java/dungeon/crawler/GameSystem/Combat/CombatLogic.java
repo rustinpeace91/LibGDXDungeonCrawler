@@ -81,9 +81,9 @@ public class CombatLogic {
 
             case ACTIONSELECT_COMPLETE:
                 Gdx.app.log("Combat", "Enemies Decide their action");
-                notifyOnActionSelectComplete();
                 decideEnemyActions();
                 sortByInitiative();
+                notifyOnActionSelectComplete();
                 handleState(CombatPhase.INITIATIVE_COMPLETE);
                 break;
                 
@@ -134,7 +134,7 @@ public class CombatLogic {
                 if(targetDead){
                     eventScreen.addMessages(new String[] {String.format("%s has died", currentAction.target.getName())});
                 }
-                                
+
                 break;
             case DEFEND:
                 Gdx.app.log("Combat", "Defense Made");

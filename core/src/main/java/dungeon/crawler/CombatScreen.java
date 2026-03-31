@@ -237,12 +237,13 @@ public class CombatScreen extends ScreenAdapter
     @Override
     public void onActionSelectComplete(){
         menuInputHanlder.setShowMenu(false);
+        uiStage.setKeyboardFocus(eventScreen);
     }
 
     @Override
     public void onFirstMessageAdded(){
-        uiStage.setKeyboardFocus(eventScreen);
-        menuInputHanlder.setShowMenu(false);
+        // uiStage.setKeyboardFocus(eventScreen);
+        // menuInputHanlder.setShowMenu(false);
     }
 
     @Override
