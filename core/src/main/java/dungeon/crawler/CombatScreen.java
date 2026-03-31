@@ -14,15 +14,23 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import dungeon.crawler.GameSystem.Combat.CombatLogic;
+import dungeon.crawler.GameSystem.GameState.CombatActionState;
 import dungeon.crawler.GameSystem.GameState.CombatPhase;
 import dungeon.crawler.Menu.CombatEventScreen;
 import dungeon.crawler.Menu.CombatMenu;
 import dungeon.crawler.Menu.CombatPartyOrderScreen;
 import dungeon.crawler.Menu.CurrentFighterStatusScreen;
 import dungeon.crawler.Menu.MenuInputHandler;
+import dungeon.crawler.Observers.ActionSelectObserver;
+import dungeon.crawler.Observers.CombatLogicObserver;
+import dungeon.crawler.Observers.EventScreenObserver;
 import dungeon.crawler.Observers.MenuInputObserver;
 
-public class CombatScreen extends ScreenAdapter implements MenuInputObserver {
+public class CombatScreen extends ScreenAdapter 
+    implements MenuInputObserver, 
+    ActionSelectObserver,
+    EventScreenObserver,
+    CombatLogicObserver {
     private MainGame game;
 
     private Stage uiStage;
@@ -34,6 +42,7 @@ public class CombatScreen extends ScreenAdapter implements MenuInputObserver {
     private CombatLogic logicHandler;
 
     private CombatEventScreen  eventScreen;
+    private CombatMenu combatMenu;
 
     private Texture backgroundTexture;
     public CombatScreen(
@@ -120,17 +129,18 @@ public class CombatScreen extends ScreenAdapter implements MenuInputObserver {
 
 
         // phase = CombatPhase.INTRO;
-        String enemyName = game.gameState.currentEnemyRoster.get(0).name;
+        String enemyName = game.gameState.currentEnemyRoster.get(1).name;
         String[] introText = new String[] {
             String.format("A %s pops up!", enemyName),
-            String.format("It has %s HP!", game.gameState.currentEnemyRoster.get(0).hp),
-            String.format("It has a defense value of %s!", game.gameState.currentEnemyRoster.get(0).defense),
+            String.format("It has %s HP!", game.gameState.currentEnemyRoster.get(1).hp),
+            String.format("It has a defense value of %s!", game.gameState.currentEnemyRoster.get(1).defense),
             "prepare to fight"
         };
         eventScreen.addMessages(introText);
         eventScreen.showNextMessage();
         this.uiStage.setKeyboardFocus(eventScreen);
-        this.logicHandler = new CombatLogic(eventScreen);
+        this.logicHandler = new CombatLogic(eventScreen, game);
+        this.logicHandler.addListener(this);
         this.logicHandler.handleState(CombatPhase.INTRO);
     }
 
@@ -138,9 +148,8 @@ public class CombatScreen extends ScreenAdapter implements MenuInputObserver {
         // this.uiStage = new Stage(new ScreenViewport());
         CombatMenu menu = new CombatMenu(this.skin);
 
-
-
         menu.addScreenChangeObserver(game);
+        menu.addActionSelectObserver(this);
         // menu.setOrigin(Align.right); 
         // menu.setOrigin(Align.bottom);
         
@@ -149,6 +158,7 @@ public class CombatScreen extends ScreenAdapter implements MenuInputObserver {
         float y = 0;
         menu.setPosition(x, y);
         this.uiStage.addActor(menu);
+        combatMenu = menu;
 
         eventScreen = new CombatEventScreen(this.skin);
         
@@ -157,6 +167,7 @@ public class CombatScreen extends ScreenAdapter implements MenuInputObserver {
             10f
         );
         this.uiStage.addActor(eventScreen);
+        eventScreen.addListener(this);
 
         CombatPartyOrderScreen partyScreen = new CombatPartyOrderScreen(skin);
 
@@ -178,14 +189,13 @@ public class CombatScreen extends ScreenAdapter implements MenuInputObserver {
             menu
         );
         this.menuInputHanlder.addListener(this);
-        this.menuInputHanlder.setShowMenu(true);
+        this.menuInputHanlder.setShowMenu(false);
     }
 
     public InputMultiplexer setUpInput() {
         InputMultiplexer multiplexer = new InputMultiplexer();
         // --- Configure the InputMultiplexer ---
         this.menuInputHanlder.addListener(this);
-        this.menuInputHanlder.setShowMenu(false);
         multiplexer.addProcessor(uiStage); 
         multiplexer.addProcessor(menuInputHanlder);
         // 6. Tell LibGDX to use the multiplexer for all input events
@@ -193,6 +203,9 @@ public class CombatScreen extends ScreenAdapter implements MenuInputObserver {
     }
 
     public void advanceCombat(){
+        // if(!eventScreen.messageQueue.isEmpty()){
+        //     menuInputHanlder.setShowMenu(false);
+        // }
         logicHandler.advanceCombat();
     }
 
@@ -205,5 +218,42 @@ public class CombatScreen extends ScreenAdapter implements MenuInputObserver {
     // TODO: untangle this from menuInputHanlder
     @Override
     public void onMenuToggled(boolean value) {}
+
+    @Override
+    public void onActionMenuFocus(){
+        uiStage.setKeyboardFocus(combatMenu);
+        menuInputHanlder.setShowMenu(true);
+    }
+
+    @Override
+    public void onActionSelect(CombatActionState actionState){
+        logicHandler.addAction(1, actionState, 1);
+        // CombatAction newAction = new CombatAction(
+        //     1
+        // )
+        // logicHandler.actionQueue.add(e)
+    }
+
+    @Override
+    public void onActionSelectComplete(){
+        menuInputHanlder.setShowMenu(false);
+    }
+
+    @Override
+    public void onFirstMessageAdded(){
+        uiStage.setKeyboardFocus(eventScreen);
+        menuInputHanlder.setShowMenu(false);
+    }
+
+    @Override
+    public void onLastMessageRead(){
+        
+    }
+
+    @Override
+    public void dispose(){
+        uiStage.dispose();
+        // clean up mf
+    }
 
 }

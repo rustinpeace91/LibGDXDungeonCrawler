@@ -52,5 +52,21 @@ public class PlayerCharacter extends PartyCharacter implements Combatant{
 
     }
 
-    
+    @Override
+    public int rollInitiative(){
+        Random rand = new Random();
+        int agilityMod = (int) Math.ceil(this.agility / 10.0);
+        return (rand.nextInt(20) + 1) + agilityMod;
+    }
+
+    @Override
+    public boolean checkDeath(){
+        isDead = hp <= 0;
+        return isDead;
+    }
+
+    @Override
+    public String getName(){
+        return name;
+    }
 }

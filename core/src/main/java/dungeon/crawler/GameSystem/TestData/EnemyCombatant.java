@@ -56,6 +56,21 @@ public class EnemyCombatant extends Enemy implements Combatant {
         return attack.damage;
     }
 
+    @Override
+    public int rollInitiative(){
+        Random rand = new Random();
+        return (rand.nextInt(20) + 1) + initiative;
+    }
 
+    @Override
+    public boolean checkDeath(){
+        isDead = hp <= 0;
+        return isDead;
+    }
+
+    @Override
+    public String getName(){
+        return name;
+    }
     
 }

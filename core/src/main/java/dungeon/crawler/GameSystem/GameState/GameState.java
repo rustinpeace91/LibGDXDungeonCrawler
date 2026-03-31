@@ -1,6 +1,6 @@
 package dungeon.crawler.GameSystem.GameState;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.math.Vector2;
@@ -13,7 +13,7 @@ public class GameState {
     public PlayerCharacter player;
     public Map<Integer, PlayerCharacter> party;
     public Vector2 overWorldCoordinates;
-    public ArrayList<EnemyCombatant> currentEnemyRoster;
+    public Map<Integer, EnemyCombatant> currentEnemyRoster;
     public int gold;
     public boolean isPlayerDead;
 
@@ -26,7 +26,7 @@ public class GameState {
         player = PlayerFactory.generate();
         party = Map.of(1, player);
         overWorldCoordinates = new Vector2(0,0);
-        currentEnemyRoster = new ArrayList<EnemyCombatant>();
+        currentEnemyRoster = new HashMap<>();
         gold = 0;
         isPlayerDead = false;
     }
