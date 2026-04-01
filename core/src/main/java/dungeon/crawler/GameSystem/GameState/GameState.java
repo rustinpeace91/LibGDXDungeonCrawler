@@ -24,7 +24,8 @@ public class GameState {
 
     public void setUpTestData(){
         player = PlayerFactory.generate();
-        party = Map.of(1, player);
+        party = new HashMap<>();
+        party.put(1, player);
         overWorldCoordinates = new Vector2(0,0);
         currentEnemyRoster = new HashMap<>();
         gold = 0;

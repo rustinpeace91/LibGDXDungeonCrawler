@@ -9,5 +9,6 @@ public interface Combatant {
     int rollInitiative();
     // void boostDefense();
     boolean checkDeath();
+    boolean canAttack();
     String getName();
 }

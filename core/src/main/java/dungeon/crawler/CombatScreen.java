@@ -43,6 +43,7 @@ public class CombatScreen extends ScreenAdapter
 
     private CombatEventScreen  eventScreen;
     private CombatMenu combatMenu;
+    private CombatPartyOrderScreen partyScreen;
 
     private Texture backgroundTexture;
     public CombatScreen(
@@ -169,9 +170,11 @@ public class CombatScreen extends ScreenAdapter
         this.uiStage.addActor(eventScreen);
         eventScreen.addListener(this);
 
-        CombatPartyOrderScreen partyScreen = new CombatPartyOrderScreen(skin);
+        partyScreen = new CombatPartyOrderScreen(skin);
 
-        partyScreen.setText("FGHT \n HP: 20 \n MP: 0 \n\nWIZR \n HP: 10 \n MP: 10 ");
+        partyScreen.setText(
+            String.format("PLYR \n HP: %s \n MP: 0", String.valueOf(this.game.gameState.player.hp))
+        );
         partyScreen.setPosition(0, 0);
         this.uiStage.addActor(partyScreen);
 
@@ -203,9 +206,11 @@ public class CombatScreen extends ScreenAdapter
     }
 
     public void advanceCombat(){
-        // if(!eventScreen.messageQueue.isEmpty()){
-        //     menuInputHanlder.setShowMenu(false);
-        // }
+        if(!eventScreen.messageQueue.isEmpty()){
+            partyScreen.setText(
+                String.format("PLYR \n HP: %s \n MP: 0", String.valueOf(this.game.gameState.player.hp))
+            );
+        }
         logicHandler.advanceCombat();
     }
 
@@ -249,6 +254,16 @@ public class CombatScreen extends ScreenAdapter
     @Override
     public void onLastMessageRead(){
         
+    }
+
+    @Override
+    public void onLoss(){
+        Gdx.app.log("Combat", "Sending signal to game over");
+    }
+
+    @Override
+    public void onVictory(){
+        Gdx.app.log("Combat", "Sending signal to victory");
     }
 
     @Override

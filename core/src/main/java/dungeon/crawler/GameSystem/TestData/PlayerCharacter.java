@@ -66,6 +66,11 @@ public class PlayerCharacter extends PartyCharacter implements Combatant{
     }
 
     @Override
+    public boolean canAttack(){
+        return !isDead;
+    }
+
+    @Override
     public String getName(){
         return name;
     }

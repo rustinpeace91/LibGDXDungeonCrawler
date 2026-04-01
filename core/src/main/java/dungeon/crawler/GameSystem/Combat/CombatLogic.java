@@ -7,6 +7,7 @@ import java.util.Random;
 import com.badlogic.gdx.Gdx;
 
 import dungeon.crawler.GameSystem.Character.Combatant;
+import dungeon.crawler.GameSystem.Character.Enemy;
 import dungeon.crawler.GameSystem.GameState.CombatActionState;
 import dungeon.crawler.GameSystem.GameState.CombatPhase;
 import dungeon.crawler.GameSystem.TestData.EnemyCombatant;
@@ -20,6 +21,7 @@ public class CombatLogic {
     public LinkedList<CombatAction> actionQueue;
     public CombatEventScreen eventScreen;
     public ArrayList<CombatLogicObserver> combatLogicObservers;
+    public int xpGained;
     private MainGame game;
 
     public CombatLogic(
@@ -30,8 +32,11 @@ public class CombatLogic {
         this.combatLogicObservers = new ArrayList<CombatLogicObserver>();
         this.actionQueue = new LinkedList<>();
         this.game = game;
+        this.xpGained = 0;
     }
     public void advanceCombat(){
+        /* this is run every frame and is for actions that require to wait until messages are done
+        being read to run */
         if(!eventScreen.messageQueue.isEmpty()){
             return ;
         }
@@ -50,6 +55,19 @@ public class CombatLogic {
                     handleState(CombatPhase.ACTIONSELECT);
                 }
                 break;
+            case ACTION_COMPLETE:
+                handleState(CombatPhase.CHECK_CONDITIONS);
+                break;
+            
+            case LOSS:
+                notifyOnLoss();
+                handleState(CombatPhase.END);
+                break;
+            case VICTORY:
+                notifyOnVictory();
+                handleState(CombatPhase.END);
+                break;
+                
                 
         }
         // if no messages
@@ -90,20 +108,51 @@ public class CombatLogic {
 
             case INITIATIVE_COMPLETE:
                 Gdx.app.log("Combat", "Rolling for Initiative");
-                // you can sort a linked list like this
-                // // Sorts the party by speed (lowest to highest)
-                // allCombatants.sort((a, b) -> Integer.compare(a.speed, b.speed));
-            // case ENEMY_ACTION:
-            //     Gdx.app.log("Combat", "ENEMIES decide their action");
-            //     // enemies decide their actions
-            //     // iniative is rolled for them
                 handleState(CombatPhase.RESOLVE_NEXT_ACTION);
                 break;
 
             case RESOLVE_NEXT_ACTION:
                 Gdx.app.log("Combat", "Handling COMBAT round");
                 break;
-                
+
+            case CHECK_CONDITIONS:
+                // remove any actions from dead combatants
+                actionQueue.removeIf(action -> !action.combatant.canAttack());
+                // Check for total party wipe
+                boolean isAnyoneAlive = false;
+                for(PlayerCharacter partyMember: this.game.gameState.party.values()){
+                    if(!partyMember.isDead){
+                        isAnyoneAlive = true;
+                    }
+                }
+                if(!isAnyoneAlive){
+                    eventScreen.addMessages(new String[] {"All adventurers have died!"});
+                    handleState(CombatPhase.LOSS);
+                    return;
+                }
+                // add XP
+                for(Enemy enemy: this.game.gameState.currentEnemyRoster.values()){
+                    if(enemy.isDead){
+                        this.xpGained += enemy.earnedXP;
+                    }
+                }
+                // Check for dead enemies and remove from board
+                // TODO: Terrible. Do not remove from game state, move to combat state instead
+                this.game.gameState.currentEnemyRoster.values().removeIf(enemy -> enemy.checkDeath());
+                // check for total enemy wipe
+                if(this.game.gameState.currentEnemyRoster.isEmpty()){
+                    eventScreen.addMessages(new String[] {"All enemies have been vanquished!"});
+                    eventScreen.addMessages(new String[] {
+                        String.format("You have gained %s experience points from the fight", String.valueOf(xpGained))
+                    });
+                    handleState(CombatPhase.VICTORY);
+                    return;
+                }
+
+                //else 
+                handleState(CombatPhase.ACTIONSELECT);
+                break;
+
         }
     }
 
@@ -122,7 +171,7 @@ public class CombatLogic {
                 // TODO: Find a way to get the character name from the defendent
                 if(damage.toHit > defense){
                     int damageDealt = currentAction.target.takeHit(damage);
-                    damageText = String.format("hit for %s damage", String.valueOf(damageDealt));
+                    damageText = String.format("%s hit for %s damage",currentAction.target.getName(), String.valueOf(damageDealt));
                     targetDead = currentAction.target.checkDeath();
 
                 } else {
@@ -134,6 +183,7 @@ public class CombatLogic {
                 if(targetDead){
                     eventScreen.addMessages(new String[] {String.format("%s has died", currentAction.target.getName())});
                 }
+                handleState(CombatPhase.ACTION_COMPLETE);
 
                 break;
             case DEFEND:
@@ -184,6 +234,18 @@ public class CombatLogic {
     public void notifyOnActionSelectComplete(){
         for(CombatLogicObserver listener: combatLogicObservers){
             listener.onActionSelectComplete();
+        }
+    }
+
+    public void notifyOnLoss(){
+        for(CombatLogicObserver listener: combatLogicObservers){
+            listener.onLoss();
+        }
+    }
+
+    public void notifyOnVictory(){
+        for(CombatLogicObserver listener: combatLogicObservers){
+            listener.onVictory();
         }
     }
 

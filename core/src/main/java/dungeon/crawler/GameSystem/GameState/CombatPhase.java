@@ -6,6 +6,10 @@ public enum CombatPhase {
     ACTIONSELECT_COMPLETE,
     INITIATIVE_COMPLETE,
     RESOLVE_NEXT_ACTION,
+    ACTION_COMPLETE,
+    CHECK_CONDITIONS,
+    LOSS,
+    VICTORY,
     END,
     
 }

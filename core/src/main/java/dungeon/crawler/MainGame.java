@@ -1,7 +1,5 @@
 package dungeon.crawler;
 
-import java.util.Map;
-
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -36,7 +34,7 @@ public class MainGame extends Game implements ScreenChangeObserver {
     @Override
     public void onScreenChange(GameConstants.GAME_SCREEN screen){
         EnemyCombatant enemy = EnemyFactory.generate();
-        this.gameState.currentEnemyRoster = Map.of(1, enemy);
+        this.gameState.currentEnemyRoster.put(1, enemy);
         // this.gameState.currentEnemyRoster.put(2, enemy)
         if(screen == GameConstants.GAME_SCREEN.COMBAT){
             setScreen(new CombatScreen(this));
