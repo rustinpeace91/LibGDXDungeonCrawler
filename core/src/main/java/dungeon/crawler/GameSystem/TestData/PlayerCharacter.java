@@ -11,11 +11,11 @@ import dungeon.crawler.GameSystem.Combat.AttackDamage;
 
 public class PlayerCharacter extends PartyCharacter implements Combatant{
     public int toHit;
-    public PlayerCharacter(String name, int maxHp, int maxMP, int hp, int mp, int defense, Stance stance,
+    public PlayerCharacter(String name, int maxHp, int maxMP, int hp, int mp, int xp, int defense, Stance stance,
             ArrayList<Condition> conditions, boolean isDead, int level, int strength, int agility, int intelligence,
             int perception, boolean isHero
     ) {
-        super(name, maxHp, maxMP, hp, mp, defense, stance, conditions, isDead, level, strength, agility, intelligence,
+        super(name, maxHp, maxMP, hp, mp, xp, defense, stance, conditions, isDead, level, strength, agility, intelligence,
                 perception, isHero);
         this.toHit = calculateToHit();
         

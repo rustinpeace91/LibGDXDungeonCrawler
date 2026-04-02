@@ -23,6 +23,7 @@ import dungeon.crawler.Menu.CurrentFighterStatusScreen;
 import dungeon.crawler.Menu.MenuInputHandler;
 import dungeon.crawler.Observers.ActionSelectObserver;
 import dungeon.crawler.Observers.CombatLogicObserver;
+import dungeon.crawler.Observers.CombatScreenObserver;
 import dungeon.crawler.Observers.EventScreenObserver;
 import dungeon.crawler.Observers.MenuInputObserver;
 
@@ -46,10 +47,13 @@ public class CombatScreen extends ScreenAdapter
     private CombatPartyOrderScreen partyScreen;
 
     private Texture backgroundTexture;
+    private CombatScreenObserver combatScreenObserver;
+    
     public CombatScreen(
         MainGame game
     ) {
         this.game = game;
+        this.addListener(game);
 
         // 1. Setup Stage and Table
         this.uiStage = new Stage(new ScreenViewport());
@@ -133,8 +137,6 @@ public class CombatScreen extends ScreenAdapter
         String enemyName = game.gameState.currentEnemyRoster.get(1).name;
         String[] introText = new String[] {
             String.format("A %s pops up!", enemyName),
-            String.format("It has %s HP!", game.gameState.currentEnemyRoster.get(1).hp),
-            String.format("It has a defense value of %s!", game.gameState.currentEnemyRoster.get(1).defense),
             "prepare to fight"
         };
         eventScreen.addMessages(introText);
@@ -180,7 +182,9 @@ public class CombatScreen extends ScreenAdapter
 
         float statusScreenHeight = Math.abs(menu.getHeight() - uiStage.getHeight());
         CurrentFighterStatusScreen currentFighterScreen = new CurrentFighterStatusScreen(skin, statusScreenHeight);
-        currentFighterScreen.setText("Edmund\n-poisoned\n-blighted\n-famished\n-in cover\n-blinded");
+        currentFighterScreen.setText(
+            String.format("%s\n-various\n-ailments\n-will\n-go\n-here", this.game.gameState.player.name)
+        );
         currentFighterScreen.setPosition(
             (uiStage.getWidth() - currentFighterScreen.getWidth()),
             menu.getHeight()
@@ -259,11 +263,21 @@ public class CombatScreen extends ScreenAdapter
     @Override
     public void onLoss(){
         Gdx.app.log("Combat", "Sending signal to game over");
+        combatScreenObserver.onCombatLoss();
+
     }
 
     @Override
     public void onVictory(){
         Gdx.app.log("Combat", "Sending signal to victory");
+        // TODO: bad
+        this.game.gameState.player.xp = this.game.gameState.player.xp + this.logicHandler.xpGained;
+        combatScreenObserver.onCombatVictory();
+
+    }
+
+    public void addListener(CombatScreenObserver observer){
+        combatScreenObserver = observer;
     }
 
     @Override

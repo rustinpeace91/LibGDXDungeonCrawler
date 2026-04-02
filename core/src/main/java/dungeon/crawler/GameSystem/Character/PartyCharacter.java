@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class PartyCharacter extends Character{
     public int level;
+    public int xp;
     public int strength;
     public int agility;
     public int intelligence;
@@ -15,6 +16,7 @@ public class PartyCharacter extends Character{
             int maxMP,
             int hp,
             int mp,
+            int xp,
             int defense,
             Stance stance,
             ArrayList<Condition> conditions,
@@ -33,6 +35,7 @@ public class PartyCharacter extends Character{
         this.intelligence = intelligence;
         this.perception = perception;
         this.isHero = isHero;
+        this.xp = xp;
     }
 
 }

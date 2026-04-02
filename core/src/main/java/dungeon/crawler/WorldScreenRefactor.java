@@ -22,6 +22,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import dungeon.crawler.Menu.MenuInputHandler;
 import dungeon.crawler.Menu.OverworldMenu;
+import dungeon.crawler.Menu.PartyCharacterStatusMenu;
 import dungeon.crawler.Observers.MenuInputObserver;
 import dungeon.crawler.Observers.PlayerPositionObserver;
 import dungeon.crawler.Observers.ScreenChangeObserver;
@@ -37,6 +38,7 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
     private TiledMap map;
     private OrthogonalTiledMapRenderer renderer;
     private OrthographicCamera camera;
+    private PartyCharacterStatusMenu statusMenu;
 
     private PlayerAnimatedSprite characterSprite;
     private boolean overWorld;
@@ -57,6 +59,7 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
     private Stage uiStage;
     private MenuInputHandler menuInputHanlder;
     private boolean menuVisible;
+    private boolean statusScreenVisible;
 
 // observers
     public ArrayList<ScreenChangeObserver> screenChangeObservers;
@@ -130,8 +133,8 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
     private void setUpMenu() {
         this.uiStage = new Stage(new ScreenViewport());
         OverworldMenu menu = new OverworldMenu(this.skin);
-        float x = 50;
-        float y = Gdx.graphics.getHeight() - menu.getHeight() - 50;
+        float x = 20;
+        float y = Gdx.graphics.getHeight() - menu.getHeight() - 20;
         menu.setPosition(x, y);
         menu.addScreenChangeObserver(game);
         this.uiStage.addActor(menu);
@@ -140,6 +143,13 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
             menu
         );
         this.menuInputHanlder.addListener(this);
+
+        statusMenu = new PartyCharacterStatusMenu(skin, this.game.gameState.player);
+        x = Gdx.graphics.getWidth() - statusMenu.getWidth() -20 ;
+        y = Gdx.graphics.getHeight() - statusMenu.getHeight() - 20;
+        statusMenu.setPosition(x, y);
+        this.uiStage.addActor(statusMenu);
+
     }
 
     public InputMultiplexer setUpInput() {
@@ -217,7 +227,7 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
 
     public void notifyScreenChange(GameConstants.GAME_SCREEN screen){
             for (ScreenChangeObserver observer : screenChangeObservers) {
-                game.gameState.overWorldCoordinates = new Vector2(playerPosition.x, playerPosition.y);
+                game.gameState.overWorldCoordinates = new Vector2(playerPosition.tileX, playerPosition.tileY);
                 observer.onScreenChange(screen);
             }
     }
@@ -231,6 +241,8 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
 
     @Override
     public void onEnteredNewTile(Cell tileCell){
+        Vector2 newCoords = new Vector2(playerPosition.tileX, playerPosition.tileY);
+        this.game.gameState.updateWorldCoordinates(newCoords);
         if(overWorld){
             Gdx.app.log("Tile", "Entered New Tile");
             float roll = MathUtils.random();

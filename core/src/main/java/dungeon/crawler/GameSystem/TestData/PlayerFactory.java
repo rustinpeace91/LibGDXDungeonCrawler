@@ -14,6 +14,7 @@ public class PlayerFactory {
             10,
             30,
             10,
+            0,
             10,
             Stance.STANDING,
             new ArrayList<Condition>(),

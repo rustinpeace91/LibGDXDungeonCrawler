@@ -36,7 +36,7 @@ public class EnemyCombatant extends Enemy implements Combatant {
         Random rand = new Random();
         // nextInt(20) gives 0-19, so +1 gives 1-20
         int randomNumber = rand.nextInt(20) + 1;
-        int toHitRoll = randomNumber + 4;
+        int toHitRoll = randomNumber + toHit;
         int damageRoll = rand.nextInt(10) + 1;
         String flavorText = String.format("The %s takes a bite!", this.name);
         return new AttackDamage(toHitRoll, damageRoll,  flavorText, false);

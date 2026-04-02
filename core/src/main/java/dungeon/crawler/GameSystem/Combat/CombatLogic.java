@@ -116,6 +116,7 @@ public class CombatLogic {
                 break;
 
             case CHECK_CONDITIONS:
+                // TODO: Break up this logic
                 // remove any actions from dead combatants
                 actionQueue.removeIf(action -> !action.combatant.canAttack());
                 // Check for total party wipe
@@ -168,7 +169,6 @@ public class CombatLogic {
                 Gdx.app.log("Combat", "Attack Made");
                 AttackDamage damage = currentAction.combatant.attack();
                 int defense = currentAction.target.defend(damage);
-                // TODO: Find a way to get the character name from the defendent
                 if(damage.toHit > defense){
                     int damageDealt = currentAction.target.takeHit(damage);
                     damageText = String.format("%s hit for %s damage",currentAction.target.getName(), String.valueOf(damageDealt));

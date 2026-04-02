@@ -16,6 +16,8 @@ public class GameState {
     public Map<Integer, EnemyCombatant> currentEnemyRoster;
     public int gold;
     public boolean isPlayerDead;
+    public String currentMap;
+    public int screenID;
 
     public GameState(){
         // TODO: make an actual constructor
@@ -30,5 +32,18 @@ public class GameState {
         currentEnemyRoster = new HashMap<>();
         gold = 0;
         isPlayerDead = false;
+        currentMap = "";
+        screenID = 1;
+    }
+
+    public void updateWorldCoordinates(Vector2 newCoords){
+        overWorldCoordinates = newCoords;
+    }
+
+    public void updateWorldMap(String mapFile){
+        currentMap = mapFile;
+    }
+    public void updateScreenID(int id){
+        screenID = id;
     }
 }
