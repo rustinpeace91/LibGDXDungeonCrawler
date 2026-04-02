@@ -43,7 +43,25 @@ public class CombatLogic {
 
         switch(phase) {
             case INTRO:
-                handleState(CombatPhase.ACTIONSELECT);
+                notifyOnCombatMenuFocus();
+                advanceState(CombatPhase.ACTIONSELECT);
+                break;
+            
+            case ACTIONSELECT:
+                // user is selecting action. Do nothing
+                break;
+
+            case ACTIONSELECT_COMPLETE:
+                Gdx.app.log("Combat", "Enemies Decide their action");
+                decideEnemyActions();
+                sortByInitiative();
+                notifyOnActionSelectComplete();
+                advanceState(CombatPhase.INITIATIVE_COMPLETE);
+                break;
+
+            case INITIATIVE_COMPLETE:
+                Gdx.app.log("Combat", "Rolling for Initiative");
+                advanceState(CombatPhase.RESOLVE_NEXT_ACTION);
                 break;
 
             case RESOLVE_NEXT_ACTION:
@@ -52,21 +70,27 @@ public class CombatLogic {
                     handleAction(nextAction);
 
                 } else {
-                    handleState(CombatPhase.ACTIONSELECT);
+                    advanceState(CombatPhase.ACTIONSELECT);
                 }
                 break;
             case ACTION_COMPLETE:
-                handleState(CombatPhase.CHECK_CONDITIONS);
+                advanceState(CombatPhase.CHECK_CONDITIONS);
                 break;
-            
+            case CHECK_CONDITIONS:
+                checkWinConditions();
+                break;
             case LOSS:
                 notifyOnLoss();
-                handleState(CombatPhase.END);
+                advanceState(CombatPhase.END);
                 break;
             case VICTORY:
                 notifyOnVictory();
-                handleState(CombatPhase.END);
+                advanceState(CombatPhase.END);
                 break;
+
+            case NEW_ROUND:
+                notifyOnCombatMenuFocus();
+                advanceState(CombatPhase.ACTIONSELECT);
                 
                 
         }
@@ -84,78 +108,12 @@ public class CombatLogic {
             // advance to ACTIONSELECT
     }
 
-    public void handleState(CombatPhase nextPhase){
+    public void advanceState(CombatPhase nextPhase){
         phase =  nextPhase;
-        switch(nextPhase) {
-            case INTRO:
-                Gdx.app.log("Combat", "INTRO");
-                break;
-            case ACTIONSELECT:
-                Gdx.app.log("Combat", "Player Select");
-                // push stuff to the queue
-                // roll iniative can take place here?
-                notifyOnCombatMenuFocus();
-                break;
 
-            case ACTIONSELECT_COMPLETE:
-                Gdx.app.log("Combat", "Enemies Decide their action");
-                decideEnemyActions();
-                sortByInitiative();
-                notifyOnActionSelectComplete();
-                handleState(CombatPhase.INITIATIVE_COMPLETE);
-                break;
-                
-
-            case INITIATIVE_COMPLETE:
-                Gdx.app.log("Combat", "Rolling for Initiative");
-                handleState(CombatPhase.RESOLVE_NEXT_ACTION);
-                break;
-
-            case RESOLVE_NEXT_ACTION:
-                Gdx.app.log("Combat", "Handling COMBAT round");
-                break;
-
-            case CHECK_CONDITIONS:
-                // TODO: Break up this logic
-                // remove any actions from dead combatants
-                actionQueue.removeIf(action -> !action.combatant.canAttack());
-                // Check for total party wipe
-                boolean isAnyoneAlive = false;
-                for(PlayerCharacter partyMember: this.game.gameState.party.values()){
-                    if(!partyMember.isDead){
-                        isAnyoneAlive = true;
-                    }
-                }
-                if(!isAnyoneAlive){
-                    eventScreen.addMessages(new String[] {"All adventurers have died!"});
-                    handleState(CombatPhase.LOSS);
-                    return;
-                }
-                // add XP
-                for(Enemy enemy: this.game.gameState.currentEnemyRoster.values()){
-                    if(enemy.isDead){
-                        this.xpGained += enemy.earnedXP;
-                    }
-                }
-                // Check for dead enemies and remove from board
-                // TODO: Terrible. Do not remove from game state, move to combat state instead
-                this.game.gameState.currentEnemyRoster.values().removeIf(enemy -> enemy.checkDeath());
-                // check for total enemy wipe
-                if(this.game.gameState.currentEnemyRoster.isEmpty()){
-                    eventScreen.addMessages(new String[] {"All enemies have been vanquished!"});
-                    eventScreen.addMessages(new String[] {
-                        String.format("You have gained %s experience points from the fight", String.valueOf(xpGained))
-                    });
-                    handleState(CombatPhase.VICTORY);
-                    return;
-                }
-
-                //else 
-                handleState(CombatPhase.ACTIONSELECT);
-                break;
-
-        }
     }
+
+
 
     public void handleAction(CombatAction currentAction){
         CombatActionState aState = currentAction.action;
@@ -183,7 +141,7 @@ public class CombatLogic {
                 if(targetDead){
                     eventScreen.addMessages(new String[] {String.format("%s has died", currentAction.target.getName())});
                 }
-                handleState(CombatPhase.ACTION_COMPLETE);
+                advanceState(CombatPhase.ACTION_COMPLETE);
 
                 break;
             case DEFEND:
@@ -216,8 +174,46 @@ public class CombatLogic {
         this.actionQueue.add(newAction);
         Gdx.app.log("Combat", "Action added to queue");
         if(id <= this.game.gameState.party.keySet().size()){
-            handleState(CombatPhase.ACTIONSELECT_COMPLETE);
+            advanceState(CombatPhase.ACTIONSELECT_COMPLETE);
         }
+    }
+
+    public void checkWinConditions(){
+        // TODO: Break up this logic
+        // remove any actions from dead combatants
+        actionQueue.removeIf(action -> !action.combatant.canAttack());
+        // Check for total party wipe
+        boolean isAnyoneAlive = false;
+        for(PlayerCharacter partyMember: this.game.gameState.party.values()){
+            if(!partyMember.isDead){
+                isAnyoneAlive = true;
+            }
+        }
+        if(!isAnyoneAlive){
+            eventScreen.addMessages(new String[] {"All adventurers have died!"});
+            advanceState(CombatPhase.LOSS);
+            return;
+        }
+        // add XP
+        for(Enemy enemy: this.game.gameState.currentEnemyRoster.values()){
+            if(enemy.isDead){
+                this.xpGained += enemy.earnedXP;
+            }
+        }
+        // Check for dead enemies and remove from board
+        // TODO: Terrible. Do not remove from game state, move to combat state instead
+        this.game.gameState.currentEnemyRoster.values().removeIf(enemy -> enemy.checkDeath());
+        // check for total enemy wipe
+        if(this.game.gameState.currentEnemyRoster.isEmpty()){
+            eventScreen.addMessages(new String[] {"All enemies have been vanquished!"});
+            eventScreen.addMessages(new String[] {
+                String.format("You have gained %s experience points from the fight", String.valueOf(xpGained))
+            });
+            advanceState(CombatPhase.VICTORY);
+            return;
+        }
+        //else 
+        advanceState(CombatPhase.NEW_ROUND);
     }
 
     public void addListener(CombatLogicObserver listener){
@@ -287,16 +283,5 @@ public class CombatLogic {
         actionQueue.sort((a, b) -> Integer.compare(a.iniative, a.iniative));
     }
 
-    // public Combatant getEnemyCombatantById(int id){
-    //     for(Combatant combatant: game.gameState.currentEnemyRoster){
-    //         if(combatant.id == id){
-
-    //         }
-    //     };
-    // }
-    // add text
-    // switch phase
-    // handle attack
-    // store logic 
     
 }

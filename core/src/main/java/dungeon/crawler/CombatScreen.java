@@ -144,7 +144,7 @@ public class CombatScreen extends ScreenAdapter
         this.uiStage.setKeyboardFocus(eventScreen);
         this.logicHandler = new CombatLogic(eventScreen, game);
         this.logicHandler.addListener(this);
-        this.logicHandler.handleState(CombatPhase.INTRO);
+        this.logicHandler.advanceState(CombatPhase.INTRO);
     }
 
     private void setUpMenu() {

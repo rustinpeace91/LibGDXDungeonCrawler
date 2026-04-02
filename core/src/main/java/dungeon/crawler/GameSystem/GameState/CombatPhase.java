@@ -11,6 +11,7 @@ public enum CombatPhase {
     LOSS,
     VICTORY,
     END,
+    NEW_ROUND
     
 }
 
