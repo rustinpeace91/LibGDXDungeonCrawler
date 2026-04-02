@@ -2,13 +2,13 @@ package dungeon.crawler.Menu;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
-import dungeon.crawler.GameSystem.TestData.PlayerCharacter;
+import dungeon.crawler.GameSystem.Character.PartyCharacter;
 
 public class PartyCharacterStatusMenu extends StandardStatusMenu {
-    private PlayerCharacter character;
+    private PartyCharacter character;
     public PartyCharacterStatusMenu (
         Skin skin,
-        PlayerCharacter character
+        PartyCharacter character
     ){
         super(skin);
         this.character = character;

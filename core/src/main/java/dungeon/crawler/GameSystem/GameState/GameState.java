@@ -5,13 +5,13 @@ import java.util.Map;
 
 import com.badlogic.gdx.math.Vector2;
 
+import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.GameSystem.TestData.EnemyCombatant;
-import dungeon.crawler.GameSystem.TestData.PlayerCharacter;
 import dungeon.crawler.GameSystem.TestData.PlayerFactory;
 
 public class GameState {
-    public PlayerCharacter player;
-    public Map<Integer, PlayerCharacter> party;
+    public PartyCharacter player;
+    public Map<Integer, PartyCharacter> party;
     public Vector2 overWorldCoordinates;
     public Map<Integer, EnemyCombatant> currentEnemyRoster;
     public int gold;

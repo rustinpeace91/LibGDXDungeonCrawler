@@ -3,12 +3,13 @@ package dungeon.crawler.GameSystem.TestData;
 import java.util.ArrayList;
 
 import dungeon.crawler.GameSystem.Character.Condition;
+import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.GameSystem.Character.Stance;
 
 public class PlayerFactory {
 
-    public static PlayerCharacter generate() {
-        return new PlayerCharacter(
+    public static PartyCharacter generate() {
+        return new PartyCharacter(
             "Hero",
             30,
             10,

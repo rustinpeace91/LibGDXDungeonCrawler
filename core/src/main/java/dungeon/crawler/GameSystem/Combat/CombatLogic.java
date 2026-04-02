@@ -11,7 +11,7 @@ import dungeon.crawler.GameSystem.Character.Enemy;
 import dungeon.crawler.GameSystem.GameState.CombatActionState;
 import dungeon.crawler.GameSystem.GameState.CombatPhase;
 import dungeon.crawler.GameSystem.TestData.EnemyCombatant;
-import dungeon.crawler.GameSystem.TestData.PlayerCharacter;
+import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.MainGame;
 import dungeon.crawler.Menu.CombatEventScreen;
 import dungeon.crawler.Observers.CombatLogicObserver;
@@ -184,7 +184,7 @@ public class CombatLogic {
         actionQueue.removeIf(action -> !action.combatant.canAttack());
         // Check for total party wipe
         boolean isAnyoneAlive = false;
-        for(PlayerCharacter partyMember: this.game.gameState.party.values()){
+        for(PartyCharacter partyMember: this.game.gameState.party.values()){
             if(!partyMember.isDead){
                 isAnyoneAlive = true;
             }
