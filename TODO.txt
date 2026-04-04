@@ -1,8 +1,7 @@
 3/16/22
-- finish Combat Event screen
-- Fix Tabs vs Spaces BS
+- Make menus suck less
+- Make an Inn
+- Find way to store items/weapons in json
 - Clean up Notifier vs Observer nomenclature, pick one
 - Make MenuInputHandler cleaner and lighter, handle focus in OverWorldMenu class
 - Animate Sword in Blender and use it for menu pointer (for colorblindness and ease of sight)
-- Make class system
-- Make combat system

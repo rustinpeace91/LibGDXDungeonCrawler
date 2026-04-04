@@ -127,6 +127,10 @@ public class CombatLogic {
                 Gdx.app.log("Combat", "Attack Made");
                 AttackDamage damage = currentAction.combatant.attack();
                 int defense = currentAction.target.defend(damage);
+                Gdx.app.log("Combat", String.format(
+                    "Roll: %s", String.valueOf(damage.toHit)
+                ));
+
                 if(damage.toHit > defense){
                     int damageDealt = currentAction.target.takeHit(damage);
                     damageText = String.format("%s hit for %s damage",currentAction.target.getName(), String.valueOf(damageDealt));
@@ -141,6 +145,7 @@ public class CombatLogic {
                 if(targetDead){
                     eventScreen.addMessages(new String[] {String.format("%s has died", currentAction.target.getName())});
                 }
+                eventScreen.showNextMessage();
                 advanceState(CombatPhase.ACTION_COMPLETE);
 
                 break;
@@ -209,6 +214,7 @@ public class CombatLogic {
             eventScreen.addMessages(new String[] {
                 String.format("You have gained %s experience points from the fight", String.valueOf(xpGained))
             });
+            eventScreen.showNextMessage();
             advanceState(CombatPhase.VICTORY);
             return;
         }

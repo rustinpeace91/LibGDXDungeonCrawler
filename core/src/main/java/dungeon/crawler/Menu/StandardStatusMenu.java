@@ -23,7 +23,7 @@ public class StandardStatusMenu extends Table {
         messageLabel.setWrap(true);
         messageLabel.setAlignment(Align.topLeft);
         // Add the label to 'this' table
-        this.add(messageLabel).expand().fill().pad(20f, 20f, 20f, 20f);
+        this.add(messageLabel).expand().fill().pad(10f, 10f, 10f, 10f);
 
     }
 

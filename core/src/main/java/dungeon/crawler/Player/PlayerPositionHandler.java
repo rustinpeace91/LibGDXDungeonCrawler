@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.Array;
 
 import dungeon.crawler.GameConstants;
 import dungeon.crawler.Observers.PlayerPositionObserver;
+import dungeon.crawler.Observers.ScreenChangeObserver;
 import dungeon.crawler.Subject.GameSubject;
 
 public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
@@ -18,7 +19,7 @@ public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
     public float y;
     
     protected final Array<PlayerPositionObserver> observers = new Array<>();
-
+    protected final Array<ScreenChangeObserver> screenObservers = new Array<>();
 
     // tile number
     public float tileX;
@@ -96,7 +97,11 @@ public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
     
     @Override
     public void addObserver(PlayerPositionObserver observer) { 
-    observers.add(observer); 
+        observers.add(observer); 
+    }
+
+    public void addScreenChangeListener(ScreenChangeObserver observer) { 
+        screenObservers.add(observer); 
     }
 
     @Override
@@ -162,7 +167,7 @@ public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
         if (actionCell != null && actionCell.getTile() != null) {
             // 2. Check the properties of the "Yellow Square" tile
             MapProperties props = actionCell.getTile().getProperties();
-            
+            // Iterator<String> keys = props.getKeys();
             if (props.containsKey("world_screen")) {
                 int screenId = props.get("world_screen", Integer.class);
                 
@@ -170,7 +175,19 @@ public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
                 for (PlayerPositionObserver obs : observers) {
                     obs.onTransition(screenId);
                 }
+            } 
+            // if (props.containsKey("inn")) {
+            //     System.out.println("MOOOOOOOOOOO");
+            // }
+            if (props.containsKey("inn")) {
+                System.out.println("MOOOOOOOOOOO");
+                // 3. Notify your observers (MainGame, etc.)
+                for (ScreenChangeObserver obs : screenObservers) {
+                    obs.onScreenChange(GameConstants.GAME_SCREEN.INN);
+                }
+
             }
+
         } else {
             for (PlayerPositionObserver obs : observers) {
                 obs.onEnteredNewTile(tileCell);

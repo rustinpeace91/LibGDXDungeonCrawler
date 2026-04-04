@@ -23,6 +23,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import dungeon.crawler.Menu.MenuInputHandler;
 import dungeon.crawler.Menu.OverworldMenu;
 import dungeon.crawler.Menu.PartyCharacterStatusMenu;
+import dungeon.crawler.Menu.StandardStatusMenu;
 import dungeon.crawler.Observers.MenuInputObserver;
 import dungeon.crawler.Observers.PlayerPositionObserver;
 import dungeon.crawler.Observers.ScreenChangeObserver;
@@ -32,13 +33,17 @@ import dungeon.crawler.Player.PlayerDirection;
 import dungeon.crawler.Player.PlayerInputHandler;
 import dungeon.crawler.Player.PlayerPositionHandler;
 
-public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObserver, PlayerPositionObserver{
+public class WorldScreenRefactor extends ScreenAdapter 
+implements MenuInputObserver,
+ScreenChangeObserver,
+PlayerPositionObserver {
     private MainGame game;
     private SpriteBatch spriteBatch;
     private TiledMap map;
     private OrthogonalTiledMapRenderer renderer;
     private OrthographicCamera camera;
     private PartyCharacterStatusMenu statusMenu;
+    private StandardStatusMenu goldMenu;
 
     private PlayerAnimatedSprite characterSprite;
     private boolean overWorld;
@@ -111,6 +116,7 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
             playerPosition
         );
         playerPosition.addObserver(characterSprite);
+        playerPosition.addScreenChangeListener(game);
         this.skin = new Skin(Gdx.files.internal(GameConstants.MENU_SKIN));
         setUpMenu();
         //input
@@ -147,8 +153,14 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
         statusMenu = new PartyCharacterStatusMenu(skin, this.game.gameState.player);
         x = Gdx.graphics.getWidth() - statusMenu.getWidth() -20 ;
         y = Gdx.graphics.getHeight() - statusMenu.getHeight() - 20;
-        statusMenu.setPosition(x, y);
+        statusMenu.setPosition(x, y + 20);
         this.uiStage.addActor(statusMenu);
+
+        goldMenu = new StandardStatusMenu(skin);
+        String gold = String.valueOf(this.game.gameState.gold);
+        goldMenu.setText(String.format("Gold: %s ", gold));
+        goldMenu.setPosition(x, y - 100);
+        this.uiStage.addActor(goldMenu);
 
     }
 
@@ -182,6 +194,8 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
         characterSprite.render(spriteBatch);
         spriteBatch.end();
         if(menuVisible) {
+            String gold = String.valueOf(this.game.gameState.gold);
+            goldMenu.setText(String.format("Gold: %s ", gold));
             uiStage.act(Gdx.graphics.getDeltaTime());
             uiStage.draw();
         }
@@ -243,11 +257,11 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
     public void onEnteredNewTile(Cell tileCell){
         Vector2 newCoords = new Vector2(playerPosition.tileX, playerPosition.tileY);
         this.game.gameState.updateWorldCoordinates(newCoords);
+        // this.game.gameState.screenID = this.screenID;
         if(overWorld){
             Gdx.app.log("Tile", "Entered New Tile");
             float roll = MathUtils.random();
             if ( roll < 0.16f) { 
-                Gdx.app.log("Tile", "FIIIIIIIGHT");
                 notifyScreenChange(GameConstants.GAME_SCREEN.COMBAT);
             }
         }
@@ -255,8 +269,18 @@ public class WorldScreenRefactor extends ScreenAdapter implements MenuInputObser
 
     @Override
     public void onTransition(int screenID){
-            for (ScreenChangeObserver observer : screenChangeObservers) {
-                observer.onMapChange(screenID);
-            }
+        for (ScreenChangeObserver observer : screenChangeObservers) {
+            observer.onMapChange(screenID);
+        }
     };
+
+    @Override
+    public void onScreenChange(GameConstants.GAME_SCREEN screen){
+        for (ScreenChangeObserver observer : screenChangeObservers) {
+            observer.onScreenChange(screen);
+        }
+    };
+
+    @Override
+    public void onMapChange(int ScreenId){};
 }

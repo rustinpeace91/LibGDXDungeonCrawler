@@ -2,6 +2,7 @@ package dungeon.crawler.GameSystem.TestData;
 
 import java.util.ArrayList;
 
+import dungeon.crawler.GameSystem.Character.CharacterClass;
 import dungeon.crawler.GameSystem.Character.Condition;
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.GameSystem.Character.Stance;
@@ -9,7 +10,7 @@ import dungeon.crawler.GameSystem.Character.Stance;
 public class PlayerFactory {
 
     public static PartyCharacter generate() {
-        return new PartyCharacter(
+        PartyCharacter pc = new PartyCharacter(
             "Hero",
             30,
             10,
@@ -25,7 +26,12 @@ public class PlayerFactory {
             10,
             10,
             10,
+            CharacterClass.HERO,
             true
         );
+        pc.equipWeapon(WeaponFactory.getIronSword());
+        return pc;
     }
+
+
 }

@@ -30,7 +30,7 @@ public class GameState {
         party.put(1, player);
         overWorldCoordinates = new Vector2(0,0);
         currentEnemyRoster = new HashMap<>();
-        gold = 0;
+        gold = 20;
         isPlayerDead = false;
         currentMap = "";
         screenID = 1;

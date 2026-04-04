@@ -3,6 +3,7 @@ package dungeon.crawler.GameSystem.TestData;
 import java.util.ArrayList;
 import java.util.Random;
 
+import dungeon.crawler.GameSystem.Character.CharacterClass;
 import dungeon.crawler.GameSystem.Character.Combatant;
 import dungeon.crawler.GameSystem.Character.Condition;
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
@@ -16,7 +17,7 @@ public class PlayerCharacter extends PartyCharacter implements Combatant{
             int perception, boolean isHero
     ) {
         super(name, maxHp, maxMP, hp, mp, xp, defense, stance, conditions, isDead, level, strength, agility, intelligence,
-                perception, isHero);
+                perception, CharacterClass.HERO, isHero);
         this.toHit = calculateToHit();
         
     }

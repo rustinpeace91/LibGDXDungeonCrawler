@@ -4,7 +4,13 @@ import java.util.Map;
 
 import dungeon.crawler.Player.PlayerDirection;
 public class GameConstants {
-    public enum GAME_SCREEN { MENU, WALK_OVERWORLD, WALK_TOWN, COMBAT };
+    public enum GAME_SCREEN { 
+        MENU,
+        WALK_OVERWORLD,
+        WALK_TOWN,
+        COMBAT,
+        INN
+    };
 
     // screen
     public static final int RESOLUTION_WIDTH = 1280;

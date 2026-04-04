@@ -13,6 +13,8 @@ public class PartyCharacterStatusMenu extends StandardStatusMenu {
         super(skin);
         this.character = character;
         displayCharacter();
+
+
     }
 
     public void displayCharacter(){

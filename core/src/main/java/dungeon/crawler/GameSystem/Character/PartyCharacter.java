@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import dungeon.crawler.GameSystem.Combat.AttackDamage;
+import dungeon.crawler.GameSystem.Inventory.Weapon;
+// import dungeon.crawler.GameSystem.TestData.PlayerCharacter;
 
 public class PartyCharacter extends Character implements Combatant{
     public int level;
@@ -14,6 +16,10 @@ public class PartyCharacter extends Character implements Combatant{
     public int perception;
     public boolean isHero;
     public int toHit;
+    public Weapon equippedWeapon;
+    public Weapon fist;
+    public CharacterClass charClass;
+
     public PartyCharacter(
             String name,
             int maxHp,
@@ -30,6 +36,7 @@ public class PartyCharacter extends Character implements Combatant{
             int agility,
             int intelligence,
             int perception,
+            CharacterClass charClass,
             boolean isHero
 
     ) {
@@ -42,6 +49,18 @@ public class PartyCharacter extends Character implements Combatant{
         this.isHero = isHero;
         this.xp = xp;
         this.toHit = calculateToHit();
+        this.fist = new Weapon(
+            "fist",
+            (PartyCharacter) this,
+            this.agility,
+            1,
+            10,
+            "punches",
+            false,
+            null,
+            null,
+            (ArrayList<CharacterClass>) null
+        );
     }
 
     public int calculateToHit(){
@@ -51,12 +70,15 @@ public class PartyCharacter extends Character implements Combatant{
     @Override
     public AttackDamage attack() {
         // TODO Auto-generated method stub
+
+        Weapon attackWeapon = getWeapon();
         Random rand = new Random();
-        // nextInt(20) gives 0-19, so +1 gives 1-20
-        int randomNumber = rand.nextInt(20) + 1;
-        int toHit = randomNumber + 1;
-        int damageRoll = rand.nextInt(10) + 1;
-        return new AttackDamage(toHit, damageRoll, "You swing your sword", false);
+        int toHitRoll = rand.nextInt(20) + 1 + attackWeapon.toHit;
+        int damageRoll = rand.nextInt(attackWeapon.damageHigh) + attackWeapon.damageLow;
+        String attackText = String.format(
+            "%s %s with their %s", name, attackWeapon.flavorTextVerb, attackWeapon.name
+        );
+        return new AttackDamage(toHitRoll, damageRoll, attackText, false);
     }
 
     @Override
@@ -96,5 +118,19 @@ public class PartyCharacter extends Character implements Combatant{
     @Override
     public String getName(){
         return name;
+    }
+
+    public void equipWeapon(Weapon weapon){
+        this.equippedWeapon = weapon;
+    }
+
+    public Weapon getWeapon(){
+        if(
+            equippedWeapon != null
+        ){
+            return equippedWeapon;
+        } else {
+            return fist;
+        }
     }
 }
