@@ -13,8 +13,8 @@ public class GameConstants {
     };
 
     // screen
-    public static final int RESOLUTION_WIDTH = 1280;
-    public static final int RESOLUTION_HEIGHT = 800;
+    public static final int RESOLUTION_WIDTH = 960;
+    public static final int RESOLUTION_HEIGHT = 720;
 
     // player
     public static final float TOWN_MOVEMENT_DURATION = 0.15f;

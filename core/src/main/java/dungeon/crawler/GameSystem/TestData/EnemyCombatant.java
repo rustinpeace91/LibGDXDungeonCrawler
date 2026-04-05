@@ -8,6 +8,7 @@ import dungeon.crawler.GameSystem.Character.Condition;
 import dungeon.crawler.GameSystem.Character.Enemy;
 import dungeon.crawler.GameSystem.Character.Stance;
 import dungeon.crawler.GameSystem.Combat.AttackDamage;
+import dungeon.crawler.Utils.StringUtils;
 
 public class EnemyCombatant extends Enemy implements Combatant {
     public int toHit;
@@ -38,7 +39,7 @@ public class EnemyCombatant extends Enemy implements Combatant {
         int randomNumber = rand.nextInt(20) + 1;
         int toHitRoll = randomNumber + toHit;
         int damageRoll = rand.nextInt(10) + 1;
-        String flavorText = String.format("The %s takes a bite!", this.name);
+        String flavorText = StringUtils.format("The %s takes a bite!", this.name);
         return new AttackDamage(toHitRoll, damageRoll,  flavorText, false);
     }
 

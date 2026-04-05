@@ -5,7 +5,7 @@ import java.util.Random;
 
 import dungeon.crawler.GameSystem.Combat.AttackDamage;
 import dungeon.crawler.GameSystem.Inventory.Weapon;
-// import dungeon.crawler.GameSystem.TestData.PlayerCharacter;
+import dungeon.crawler.Utils.StringUtils;
 
 public class PartyCharacter extends Character implements Combatant{
     public int level;
@@ -74,14 +74,22 @@ public class PartyCharacter extends Character implements Combatant{
 
         Weapon attackWeapon = getWeapon();
         Random rand = new Random();
-        int toHitRoll = rand.nextInt(20) + 1 + attackWeapon.toHit;
-        int damageRoll = rand.nextInt(attackWeapon.damageHigh) + attackWeapon.damageLow;
-        String attackText = String.format(
+        int agilityModofier = Math.round(agility / 10);
+        int toHitRoll = rand.nextInt(20) + 1 + attackWeapon.toHit + getToHit();
+        int damageRoll = rand.nextInt(attackWeapon.damageHigh) + attackWeapon.damageLow + getDamageBonus();
+        String attackText = StringUtils.format(
             "%s %s with their %s", name, attackWeapon.flavorTextVerb, attackWeapon.name
         );
         return new AttackDamage(toHitRoll, damageRoll, attackText, false);
     }
 
+    public int getToHit(){
+        return  Math.round(agility / 10) + getWeapon().toHit;
+    }
+
+    public int getDamageBonus(){
+        return Math.round(strength/10);
+    }
     @Override
     public int defend(AttackDamage attack) {
         // TODO Auto-generated method stub
@@ -133,12 +141,12 @@ public class PartyCharacter extends Character implements Combatant{
                 Random rand = new Random();
                 int newStr = rand.nextInt(3) + 1;
                 messages.add(
-                    String.format("You are now level %s", String.valueOf(level))
+                    StringUtils.format("You are now level %s", String.valueOf(level))
                 );
                 if(newStr > 0){
                     strength = strength + newStr;
                     messages.add(
-                        String.format(
+                        StringUtils.format(
                             "Strength increased by %s",
                             String.valueOf(newStr)
                         )
@@ -148,7 +156,7 @@ public class PartyCharacter extends Character implements Combatant{
                 if(newaGi > 0){
                     agility = agility + newaGi;
                     messages.add(
-                        String.format(
+                        StringUtils.format(
                             "Agility increased by %s",
                             String.valueOf(newaGi)
                         )
@@ -158,7 +166,7 @@ public class PartyCharacter extends Character implements Combatant{
                     if(newInt > 0){
                         intelligence = intelligence + newInt;
                         messages.add(
-                            String.format(
+                            StringUtils.format(
                                 "Intelligence increased by %s",
                                 String.valueOf(newInt)
                             )
@@ -168,7 +176,7 @@ public class PartyCharacter extends Character implements Combatant{
                 if(newPerc > 0){
                     perception = perception + newPerc;
                     messages.add(
-                        String.format(
+                        StringUtils.format(
                             "Perception increased by %s",
                             String.valueOf(newPerc)
                         )

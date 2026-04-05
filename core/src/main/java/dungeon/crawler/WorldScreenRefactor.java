@@ -32,6 +32,7 @@ import dungeon.crawler.Player.PlayerAnimatedSpriteFactory;
 import dungeon.crawler.Player.PlayerDirection;
 import dungeon.crawler.Player.PlayerInputHandler;
 import dungeon.crawler.Player.PlayerPositionHandler;
+import dungeon.crawler.Utils.StringUtils;
 
 public class WorldScreenRefactor extends ScreenAdapter 
 implements MenuInputObserver,
@@ -132,7 +133,7 @@ PlayerPositionObserver {
         // set up camera
         this.camera = new OrthographicCamera();
         camera.setToOrtho(false, GameConstants.RESOLUTION_WIDTH, GameConstants.RESOLUTION_HEIGHT);
-        camera.zoom=0.25f;
+        camera.zoom=0.35f;
         camera.update();
     }
 
@@ -158,7 +159,7 @@ PlayerPositionObserver {
 
         goldMenu = new StandardStatusMenu(skin);
         String gold = String.valueOf(this.game.gameState.gold);
-        goldMenu.setText(String.format("Gold: %s ", gold));
+        goldMenu.setText(StringUtils.format("Gold: %s ", gold));
         goldMenu.setPosition(x, y - 100);
         this.uiStage.addActor(goldMenu);
 
@@ -195,7 +196,7 @@ PlayerPositionObserver {
         spriteBatch.end();
         if(menuVisible) {
             String gold = String.valueOf(this.game.gameState.gold);
-            goldMenu.setText(String.format("Gold: %s ", gold));
+            goldMenu.setText(StringUtils.format("Gold: %s ", gold));
             uiStage.act(Gdx.graphics.getDeltaTime());
             uiStage.draw();
         }

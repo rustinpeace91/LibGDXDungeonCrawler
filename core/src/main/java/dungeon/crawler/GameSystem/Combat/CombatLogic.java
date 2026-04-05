@@ -16,6 +16,7 @@ import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.MainGame;
 import dungeon.crawler.Menu.CombatEventScreen;
 import dungeon.crawler.Observers.CombatLogicObserver;
+import dungeon.crawler.Utils.StringUtils;
 
 public class CombatLogic {
     public CombatPhase phase;
@@ -136,13 +137,13 @@ public class CombatLogic {
                 Gdx.app.log("Combat", "Attack Made");
                 AttackDamage damage = currentAction.combatant.attack();
                 int defense = currentAction.target.defend(damage);
-                Gdx.app.log("Combat", String.format(
+                Gdx.app.log("Combat", StringUtils.format(
                     "Roll: %s", String.valueOf(damage.toHit)
                 ));
 
                 if(damage.toHit > defense){
                     int damageDealt = currentAction.target.takeHit(damage);
-                    damageText = String.format("%s hit for %s damage",currentAction.target.getName(), String.valueOf(damageDealt));
+                    damageText = StringUtils.format("%s hit for %s damage",currentAction.target.getName(), String.valueOf(damageDealt));
                     targetDead = currentAction.target.checkDeath();
 
                 } else {
@@ -152,7 +153,7 @@ public class CombatLogic {
 
                 eventScreen.addMessages(new String[] {damage.flavorText, damageText});
                 if(targetDead){
-                    eventScreen.addMessages(new String[] {String.format("%s has died", currentAction.target.getName())});
+                    eventScreen.addMessages(new String[] {StringUtils.format("%s has died", currentAction.target.getName())});
                 }
                 advanceState(CombatPhase.ACTION_COMPLETE);
 
@@ -221,7 +222,7 @@ public class CombatLogic {
             eventScreen.addMessages(new String[] {"All enemies have been vanquished!"});
 
             eventScreen.addMessages(new String[] {
-                String.format("You have gained %s experience points from the fight", String.valueOf(xpGained))
+                StringUtils.format("You have gained %s experience points from the fight", String.valueOf(xpGained))
             });
 
             advanceState(CombatPhase.VICTORY);
@@ -239,7 +240,7 @@ public class CombatLogic {
         int addGold = roll.nextInt(20) + 1;
         this.game.gameState.gold = this.game.gameState.gold + addGold;
         eventScreen.addMessages(new String[] {
-                String.format(
+                StringUtils.format(
                     "You earn %s gold from this fight",
                     String.valueOf(addGold)
                 )
