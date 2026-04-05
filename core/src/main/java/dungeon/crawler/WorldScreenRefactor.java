@@ -4,6 +4,7 @@ package dungeon.crawler;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
@@ -176,6 +177,11 @@ PlayerPositionObserver {
     @Override
     public void show() {
         // The object is fully built now, so it's safe to share 'this'
+        Gdx.input.setCatchKey(Input.Keys.UP, true);
+        Gdx.input.setCatchKey(Input.Keys.DOWN, true);
+        Gdx.input.setCatchKey(Input.Keys.LEFT, true);
+        Gdx.input.setCatchKey(Input.Keys.RIGHT, true);
+        Gdx.input.setCatchKey(Input.Keys.SPACE, true);
         playerPosition.addObserver(this);
     }
 

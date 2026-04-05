@@ -290,8 +290,6 @@ public class CombatScreen extends ScreenAdapter
     @Override
     public void onVictory(){
         Gdx.app.log("Combat", "Sending signal to victory");
-        // TODO: bad
-        this.game.gameState.player.xp = this.game.gameState.player.xp + this.logicHandler.xpGained;
         combatScreenObserver.onCombatVictory();
 
     }
