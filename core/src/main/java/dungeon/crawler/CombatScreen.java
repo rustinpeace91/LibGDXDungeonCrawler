@@ -1,8 +1,6 @@
 package dungeon.crawler;
 
 
-import java.util.Random;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ScreenAdapter;
@@ -212,7 +210,7 @@ public class CombatScreen extends ScreenAdapter
     }
 
     public void advanceCombat(){
-        if(!eventScreen.messageQueue.isEmpty()){
+        if(eventScreen.isShowingMessage()){
             partyScreen.setText(
                 String.format("PLYR \n HP: %s \n MP: 0", String.valueOf(this.game.gameState.player.hp))
             );
@@ -274,18 +272,10 @@ public class CombatScreen extends ScreenAdapter
         Gdx.app.log("Combat", "Sending signal to victory");
         // TODO: bad
         this.game.gameState.player.xp = this.game.gameState.player.xp + this.logicHandler.xpGained;
-        calculateGold();
         combatScreenObserver.onCombatVictory();
 
     }
 
-    public void calculateGold(){
-        Random roll = new Random();
-        int addGold = roll.nextInt(20) + 1;
-        this.game.gameState.gold = this.game.gameState.gold + addGold;
-
-
-    }
 
     public void addListener(CombatScreenObserver observer){
         combatScreenObserver = observer;

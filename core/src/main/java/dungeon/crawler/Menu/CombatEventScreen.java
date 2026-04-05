@@ -53,7 +53,7 @@ public class CombatEventScreen extends Table {
         if(!messageQueue.isEmpty()){
             messageLabel.setText(messageQueue.poll());
         } else {
-
+            messageLabel.setText("");
         }
     }
     public void setText(String text) {
@@ -82,5 +82,12 @@ public class CombatEventScreen extends Table {
         for(String s: messages){
             messageQueue.add(s);
         }
+        if (messageLabel.getText().toString().isEmpty() && !messageQueue.isEmpty()) {
+            messageLabel.setText(messageQueue.poll());
+            notifyOnFirstMessageAdded();
+        }
+    }
+    public boolean isShowingMessage() {
+        return !messageQueue.isEmpty() || !messageLabel.textEquals("");
     }
 }

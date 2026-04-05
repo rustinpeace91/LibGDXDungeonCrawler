@@ -10,6 +10,7 @@ import dungeon.crawler.GameSystem.Character.Combatant;
 import dungeon.crawler.GameSystem.Character.Enemy;
 import dungeon.crawler.GameSystem.GameState.CombatActionState;
 import dungeon.crawler.GameSystem.GameState.CombatPhase;
+import dungeon.crawler.GameSystem.Leveling.LevelTable;
 import dungeon.crawler.GameSystem.TestData.EnemyCombatant;
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.MainGame;
@@ -37,7 +38,7 @@ public class CombatLogic {
     public void advanceCombat(){
         /* this is run every frame and is for actions that require to wait until messages are done
         being read to run */
-        if(!eventScreen.messageQueue.isEmpty()){
+        if(eventScreen.isShowingMessage()){
             return ;
         }
 
@@ -80,17 +81,25 @@ public class CombatLogic {
                 checkWinConditions();
                 break;
             case LOSS:
-                notifyOnLoss();
-                advanceState(CombatPhase.END);
+                advanceState(CombatPhase.END_LOSS);
                 break;
             case VICTORY:
+                rewards();
+                advanceState(CombatPhase.END_VICTORY);
+                break;
+
+            case END_VICTORY:
                 notifyOnVictory();
-                advanceState(CombatPhase.END);
+                break;
+
+            case END_LOSS:
+                notifyOnLoss();
                 break;
 
             case NEW_ROUND:
                 notifyOnCombatMenuFocus();
                 advanceState(CombatPhase.ACTIONSELECT);
+                break;
                 
                 
         }
@@ -145,7 +154,6 @@ public class CombatLogic {
                 if(targetDead){
                     eventScreen.addMessages(new String[] {String.format("%s has died", currentAction.target.getName())});
                 }
-                eventScreen.showNextMessage();
                 advanceState(CombatPhase.ACTION_COMPLETE);
 
                 break;
@@ -211,15 +219,39 @@ public class CombatLogic {
         // check for total enemy wipe
         if(this.game.gameState.currentEnemyRoster.isEmpty()){
             eventScreen.addMessages(new String[] {"All enemies have been vanquished!"});
+
             eventScreen.addMessages(new String[] {
                 String.format("You have gained %s experience points from the fight", String.valueOf(xpGained))
             });
-            eventScreen.showNextMessage();
+
             advanceState(CombatPhase.VICTORY);
             return;
         }
         //else 
         advanceState(CombatPhase.NEW_ROUND);
+    }
+
+    public void rewards(){
+                // TODO: bad
+        this.game.gameState.player.xp = this.game.gameState.player.xp + xpGained;
+
+        Random roll = new Random();
+        int addGold = roll.nextInt(20) + 1;
+        this.game.gameState.gold = this.game.gameState.gold + addGold;
+        eventScreen.addMessages(new String[] {
+                String.format(
+                    "You earn %s gold from this fight",
+                    String.valueOf(addGold)
+                )
+            }
+        );
+
+        int nextLevel = this.game.gameState.player.level + 1;
+        if(game.gameState.player.xp >= LevelTable.getRequiredXp(nextLevel)){
+            ArrayList<String> messages = game.gameState.player.LevelUp(nextLevel);
+            eventScreen.addMessages(messages.toArray(new String[0]));
+        }
+
     }
 
     public void addListener(CombatLogicObserver listener){

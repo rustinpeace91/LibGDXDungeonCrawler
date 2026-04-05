@@ -10,7 +10,8 @@ public enum CombatPhase {
     CHECK_CONDITIONS,
     LOSS,
     VICTORY,
-    END,
+    END_VICTORY,
+    END_LOSS,
     NEW_ROUND
     
 }

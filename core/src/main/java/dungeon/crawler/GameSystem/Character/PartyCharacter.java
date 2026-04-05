@@ -61,6 +61,7 @@ public class PartyCharacter extends Character implements Combatant{
             null,
             (ArrayList<CharacterClass>) null
         );
+        this.charClass = charClass;
     }
 
     public int calculateToHit(){
@@ -122,6 +123,63 @@ public class PartyCharacter extends Character implements Combatant{
 
     public void equipWeapon(Weapon weapon){
         this.equippedWeapon = weapon;
+    }
+
+    public ArrayList<String> LevelUp(int newLevel) {
+        ArrayList<String> messages = new ArrayList();
+        level = newLevel;
+        switch(charClass) {
+            case HERO:
+                Random rand = new Random();
+                int newStr = rand.nextInt(3) + 1;
+                messages.add(
+                    String.format("You are now level %s", String.valueOf(level))
+                );
+                if(newStr > 0){
+                    strength = strength + newStr;
+                    messages.add(
+                        String.format(
+                            "Strength increased by %s",
+                            String.valueOf(newStr)
+                        )
+                    );
+                }
+                int newaGi = rand.nextInt(4) + 1;
+                if(newaGi > 0){
+                    agility = agility + newaGi;
+                    messages.add(
+                        String.format(
+                            "Agility increased by %s",
+                            String.valueOf(newaGi)
+                        )
+                    );
+                }
+                int newInt = rand.nextInt(2);
+                    if(newInt > 0){
+                        intelligence = intelligence + newInt;
+                        messages.add(
+                            String.format(
+                                "Intelligence increased by %s",
+                                String.valueOf(newInt)
+                            )
+                        );
+                    }
+                int newPerc = rand.nextInt(2);
+                if(newPerc > 0){
+                    perception = perception + newPerc;
+                    messages.add(
+                        String.format(
+                            "Perception increased by %s",
+                            String.valueOf(newPerc)
+                        )
+                    );
+                }
+                break;
+            default:
+                break;
+
+        }
+        return messages;
     }
 
     public Weapon getWeapon(){

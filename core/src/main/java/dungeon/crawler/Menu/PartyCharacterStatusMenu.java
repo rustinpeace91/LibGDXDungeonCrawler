@@ -20,8 +20,9 @@ public class PartyCharacterStatusMenu extends StandardStatusMenu {
     public void displayCharacter(){
         setText(
             String.format(
-                "%s\n HP: %s\n MP: %s\n XP: %s",
+                "%s\nLevel: %s\n HP: %s\n MP: %s\n XP: %s",
                 character.name,
+                String.valueOf(character.level),
                 String.valueOf(character.hp),
                 String.valueOf(character.mp),
                 String.valueOf(character.xp)

@@ -12,7 +12,7 @@ public class EnemyFactory {
         return new EnemyCombatant(
             "rat",
             3,
-            5,
+            50,
             1,
             16,
             0,
