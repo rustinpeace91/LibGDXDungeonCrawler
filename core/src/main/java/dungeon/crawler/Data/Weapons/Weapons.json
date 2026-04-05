@@ -1,0 +1,13 @@
+// {
+//   "long_sword": {
+//     "name": "Long Sword",
+//     "toHit": 2,
+//     "damageLow": 1,
+//     "damageHigh": 8,
+//     "flavorTextVerb": "slashes",
+//     "ranged": false,
+//     "condition": "POISONED",
+//     "elemental": "FIRE",
+//     "classRestrictions": ["FIGHTER", "PALADIN"]
+//   }
+// }

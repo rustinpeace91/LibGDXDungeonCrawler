@@ -11,16 +11,28 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Scaling;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import dungeon.crawler.GameSystem.Combat.CombatLogic;
+import dungeon.crawler.GameSystem.GameState.CombatActionState;
+import dungeon.crawler.GameSystem.GameState.CombatPhase;
 import dungeon.crawler.Menu.CombatEventScreen;
 import dungeon.crawler.Menu.CombatMenu;
 import dungeon.crawler.Menu.CombatPartyOrderScreen;
 import dungeon.crawler.Menu.CurrentFighterStatusScreen;
 import dungeon.crawler.Menu.MenuInputHandler;
+import dungeon.crawler.Observers.ActionSelectObserver;
+import dungeon.crawler.Observers.CombatLogicObserver;
+import dungeon.crawler.Observers.CombatScreenObserver;
+import dungeon.crawler.Observers.EventScreenObserver;
 import dungeon.crawler.Observers.MenuInputObserver;
+import dungeon.crawler.Utils.StringUtils;
 
-public class CombatScreen extends ScreenAdapter implements MenuInputObserver {
+public class CombatScreen extends ScreenAdapter 
+    implements MenuInputObserver, 
+    ActionSelectObserver,
+    EventScreenObserver,
+    CombatLogicObserver {
     private MainGame game;
 
     private Stage uiStage;
@@ -29,15 +41,29 @@ public class CombatScreen extends ScreenAdapter implements MenuInputObserver {
     private MenuInputHandler menuInputHanlder;
 
     private SpriteBatch batch;
+    private CombatLogic logicHandler;
+
+    private CombatEventScreen  eventScreen;
+    private CombatMenu combatMenu;
+    private CombatPartyOrderScreen partyScreen;
 
     private Texture backgroundTexture;
+    private CombatScreenObserver combatScreenObserver;
+
+    private float worldWidth;
+    private float worldHeight;
+
+    private Image testRatImage;
+    
     public CombatScreen(
         MainGame game
     ) {
         this.game = game;
-        // 1. Setup Stage and Table
-        this.uiStage = new Stage(new ScreenViewport());
+        this.addListener(game);
 
+        // 1. Setup Stage and Table
+        // this.uiStage = new Stage(new ScreenViewport());
+        this.uiStage = new Stage(new FitViewport(GameConstants.RESOLUTION_WIDTH, GameConstants.RESOLUTION_HEIGHT)); 
         // 2. Load your Skin (ensure path is correct)
         this.skin = new Skin(Gdx.files.internal(GameConstants.MENU_SKIN));
 
@@ -62,11 +88,16 @@ public class CombatScreen extends ScreenAdapter implements MenuInputObserver {
         uiStage.addActor(imageActor);
 
 
-        Texture ratTexture = new Texture(Gdx.files.internal("Sprites/Enemies/testrat.png"));
-        Image testRatImage = new Image(ratTexture );
-        testRatImage.setPosition(250, 100);
-        testRatImage.setScale(0.5f);
+        Texture ratTexture = new Texture(Gdx.files.internal("Sprites/Enemies/testrat2.png"));
+        testRatImage = new Image(ratTexture );
+
+
+        // Position the rat relative to the screen size
+        // Example: 20% from the left, 15% from the bottom
+        testRatImage.setPosition(worldWidth * 0.45f, worldHeight * 0.15f);
+        testRatImage.setScale(0.45f);
         uiStage.addActor(testRatImage);
+
         // 4. Add to Table
         // uiStage.addActor(table);
 
@@ -85,6 +116,9 @@ public class CombatScreen extends ScreenAdapter implements MenuInputObserver {
         // Draws the image at x=100, y=100 with its original size
         batch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()); 
         batch.end();
+
+        advanceCombat();
+
         // Update and Draw the Stage
         uiStage.act(delta);
         uiStage.draw();
@@ -107,71 +141,168 @@ public class CombatScreen extends ScreenAdapter implements MenuInputObserver {
         //input
         InputMultiplexer multiplexer = setUpInput();
         Gdx.input.setInputProcessor(multiplexer);
+
+
+
+        // phase = CombatPhase.INTRO;
+        String enemyName = game.gameState.currentEnemyRoster.get(1).name;
+        String[] introText = new String[] {
+            StringUtils.format("A %s pops up!", enemyName),
+            "prepare to fight"
+        };
+        eventScreen.addMessages(introText);
+        eventScreen.showNextMessage();
+        this.uiStage.setKeyboardFocus(eventScreen);
+        this.logicHandler = new CombatLogic(eventScreen, game);
+        this.logicHandler.addListener(this);
+        this.logicHandler.advanceState(CombatPhase.INTRO);
     }
 
     private void setUpMenu() {
         // this.uiStage = new Stage(new ScreenViewport());
-        CombatMenu menu = new CombatMenu(this.skin);
+        combatMenu = new CombatMenu(this.skin);
 
-
-
-        menu.addScreenChangeObserver(game);
+        combatMenu.addScreenChangeObserver(game);
+        combatMenu.addActionSelectObserver(this);
         // menu.setOrigin(Align.right); 
         // menu.setOrigin(Align.bottom);
         
         // consider making these mwnua  properties
-        float x = Gdx.graphics.getWidth() - menu.getWidth();
+        float x = Gdx.graphics.getWidth() - combatMenu.getWidth();
         float y = 0;
-        menu.setPosition(x, y);
-        this.uiStage.addActor(menu);
+        combatMenu.setPosition(x, y);
+        this.uiStage.addActor(combatMenu);
+        combatMenu = combatMenu;
 
-        CombatEventScreen eventScreen = new CombatEventScreen(this.skin);
-        eventScreen.setText("The Golden Elf lifts up thy sword and strikes at thee" );
+        eventScreen = new CombatEventScreen(this.skin);
+        
         eventScreen.setPosition(
             (uiStage.getWidth() - eventScreen.getWidth()) / 2f, 
             10f
         );
         this.uiStage.addActor(eventScreen);
+        eventScreen.addListener(this);
 
-        CombatPartyOrderScreen partyScreen = new CombatPartyOrderScreen(skin);
+        partyScreen = new CombatPartyOrderScreen(skin);
 
-        partyScreen.setText("FGHT \n HP: 20 \n MP: 0 \n\nWIZR \n HP: 10 \n MP: 10 ");
+        partyScreen.setText(
+            StringUtils.format("PLYR \n HP: %s \n MP: 0", String.valueOf(this.game.gameState.player.hp))
+        );
         partyScreen.setPosition(0, 0);
         this.uiStage.addActor(partyScreen);
 
-        float statusScreenHeight = Math.abs(menu.getHeight() - uiStage.getHeight());
+        float statusScreenHeight = Math.abs(combatMenu.getHeight() - uiStage.getHeight());
         CurrentFighterStatusScreen currentFighterScreen = new CurrentFighterStatusScreen(skin, statusScreenHeight);
-        currentFighterScreen.setText("Edmund\n-poisoned\n-blighted\n-famished\n-in cover\n-blinded");
+        currentFighterScreen.setText(
+            StringUtils.format("%s\n-various\n-ailments\n-will\n-go\n-here", this.game.gameState.player.name)
+        );
         currentFighterScreen.setPosition(
             (uiStage.getWidth() - currentFighterScreen.getWidth()),
-            menu.getHeight()
+            combatMenu.getHeight()
         );
         this.uiStage.addActor(currentFighterScreen);
 
         this.menuInputHanlder = new MenuInputHandler(
             uiStage,
-            menu
+            combatMenu
         );
         this.menuInputHanlder.addListener(this);
-        this.menuInputHanlder.setShowMenu(true);
+        this.menuInputHanlder.setShowMenu(false);
     }
 
     public InputMultiplexer setUpInput() {
         InputMultiplexer multiplexer = new InputMultiplexer();
         // --- Configure the InputMultiplexer ---
+        this.menuInputHanlder.addListener(this);
+        multiplexer.addProcessor(uiStage); 
         multiplexer.addProcessor(menuInputHanlder);
         // 6. Tell LibGDX to use the multiplexer for all input events
         return multiplexer;
     }
 
-    // @Override
-    // public void resize(int width, int height) {
-    //     // This updates the Stage's internal coordinate system to match the window
-    //     uiStage.getViewport().update(width, height, true);
-    // }
+    public void advanceCombat(){
+        if(eventScreen.isShowingMessage()){
+            partyScreen.setText(
+                StringUtils.format("PLYR \n HP: %s \n MP: 0", String.valueOf(this.game.gameState.player.hp))
+            );
+        }
+        logicHandler.advanceCombat();
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        // 'true' centers the camera, which is usually best for menus
+        uiStage.getViewport().update(width, height, false);
+
+        this.worldWidth = uiStage.getViewport().getWorldWidth();
+        this.worldHeight = uiStage.getViewport().getWorldHeight();
+        testRatImage.setPosition(worldWidth * 0.45f, worldHeight * 0.15f);
+
+        combatMenu.setPosition(worldWidth - combatMenu.getWidth(), 0);
+        partyScreen.setPosition(0, 0);
+        partyScreen.setSize(worldWidth * 0.10f, worldHeight);
+        partyScreen.invalidate(); 
+    }
 
     // TODO: untangle this from menuInputHanlder
     @Override
     public void onMenuToggled(boolean value) {}
+
+    @Override
+    public void onActionMenuFocus(){
+        uiStage.setKeyboardFocus(combatMenu);
+        menuInputHanlder.setShowMenu(true);
+    }
+
+    @Override
+    public void onActionSelect(CombatActionState actionState){
+        logicHandler.addAction(1, actionState, 1);
+        // CombatAction newAction = new CombatAction(
+        //     1
+        // )
+        // logicHandler.actionQueue.add(e)
+    }
+
+    @Override
+    public void onActionSelectComplete(){
+        menuInputHanlder.setShowMenu(false);
+        uiStage.setKeyboardFocus(eventScreen);
+    }
+
+    @Override
+    public void onFirstMessageAdded(){
+        // uiStage.setKeyboardFocus(eventScreen);
+        // menuInputHanlder.setShowMenu(false);
+    }
+
+    @Override
+    public void onLastMessageRead(){
+        
+    }
+
+    @Override
+    public void onLoss(){
+        Gdx.app.log("Combat", "Sending signal to game over");
+        combatScreenObserver.onCombatLoss();
+
+    }
+
+    @Override
+    public void onVictory(){
+        Gdx.app.log("Combat", "Sending signal to victory");
+        combatScreenObserver.onCombatVictory();
+
+    }
+
+
+    public void addListener(CombatScreenObserver observer){
+        combatScreenObserver = observer;
+    }
+
+    @Override
+    public void dispose(){
+        uiStage.dispose();
+        // clean up mf
+    }
 
 }
