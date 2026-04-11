@@ -9,7 +9,8 @@ public class GameConstants {
         WALK_OVERWORLD,
         WALK_TOWN,
         COMBAT,
-        INN
+        INN,
+        TEST_SCREEN
     };
 
     // screen
