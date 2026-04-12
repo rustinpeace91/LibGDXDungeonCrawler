@@ -43,7 +43,6 @@ public class MenuTestScreen extends ScreenAdapter  implements MenuInputObserver 
         );
         InputMultiplexer multiplexer = setUpInput();
         Gdx.input.setInputProcessor(multiplexer);
-        menuInputHandler.setShowMenu(true);
 
 
     }

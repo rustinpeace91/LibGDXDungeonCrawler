@@ -11,12 +11,11 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
-import dungeon.crawler.Menu.Toggleable;
 import dungeon.crawler.Observers.MenuInputObserver;
 
 public class TestMenuInputHandler extends InputAdapter{
 public Stage uiStage;
-public BaseLinearMenu menuTable;
+public BaseLinearMenu currentMenuTable;
 public boolean showMenu = false;
 
 public int menuColumns = 0;
@@ -29,10 +28,10 @@ private final List<MenuInputObserver> listeners = new ArrayList<>();
 
     public TestMenuInputHandler(
         Stage uiStage,
-        BaseLinearMenu menuTable
+        BaseLinearMenu currentMenuTable
     ) {
         this.uiStage = uiStage;
-        this.menuTable = menuTable;
+        this.currentMenuTable = currentMenuTable;
     }
 
     public void addListener(MenuInputObserver listener) {
@@ -48,22 +47,26 @@ private final List<MenuInputObserver> listeners = new ArrayList<>();
     }
 
     public void notifyOnMenuToggled(boolean showMenu) {
+        for (MenuInputObserver listener : listeners) {
+            listener.onMenuToggled(showMenu);
+        }
+    }
 
-            for (MenuInputObserver listener : listeners) {
-                listener.onMenuToggled(showMenu);
-            }
+    public boolean showMenu(){
+        if(currentMenuTable != null && currentMenuTable.isVisible()){
+            return true;
+        }
+        return false;
     }
 
     @Override
     public boolean keyDown(int keyCode) {
-        if(keyCode == Input.Keys.E && menuTable instanceof Toggleable) {
-            showMenu = !showMenu;
-            notifyOnMenuToggled(showMenu);
-            reinitializeMenu();
+        if(keyCode == Input.Keys.E && currentMenuTable.isToggleable) {
+            currentMenuTable.resetMenuSelection();
             return true;
         }
 
-        if(showMenu) {
+        if(showMenu()) {
             if(keyCode == Input.Keys.ENTER){
                 Actor focused = uiStage.getKeyboardFocus();
                 if (focused instanceof Button) {
@@ -72,34 +75,12 @@ private final List<MenuInputObserver> listeners = new ArrayList<>();
                 }
             }
             if(keyCode == Input.Keys.DOWN) {
-                int nextRow = menuRowIndex + 1;
-                if(menuTable.buttonList.size() > nextRow) {
-                    menuRowIndex = nextRow;
-                    currentButton = menuTable.buttonList.get(nextRow);
-                    uiStage.setKeyboardFocus(currentButton);
-                }
+                currentMenuTable.advanceMenuSelection(1);
             }
             if(keyCode == Input.Keys.UP) {
-                int nextRow = menuRowIndex -1;
-                if(nextRow >=0) {
-                    menuRowIndex = nextRow;
-                    currentButton = menuTable.buttonList.get(nextRow);
-                    uiStage.setKeyboardFocus(currentButton);
-                }
+                currentMenuTable.advanceMenuSelection(-1);
             }
         }
         return false;
     }
-
-    public void reinitializeMenu(){
-        menuColumnIndex = 0;
-        menuRowIndex = 0;
-        currentButton = this.menuTable.buttonList.get(0);
-        uiStage.setKeyboardFocus(currentButton);
-    }
-    public void setShowMenu(boolean showMenu) {
-        this.showMenu = showMenu;
-        reinitializeMenu();
-    }
-
 }

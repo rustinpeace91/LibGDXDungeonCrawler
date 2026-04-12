@@ -26,16 +26,16 @@ public class BaseLinearMenu extends Table {
 
     protected Array<TextButton> buttonList;
     protected ArrayList<ScreenChangeObserver> screenChangeObservers;
-    protected Stage uiStage;
     protected Skin skin;
+    protected boolean showMenu;
+    protected boolean isToggleable;
 
     public BaseLinearMenu(
         Skin skin,
-        Stage uiStage
+        boolean isToggleable
     ){
         super(skin);
         this.skin = skin;
-        this.uiStage = uiStage;
         Drawable background = skin.getDrawable("default-round"); 
         this.buttonList = new Array<TextButton>();
         this.screenChangeObservers = new ArrayList<ScreenChangeObserver>();
@@ -43,6 +43,14 @@ public class BaseLinearMenu extends Table {
         this.setBackground(skin.newDrawable("default-round", semiTransparentGray));
         this.defaults().pad(10).fillX().minWidth(150); // Set default padding for all cells
     }
+
+    @Override
+    protected void setStage(Stage stage) {
+        super.setStage(stage);
+        
+        this.buttonList = populateButtonList();
+    }
+
 
     public void notifyScreenChange(GameConstants.GAME_SCREEN screen){
         for (ScreenChangeObserver observer : screenChangeObservers) {
@@ -92,14 +100,19 @@ public class BaseLinearMenu extends Table {
 
     }
 
-    // public TextButton returnActiveButton(){
+    public void resetMenuSelection(){
+        getStage().setKeyboardFocus(buttonList.first());
+    }
 
-    //     for(TextButton button: buttonList){
-    //         if(button instanceo(TextButton)getStage().getKeyboardFocus()){
-                
-    //         }
-    //     }
-    // }
+    public void setMenuVisibility(boolean visible){
+        setVisible(visible);
+        if(visible){
+            resetMenuSelection();
+        } else {
+            getStage().setKeyboardFocus(null);
+        }
+    }
+
 
     public void addFocusListeners(){
         // change logic. TODO: move variables to constants/properties
