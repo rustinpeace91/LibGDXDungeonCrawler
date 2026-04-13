@@ -180,10 +180,16 @@ public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
             //     System.out.println("MOOOOOOOOOOO");
             // }
             if (props.containsKey("inn")) {
-                System.out.println("MOOOOOOOOOOO");
                 // 3. Notify your observers (MainGame, etc.)
                 for (ScreenChangeObserver obs : screenObservers) {
                     obs.onScreenChange(GameConstants.GAME_SCREEN.INN);
+                }
+
+            }
+            if (props.containsKey("general_shop")) {
+                // 3. Notify your observers (MainGame, etc.)
+                for (ScreenChangeObserver obs : screenObservers) {
+                    obs.onScreenChange(GameConstants.GAME_SCREEN.TEST_SCREEN);
                 }
 
             }

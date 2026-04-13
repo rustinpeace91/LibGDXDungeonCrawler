@@ -20,19 +20,25 @@ public class TestShopSubMenu extends BaseLinearMenu{
         );
 
 
-        this.addButton("Iron Sword", new ChangeListener() {
+        this.addButton(
+            "Iron Sword",
+            new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Gdx.app.log("Menu", "this is where the shop would open");
-            }
-        });
+            }},
+            "A big iron sword"
+        );
 
-        this.addButton("Iron Shield", new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("Menu", "this is where the shop would open");
-            }
-        });
+        this.addButton("Iron Shield",
+            new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    Gdx.app.log("Menu", "this is where the shop would open");
+                }
+            },
+            "A big wooded shield"
+        );
     
         this.pack();
         this.setPosition(50, Gdx.graphics.getHeight() - this.getHeight() - 50);
@@ -70,8 +76,12 @@ public class TestShopSubMenu extends BaseLinearMenu{
                 public void keyboardFocusChanged(FocusEvent event, Actor actor, boolean focused) {
                     TextButton button = (TextButton) actor;
                     if (focused) {
-                        String text = StringUtils.format("This is the status text for: \n %s", button.getText());
-                        subStatusMenu.setText(text);
+                        if(button.getUserObject() instanceof String){
+                            subStatusMenu.setText((String)button.getUserObject());
+                        } else {
+                            subStatusMenu.setText(StringUtils.format("This is the status text for: \n %s", button.getText()));
+
+                        }
                         subStatusMenu.setVisible(true);
                     } else {
                     }

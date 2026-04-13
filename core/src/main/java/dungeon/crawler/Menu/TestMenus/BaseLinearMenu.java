@@ -20,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.FocusListener.FocusEvent;
 import com.badlogic.gdx.utils.Array;
 
 import dungeon.crawler.GameConstants;
+import dungeon.crawler.AssetManager.Assets;
 import dungeon.crawler.Menu.StandardStatusMenu;
 import dungeon.crawler.Observers.ScreenChangeObserver;
 // TODO: Consider passing the stage in here, then using it to spawn submenus
@@ -66,12 +67,25 @@ public class BaseLinearMenu extends Table {
     public void addScreenChangeObserver(ScreenChangeObserver observer){
         screenChangeObservers.add(observer);
     }
+    public void addButton(
+        String buttonName,
+        ChangeListener listener
+    ){
+        addButton(buttonName, listener, null);
+    }
 
-    public void addButton(String buttonName, ChangeListener listener){
+    public void addButton(
+        String buttonName,
+        ChangeListener listener,
+        Object userObject 
+    ){
         TextButton newButton = new TextButton(buttonName, skin);
 
         this.add(newButton).row();
         newButton.addListener(listener);
+        if(userObject != null){
+            newButton.setUserObject(userObject);
+        }
     }
 
 
@@ -126,9 +140,9 @@ public class BaseLinearMenu extends Table {
         Color focusColor = Color.YELLOW;
         Color defaultColor = Color.WHITE;
         // Arrow button
-        // TODO: MOVE ARROW TO CONSTANT OBJECT TO PREVENT MEMORY LEAK
-        Texture arrowTex = new Texture("ui/arrow.png");
-        Image arrow = new Image(arrowTex);
+
+        Drawable arrowDrawable = skin.getDrawable("menu-selection-arrow");
+        Image arrow = new Image(arrowDrawable); 
         // 1. Declare this once outside the loop to avoid memory churn
         final Vector2 pos = new Vector2();
         arrow.setSize(12, 12); 

@@ -4,9 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import dungeon.crawler.GameConstants;
@@ -20,6 +23,8 @@ public class MenuTestScreen extends ScreenAdapter  implements MenuInputObserver 
     private Stage uiStage;
     private TestMenuInputHandler menuInputHandler;
 
+    private Texture backgroundTexture;
+
     public MenuTestScreen(
         MainGame game
     ){
@@ -27,15 +32,31 @@ public class MenuTestScreen extends ScreenAdapter  implements MenuInputObserver 
         this.game = game;
         this.batch = new SpriteBatch();
 
-    
+        this.backgroundTexture = new Texture(Gdx.files.internal("Misc/storefront.jpg"));
+            // 1. Load the PNG
+        Texture texture = new Texture(Gdx.files.internal("Misc/storefront.jpg"));
+
+        // 2. Wrap it in an Image actor
+        Image imageActor = new Image(texture);
 
 
+
+        // 3. Position and add it
+        // imageActor.setPosition(100, 100);
+        imageActor.setScaling(Scaling.stretch); // This forces it to stretch to the actor's bounds
+
+        // 2. Tell it to fill the entire stage
+        imageActor.setFillParent(true); 
+
+        uiStage.addActor(imageActor);
     }
 
     @Override
     public void show(){
         Skin skin = new Skin(Gdx.files.internal(GameConstants.MENU_SKIN));
-        shopMenu = new TestShopMenu(skin);
+        Texture arrowTexture = new Texture(Gdx.files.internal("ui/arrow.png"));
+        skin.add("menu-selection-arrow", arrowTexture); 
+        shopMenu = new TestShopMenu(skin, game);
         this.uiStage.addActor(shopMenu);
         this.menuInputHandler = new TestMenuInputHandler(
             uiStage,
@@ -43,8 +64,6 @@ public class MenuTestScreen extends ScreenAdapter  implements MenuInputObserver 
         );
         InputMultiplexer multiplexer = setUpInput();
         Gdx.input.setInputProcessor(multiplexer);
-
-
     }
     public InputMultiplexer setUpInput() {
         InputMultiplexer multiplexer = new InputMultiplexer();

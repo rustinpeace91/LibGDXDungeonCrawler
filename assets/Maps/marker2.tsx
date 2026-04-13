@@ -8,4 +8,9 @@
    <property name="store_type" type="int" value="1"/>
   </properties>
  </tile>
+ <tile id="1">
+  <properties>
+   <property name="general_shop" type="int" value="1"/>
+  </properties>
+ </tile>
 </tileset>

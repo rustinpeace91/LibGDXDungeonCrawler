@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
+import dungeon.crawler.AssetManager.Assets;
 import dungeon.crawler.Data.Maps.MapRegistry;
 import dungeon.crawler.Data.Maps.ScreenTransitionProperties;
 import dungeon.crawler.GameSystem.GameState.GameState;
@@ -18,6 +19,8 @@ public class MainGame extends Game implements ScreenChangeObserver,
     CombatScreenObserver {
     SpriteBatch spriteBatch;
     public GameState gameState;
+    public Assets assets;
+
     @Override
     public void create() {
         gameState = new GameState();
@@ -25,6 +28,11 @@ public class MainGame extends Game implements ScreenChangeObserver,
         gameState.updateWorldMap(mapFile);
         spriteBatch = new SpriteBatch();
         gameState.updateScreenID(1);
+
+        assets = new Assets();
+        assets.load();
+        assets.finishLoading();
+
 
         setScreen(new WorldScreenRefactor(
             this,
@@ -123,5 +131,9 @@ public class MainGame extends Game implements ScreenChangeObserver,
         ));
     }
 
-
+    @Override
+    public void dispose(){
+        assets.dispose();
+        // clean up mf
+    }
 }
