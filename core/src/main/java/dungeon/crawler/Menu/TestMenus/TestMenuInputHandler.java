@@ -59,8 +59,23 @@ private final List<MenuInputObserver> listeners = new ArrayList<>();
         return false;
     }
 
+    private void updateCurrentMenuFromFocus() {
+        Actor focused = uiStage.getKeyboardFocus();
+        if (focused != null) {
+            Actor parent = focused;
+            while (parent != null) {
+                if (parent instanceof BaseLinearMenu) {
+                    this.currentMenuTable = (BaseLinearMenu) parent;
+                    return; 
+                }
+                parent = parent.getParent();
+            }
+        }
+    }
+
     @Override
     public boolean keyDown(int keyCode) {
+        updateCurrentMenuFromFocus();
         if(keyCode == Input.Keys.E && currentMenuTable.isToggleable) {
             currentMenuTable.resetMenuSelection();
             return true;
@@ -80,7 +95,13 @@ private final List<MenuInputObserver> listeners = new ArrayList<>();
             if(keyCode == Input.Keys.UP) {
                 currentMenuTable.advanceMenuSelection(-1);
             }
+            if(keyCode == Input.Keys.BACKSPACE){
+                currentMenuTable.returnToParentMenu();
+            }
         }
         return false;
+    }
+    public void setCurrentMenuTable(BaseLinearMenu currentMenuTable) {
+        this.currentMenuTable = currentMenuTable;
     }
 }

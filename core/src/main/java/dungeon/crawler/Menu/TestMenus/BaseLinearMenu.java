@@ -20,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.FocusListener.FocusEvent;
 import com.badlogic.gdx.utils.Array;
 
 import dungeon.crawler.GameConstants;
+import dungeon.crawler.Menu.StandardStatusMenu;
 import dungeon.crawler.Observers.ScreenChangeObserver;
 // TODO: Consider passing the stage in here, then using it to spawn submenus
 public class BaseLinearMenu extends Table {
@@ -29,6 +30,10 @@ public class BaseLinearMenu extends Table {
     protected Skin skin;
     protected boolean showMenu;
     protected boolean isToggleable;
+    
+    protected BaseLinearMenu subMenu;
+    protected BaseLinearMenu parentMenu;
+    protected StandardStatusMenu subStatusMenu;
 
     public BaseLinearMenu(
         Skin skin,
@@ -66,8 +71,9 @@ public class BaseLinearMenu extends Table {
         TextButton newButton = new TextButton(buttonName, skin);
 
         this.add(newButton).row();
-        this.addListener(listener);
+        newButton.addListener(listener);
     }
+
 
     /* call after all button logic is added */
     public Array<TextButton> populateButtonList(){
@@ -107,6 +113,7 @@ public class BaseLinearMenu extends Table {
     public void setMenuVisibility(boolean visible){
         setVisible(visible);
         if(visible){
+            this.buttonList = populateButtonList();
             resetMenuSelection();
         } else {
             getStage().setKeyboardFocus(null);
@@ -119,6 +126,7 @@ public class BaseLinearMenu extends Table {
         Color focusColor = Color.YELLOW;
         Color defaultColor = Color.WHITE;
         // Arrow button
+        // TODO: MOVE ARROW TO CONSTANT OBJECT TO PREVENT MEMORY LEAK
         Texture arrowTex = new Texture("ui/arrow.png");
         Image arrow = new Image(arrowTex);
         // 1. Declare this once outside the loop to avoid memory churn
@@ -157,7 +165,39 @@ public class BaseLinearMenu extends Table {
         }
     }
     public void resize(int width, int height) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'resize'");
     }
+
+    public void openSubMenu(BaseLinearMenu nextMenu){
+        this.setVisible(false);
+        nextMenu.setParentMenu(this);
+        this.getStage().addActor(nextMenu);
+        nextMenu.setMenuVisibility(true); 
+    }
+
+    public void returnToParentMenu(){
+        if (parentMenu != null) {
+            this.setVisible(false);
+            parentMenu.setMenuVisibility(true);
+            this.remove();
+            if(this.subStatusMenu != null){
+                this.subStatusMenu.setVisible(false);
+                this.subStatusMenu.remove();
+            }
+        }
+    }
+
+
+    public void setSubMenu(BaseLinearMenu subMenu) {
+        this.subMenu = subMenu;
+    }
+
+    public void setParentMenu(BaseLinearMenu parentMenu) {
+        this.parentMenu = parentMenu;
+    }
+
+    public void setSubStatusMenu(StandardStatusMenu subStatusMenu) {
+        this.subStatusMenu = subStatusMenu;
+    }
+
 }

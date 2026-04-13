@@ -1,10 +1,12 @@
 package dungeon.crawler.Menu.TestMenus;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 public class TestShopMenu extends BaseLinearMenu{
     public TestShopMenu(
@@ -17,12 +19,15 @@ public class TestShopMenu extends BaseLinearMenu{
         TextButton buyButton = new TextButton("Buy", skin);
         TextButton sellButton = new TextButton("Sell", skin);
 
-        this.buttonList.add(buyButton);
-        this.buttonList.add(sellButton);
+        this.addButton("Buy", new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
 
-
-        this.add(buyButton).row();
-        this.add(sellButton).row();
+                BaseLinearMenu nextMenu = new TestShopSubMenu(skin);
+                setSubMenu(nextMenu);
+                openSubMenu(nextMenu);
+            }
+        });
 
         SelectBox<String> selectBox = new SelectBox<>(skin);
         String[] options = {"Level 1", "Level 2", "Level 3", "Settings"};
@@ -41,6 +46,12 @@ public class TestShopMenu extends BaseLinearMenu{
         if (stage != null) {
             setMenuVisibility(true); 
         }
+    }
+
+    @Override
+    public void openSubMenu(BaseLinearMenu nextMenu){
+        super.openSubMenu(nextMenu);
+        this.setVisible(true);
     }
 
     
