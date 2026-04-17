@@ -20,7 +20,7 @@ import dungeon.crawler.Menu.CombatEventScreen;
 import dungeon.crawler.Menu.CombatMenu;
 import dungeon.crawler.Menu.CombatPartyOrderScreen;
 import dungeon.crawler.Menu.CurrentFighterStatusScreen;
-import dungeon.crawler.Menu.OldMenuInputHandler;
+import dungeon.crawler.Menu.MenuInputHandler;
 import dungeon.crawler.Observers.ActionSelectObserver;
 import dungeon.crawler.Observers.CombatLogicObserver;
 import dungeon.crawler.Observers.CombatScreenObserver;
@@ -38,7 +38,7 @@ public class CombatScreen extends ScreenAdapter
     private Stage uiStage;
     private Skin skin;
 
-    private OldMenuInputHandler menuInputHanlder;
+    private MenuInputHandler menuInputHanlder;
 
     private SpriteBatch batch;
     private CombatLogic logicHandler;
@@ -160,6 +160,9 @@ public class CombatScreen extends ScreenAdapter
 
     private void setUpMenu() {
         // this.uiStage = new Stage(new ScreenViewport());
+        Texture arrowTexture = new Texture(Gdx.files.internal("ui/arrow.png"));
+
+        skin.add("menu-selection-arrow", arrowTexture); 
         combatMenu = new CombatMenu(this.skin);
 
         combatMenu.addScreenChangeObserver(game);
@@ -172,7 +175,6 @@ public class CombatScreen extends ScreenAdapter
         float y = 0;
         combatMenu.setPosition(x, y);
         this.uiStage.addActor(combatMenu);
-        combatMenu = combatMenu;
 
         eventScreen = new CombatEventScreen(this.skin);
         
@@ -202,12 +204,15 @@ public class CombatScreen extends ScreenAdapter
         );
         this.uiStage.addActor(currentFighterScreen);
 
-        this.menuInputHanlder = new OldMenuInputHandler(
+        this.menuInputHanlder = new MenuInputHandler(
             uiStage,
             combatMenu
         );
         this.menuInputHanlder.addListener(this);
-        this.menuInputHanlder.setShowMenu(false);
+        combatMenu.setActive(false);
+        menuInputHanlder.setHandlerDisabled(true);
+
+
     }
 
     public InputMultiplexer setUpInput() {
@@ -251,7 +256,8 @@ public class CombatScreen extends ScreenAdapter
     @Override
     public void onActionMenuFocus(){
         uiStage.setKeyboardFocus(combatMenu);
-        menuInputHanlder.setShowMenu(true);
+        combatMenu.setActive(true);
+        menuInputHanlder.setHandlerDisabled(false);
     }
 
     @Override
@@ -265,7 +271,9 @@ public class CombatScreen extends ScreenAdapter
 
     @Override
     public void onActionSelectComplete(){
-        menuInputHanlder.setShowMenu(false);
+        combatMenu.setActive(false);
+        menuInputHanlder.setHandlerDisabled(true);
+
         uiStage.setKeyboardFocus(eventScreen);
     }
 

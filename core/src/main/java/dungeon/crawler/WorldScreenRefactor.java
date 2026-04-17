@@ -85,7 +85,7 @@ PlayerPositionObserver {
         this.spriteBatch = spriteBatch;
         this.map = new TmxMapLoader().load(mapFile);
         this.renderer = new OrthogonalTiledMapRenderer(map);
-        this.overWorld = screen.equals(GameConstants.GAME_SCREEN.WALK_OVERWORLD) ? true : false;
+        this.overWorld = screen.equals(GameConstants.GAME_SCREEN.WALK_OVERWORLD);
         setUpCamera();
         float screenCenterY = camera.viewportHeight / 2f;
         float screenCenterX = camera.viewportWidth / 2f;

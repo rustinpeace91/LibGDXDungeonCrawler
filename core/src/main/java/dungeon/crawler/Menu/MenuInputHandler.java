@@ -23,6 +23,10 @@ public int menuRows = 0;
 public int menuColumnIndex = 0;
 public int menuRowIndex = 0;
 public TextButton currentButton;
+
+// if another input handler is used but the current menu is visible
+private boolean handlerDisabled;
+
 private final List<MenuInputObserver> listeners = new ArrayList<>();
 
     public MenuInputHandler(
@@ -31,6 +35,7 @@ private final List<MenuInputObserver> listeners = new ArrayList<>();
     ) {
         this.uiStage = uiStage;
         this.currentMenuTable = currentMenuTable;
+        handlerDisabled = false;
     }
 
 
@@ -50,6 +55,9 @@ private final List<MenuInputObserver> listeners = new ArrayList<>();
 
     @Override
     public boolean keyDown(int keyCode) {
+        if(handlerDisabled) {
+            return true;
+        }
         updateCurrentMenuFromFocus();
         if(keyCode == Input.Keys.E && currentMenuTable.isToggleable) {
             boolean currentVisibility = currentMenuTable.isVisible();
@@ -58,7 +66,7 @@ private final List<MenuInputObserver> listeners = new ArrayList<>();
             return true;
         }
 
-        if(showMenu()) {
+        if(menuFocusAvailable()) {
             if(keyCode == Input.Keys.ENTER){
                 Actor focused = uiStage.getKeyboardFocus();
                 if (focused instanceof Button) {
@@ -82,8 +90,11 @@ private final List<MenuInputObserver> listeners = new ArrayList<>();
         this.currentMenuTable = currentMenuTable;
     }
 
-    public boolean showMenu(){
-        if(currentMenuTable != null && currentMenuTable.isVisible()){
+    public boolean menuFocusAvailable(){
+        if(
+            currentMenuTable != null &&
+            currentMenuTable.isVisible()
+        ){
             return true;
         }
         return false;
@@ -105,6 +116,10 @@ private final List<MenuInputObserver> listeners = new ArrayList<>();
         if(listener != null) {
             listeners.remove(listener);
         }
+    }
+    
+    public void setHandlerDisabled(boolean value){
+        handlerDisabled = value;
     }
 
 

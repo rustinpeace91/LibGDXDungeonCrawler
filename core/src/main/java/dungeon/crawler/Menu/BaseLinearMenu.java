@@ -101,7 +101,7 @@ public class BaseLinearMenu extends Table {
 
     public void advanceMenuSelection(int step){
         Actor focusedItem = getStage().getKeyboardFocus();
-        
+
         // int activeItem
         int currentIndex = buttonList.indexOf((TextButton)focusedItem, true);
         if(currentIndex == -1){
