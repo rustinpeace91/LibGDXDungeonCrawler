@@ -1,35 +1,65 @@
 package dungeon.crawler.Menu;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import dungeon.crawler.GameConstants;
+import dungeon.crawler.Observers.MenuInputObserver;
 import dungeon.crawler.Observers.ScreenChangeObserver;
 
-public class OverworldMenu extends BaseMenu implements Toggleable {
+public class OverworldMenu extends BaseLinearMenu implements Toggleable {
+    private final List<MenuInputObserver> listeners = new ArrayList<>();
 
     public OverworldMenu (
         Skin skin
     ) {
-        super(skin);
+        super(
+            skin
+        );
+        setToggleable(true);
     // TODO: Make into a for loop?
-        TextButton inventoryButton = new TextButton("inventory", skin);
-        TextButton statusButton = new TextButton("Status", skin);
-        TextButton partyButton = new TextButton("Party", skin);
-        TextButton searchButton = new TextButton("Options", skin);
-        // BAD! make a fucking for loop ffs!
-        this.buttonList.add(inventoryButton);
-        this.buttonList.add(statusButton);
-        this.buttonList.add(partyButton);
-        this.buttonList.add(searchButton);
+        // TextButton inventoryButton = new TextButton("inventory", skin);
+        // TextButton statusButton = new TextButton("Status", skin);
+        // TextButton partyButton = new TextButton("Party", skin);
+        // TextButton searchButton = new TextButton("Options", skin);
+        // // BAD! make a fucking for loop ffs!
+        // this.buttonList.add(inventoryButton);
+        // this.buttonList.add(statusButton);
+        // this.buttonList.add(partyButton);
+        // this.buttonList.add(searchButton);
 
 
         
-        this.add(inventoryButton).row();
-        this.add(statusButton).row();
+        // this.add(inventoryButton).row();
+        // this.add(statusButton).row();
         
-        this.add(partyButton).row();
-        this.add(searchButton).row();
+        // this.add(partyButton).row();
+        // this.add(searchButton).row();
+        this.addButton("Inventory", new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor){
+
+            }
+        });
+
+        this.addButton("Status", new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor){
+                
+            }
+        });
+
+        this.addButton("Options", new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor){
+                
+            }
+        });
         
         this.pack();
         this.addFocusListeners();
@@ -51,6 +81,12 @@ public class OverworldMenu extends BaseMenu implements Toggleable {
     // }
 
     @Override
+    protected void setStage(Stage stage) {
+        super.setStage(stage);
+        setMenuVisibility(false);
+    }
+
+    @Override
     public void notifyScreenChange(GameConstants.GAME_SCREEN screen){
             for (ScreenChangeObserver observer : screenChangeObservers) {
                 observer.onScreenChange(screen);
@@ -61,4 +97,23 @@ public class OverworldMenu extends BaseMenu implements Toggleable {
     public void addScreenChangeObserver(ScreenChangeObserver observer){
         screenChangeObservers.add(observer);
     }
+
+    public void addListener(MenuInputObserver listener) {
+        if(listener != null) {
+            listeners.add(listener);
+        }
+    }
+
+    public void removeListener(MenuInputObserver listener) {
+        if(listener != null) {
+            listeners.remove(listener);
+        }
+    }
+
+    public void notifyOnMenuToggled(boolean showMenu) {
+        for (MenuInputObserver listener : listeners) {
+            listener.onMenuToggled(showMenu);
+        }
+    }
+
 }

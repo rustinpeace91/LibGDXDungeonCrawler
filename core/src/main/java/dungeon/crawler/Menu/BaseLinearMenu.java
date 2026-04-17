@@ -1,4 +1,4 @@
-package dungeon.crawler.Menu.TestMenus;
+package dungeon.crawler.Menu;
 
 import java.util.ArrayList;
 
@@ -21,7 +21,6 @@ import com.badlogic.gdx.utils.Array;
 
 import dungeon.crawler.GameConstants;
 import dungeon.crawler.AssetManager.Assets;
-import dungeon.crawler.Menu.StandardStatusMenu;
 import dungeon.crawler.Observers.ScreenChangeObserver;
 // TODO: Consider passing the stage in here, then using it to spawn submenus
 public class BaseLinearMenu extends Table {
@@ -30,15 +29,14 @@ public class BaseLinearMenu extends Table {
     protected ArrayList<ScreenChangeObserver> screenChangeObservers;
     protected Skin skin;
     protected boolean showMenu;
-    protected boolean isToggleable;
+    public boolean isToggleable;
     
     protected BaseLinearMenu subMenu;
     protected BaseLinearMenu parentMenu;
     protected StandardStatusMenu subStatusMenu;
 
     public BaseLinearMenu(
-        Skin skin,
-        boolean isToggleable
+        Skin skin
     ){
         super(skin);
         this.skin = skin;
@@ -212,6 +210,10 @@ public class BaseLinearMenu extends Table {
 
     public void setSubStatusMenu(StandardStatusMenu subStatusMenu) {
         this.subStatusMenu = subStatusMenu;
+    }
+
+    public void setToggleable(boolean toggle){
+        isToggleable = toggle;
     }
 
 }

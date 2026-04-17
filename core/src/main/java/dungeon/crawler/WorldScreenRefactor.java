@@ -9,6 +9,7 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -21,10 +22,10 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-import dungeon.crawler.Menu.MenuInputHandler;
 import dungeon.crawler.Menu.OverworldMenu;
 import dungeon.crawler.Menu.PartyCharacterStatusMenu;
 import dungeon.crawler.Menu.StandardStatusMenu;
+import dungeon.crawler.Menu.MenuInputHandler;
 import dungeon.crawler.Observers.MenuInputObserver;
 import dungeon.crawler.Observers.PlayerPositionObserver;
 import dungeon.crawler.Observers.ScreenChangeObserver;
@@ -120,6 +121,9 @@ PlayerPositionObserver {
         playerPosition.addObserver(characterSprite);
         playerPosition.addScreenChangeListener(game);
         this.skin = new Skin(Gdx.files.internal(GameConstants.MENU_SKIN));
+        // TODO: make this a feature of the skin
+        Texture arrowTexture = new Texture(Gdx.files.internal("ui/arrow.png"));
+        skin.add("menu-selection-arrow", arrowTexture); 
         setUpMenu();
         //input
         InputMultiplexer multiplexer = setUpInput();
@@ -134,7 +138,7 @@ PlayerPositionObserver {
         // set up camera
         this.camera = new OrthographicCamera();
         camera.setToOrtho(false, GameConstants.RESOLUTION_WIDTH, GameConstants.RESOLUTION_HEIGHT);
-        camera.zoom=0.35f;
+        camera.zoom=0.25f;
         camera.update();
     }
 
@@ -150,7 +154,7 @@ PlayerPositionObserver {
             uiStage,
             menu
         );
-        this.menuInputHanlder.addListener(this);
+        menuInputHanlder.addListener(this);
 
         statusMenu = new PartyCharacterStatusMenu(skin, this.game.gameState.player);
         x = Gdx.graphics.getWidth() - statusMenu.getWidth() -20 ;
@@ -241,7 +245,7 @@ PlayerPositionObserver {
         skin.dispose();
     }
 
-
+    @Override
     public void onMenuToggled(boolean value) {
         menuVisible = value;
     }

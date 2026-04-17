@@ -20,7 +20,7 @@ import dungeon.crawler.Menu.CombatEventScreen;
 import dungeon.crawler.Menu.CombatMenu;
 import dungeon.crawler.Menu.CombatPartyOrderScreen;
 import dungeon.crawler.Menu.CurrentFighterStatusScreen;
-import dungeon.crawler.Menu.MenuInputHandler;
+import dungeon.crawler.Menu.OldMenuInputHandler;
 import dungeon.crawler.Observers.ActionSelectObserver;
 import dungeon.crawler.Observers.CombatLogicObserver;
 import dungeon.crawler.Observers.CombatScreenObserver;
@@ -38,7 +38,7 @@ public class CombatScreen extends ScreenAdapter
     private Stage uiStage;
     private Skin skin;
 
-    private MenuInputHandler menuInputHanlder;
+    private OldMenuInputHandler menuInputHanlder;
 
     private SpriteBatch batch;
     private CombatLogic logicHandler;
@@ -69,9 +69,9 @@ public class CombatScreen extends ScreenAdapter
 
 
         this.batch = new SpriteBatch();
-        this.backgroundTexture = new Texture(Gdx.files.internal("libgdungeonPOC.png"));
+        this.backgroundTexture = new Texture(Gdx.files.internal("libgfieldPOC.png"));
             // 1. Load the PNG
-        Texture texture = new Texture(Gdx.files.internal("libgdungeonPOC.png"));
+        Texture texture = new Texture(Gdx.files.internal("libgfieldPOC.png"));
 
         // 2. Wrap it in an Image actor
         Image imageActor = new Image(texture);
@@ -202,7 +202,7 @@ public class CombatScreen extends ScreenAdapter
         );
         this.uiStage.addActor(currentFighterScreen);
 
-        this.menuInputHanlder = new MenuInputHandler(
+        this.menuInputHanlder = new OldMenuInputHandler(
             uiStage,
             combatMenu
         );

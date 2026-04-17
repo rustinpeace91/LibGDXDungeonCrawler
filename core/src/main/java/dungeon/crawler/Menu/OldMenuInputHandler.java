@@ -1,4 +1,4 @@
-package dungeon.crawler.Menu.TestMenus;
+package dungeon.crawler.Menu;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,9 +13,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
 import dungeon.crawler.Observers.MenuInputObserver;
 
-public class TestMenuInputHandler extends InputAdapter{
+public class OldMenuInputHandler extends InputAdapter{
 public Stage uiStage;
-public BaseLinearMenu currentMenuTable;
+public BaseMenu menuTable;
 public boolean showMenu = false;
 
 public int menuColumns = 0;
@@ -26,12 +26,12 @@ public TextButton currentButton;
 
 private final List<MenuInputObserver> listeners = new ArrayList<>();
 
-    public TestMenuInputHandler(
+    public OldMenuInputHandler(
         Stage uiStage,
-        BaseLinearMenu currentMenuTable
+        BaseMenu menuTable
     ) {
         this.uiStage = uiStage;
-        this.currentMenuTable = currentMenuTable;
+        this.menuTable = menuTable;
     }
 
     public void addListener(MenuInputObserver listener) {
@@ -47,41 +47,22 @@ private final List<MenuInputObserver> listeners = new ArrayList<>();
     }
 
     public void notifyOnMenuToggled(boolean showMenu) {
-        for (MenuInputObserver listener : listeners) {
-            listener.onMenuToggled(showMenu);
-        }
-    }
 
-    public boolean showMenu(){
-        if(currentMenuTable != null && currentMenuTable.isVisible()){
-            return true;
-        }
-        return false;
-    }
-
-    private void updateCurrentMenuFromFocus() {
-        Actor focused = uiStage.getKeyboardFocus();
-        if (focused != null) {
-            Actor parent = focused;
-            while (parent != null) {
-                if (parent instanceof BaseLinearMenu) {
-                    this.currentMenuTable = (BaseLinearMenu) parent;
-                    return; 
-                }
-                parent = parent.getParent();
+            for (MenuInputObserver listener : listeners) {
+                listener.onMenuToggled(showMenu);
             }
-        }
     }
 
     @Override
     public boolean keyDown(int keyCode) {
-        updateCurrentMenuFromFocus();
-        if(keyCode == Input.Keys.E && currentMenuTable.isToggleable) {
-            currentMenuTable.resetMenuSelection();
+        if(keyCode == Input.Keys.E && menuTable instanceof Toggleable) {
+            showMenu = !showMenu;
+            notifyOnMenuToggled(showMenu);
+            reinitializeMenu();
             return true;
         }
 
-        if(showMenu()) {
+        if(showMenu) {
             if(keyCode == Input.Keys.ENTER){
                 Actor focused = uiStage.getKeyboardFocus();
                 if (focused instanceof Button) {
@@ -90,18 +71,34 @@ private final List<MenuInputObserver> listeners = new ArrayList<>();
                 }
             }
             if(keyCode == Input.Keys.DOWN) {
-                currentMenuTable.advanceMenuSelection(1);
+                int nextRow = menuRowIndex + 1;
+                if(menuTable.buttonList.size() > nextRow) {
+                    menuRowIndex = nextRow;
+                    currentButton = menuTable.buttonList.get(nextRow);
+                    uiStage.setKeyboardFocus(currentButton);
+                }
             }
             if(keyCode == Input.Keys.UP) {
-                currentMenuTable.advanceMenuSelection(-1);
-            }
-            if(keyCode == Input.Keys.BACKSPACE){
-                currentMenuTable.returnToParentMenu();
+                int nextRow = menuRowIndex -1;
+                if(nextRow >=0) {
+                    menuRowIndex = nextRow;
+                    currentButton = menuTable.buttonList.get(nextRow);
+                    uiStage.setKeyboardFocus(currentButton);
+                }
             }
         }
         return false;
     }
-    public void setCurrentMenuTable(BaseLinearMenu currentMenuTable) {
-        this.currentMenuTable = currentMenuTable;
+
+    public void reinitializeMenu(){
+        menuColumnIndex = 0;
+        menuRowIndex = 0;
+        currentButton = this.menuTable.buttonList.get(0);
+        uiStage.setKeyboardFocus(currentButton);
     }
+    public void setShowMenu(boolean showMenu) {
+        this.showMenu = showMenu;
+        reinitializeMenu();
+    }
+
 }

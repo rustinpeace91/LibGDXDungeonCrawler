@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import dungeon.crawler.GameConstants;
 import dungeon.crawler.MainGame;
+import dungeon.crawler.Menu.MenuInputHandler;
 import dungeon.crawler.Observers.MenuInputObserver;
 
 public class MenuTestScreen extends ScreenAdapter  implements MenuInputObserver {
@@ -21,7 +22,7 @@ public class MenuTestScreen extends ScreenAdapter  implements MenuInputObserver 
     private TestShopMenu shopMenu;
     private SpriteBatch batch;
     private Stage uiStage;
-    private TestMenuInputHandler menuInputHandler;
+    private MenuInputHandler menuInputHandler;
 
     private Texture backgroundTexture;
 
@@ -58,7 +59,7 @@ public class MenuTestScreen extends ScreenAdapter  implements MenuInputObserver 
         skin.add("menu-selection-arrow", arrowTexture); 
         shopMenu = new TestShopMenu(skin, game);
         this.uiStage.addActor(shopMenu);
-        this.menuInputHandler = new TestMenuInputHandler(
+        this.menuInputHandler = new MenuInputHandler(
             uiStage,
             shopMenu
         );

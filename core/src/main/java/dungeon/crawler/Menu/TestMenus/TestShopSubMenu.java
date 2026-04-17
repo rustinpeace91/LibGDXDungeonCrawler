@@ -9,14 +9,14 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener.FocusEvent;
 
+import dungeon.crawler.Menu.BaseLinearMenu;
 import dungeon.crawler.Menu.StandardStatusMenu;
 import dungeon.crawler.Utils.StringUtils;
 
 public class TestShopSubMenu extends BaseLinearMenu{
     public TestShopSubMenu(Skin skin){
         super(
-            skin,
-            false
+            skin
         );
 
 
