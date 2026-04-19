@@ -24,7 +24,7 @@ public class MainGame extends Game implements ScreenChangeObserver,
     @Override
     public void create() {
         gameState = new GameState();
-        String mapFile = "Maps/testmap.tmx";
+        String mapFile = GameConstants.TEST_MAP;
         gameState.updateWorldMap(mapFile);
         spriteBatch = new SpriteBatch();
         gameState.updateScreenID(1);

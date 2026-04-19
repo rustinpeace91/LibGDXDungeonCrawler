@@ -151,7 +151,6 @@ public class CombatScreen extends ScreenAdapter
             "prepare to fight"
         };
         eventScreen.addMessages(introText);
-        eventScreen.showNextMessage();
         this.uiStage.setKeyboardFocus(eventScreen);
         this.logicHandler = new CombatLogic(eventScreen, game);
         this.logicHandler.addListener(this);

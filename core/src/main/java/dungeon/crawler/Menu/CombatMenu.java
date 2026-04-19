@@ -32,12 +32,33 @@ private final List<ActionSelectObserver> actionSelectObservers = new ArrayList<>
         // this.buttonList.add(inventoryButton);
         // this.buttonList.add(runButton);
 
-        this.addButton("Fight", new ChangeListener() {
+        this.addButton("Attack", new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor){
                 // TODO: remove hard code
                 int combatantId = 1;
                 notifyActionSelect(combatantId, CombatActionState.ATTACK);
+            }
+        });
+
+        this.addButton("Action", new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor){
+                Gdx.app.log("Fight", "fuuuck u");
+            }
+        });
+
+        this.addButton("Magic", new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor){
+                Gdx.app.log("Fight", "fuuuck u");
+            }
+        });
+
+        this.addButton("Inventory", new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor){
+                Gdx.app.log("Fight", "fuuuck u");
             }
         });
 
