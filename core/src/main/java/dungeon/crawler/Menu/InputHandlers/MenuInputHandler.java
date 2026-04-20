@@ -1,4 +1,4 @@
-package dungeon.crawler.Menu;
+package dungeon.crawler.Menu.InputHandlers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
+import dungeon.crawler.Menu.BaseLinearMenu;
 import dungeon.crawler.Observers.MenuInputObserver;
 
 public class MenuInputHandler extends InputAdapter{
@@ -46,7 +47,7 @@ private final List<MenuInputObserver> listeners = new ArrayList<>();
             while (parent != null) {
                 if (parent instanceof BaseLinearMenu) {
                     this.currentMenuTable = (BaseLinearMenu) parent;
-                    return; 
+                    return;
                 }
                 parent = parent.getParent();
             }
@@ -117,7 +118,7 @@ private final List<MenuInputObserver> listeners = new ArrayList<>();
             listeners.remove(listener);
         }
     }
-    
+
     public void setHandlerDisabled(boolean value){
         handlerDisabled = value;
     }

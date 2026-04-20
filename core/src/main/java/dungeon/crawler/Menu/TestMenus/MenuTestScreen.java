@@ -14,7 +14,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import dungeon.crawler.GameConstants;
 import dungeon.crawler.MainGame;
-import dungeon.crawler.Menu.MenuInputHandler;
+import dungeon.crawler.Menu.InputHandlers.MenuInputHandler;
 import dungeon.crawler.Observers.MenuInputObserver;
 
 public class MenuTestScreen extends ScreenAdapter  implements MenuInputObserver {
@@ -29,7 +29,7 @@ public class MenuTestScreen extends ScreenAdapter  implements MenuInputObserver 
     public MenuTestScreen(
         MainGame game
     ){
-        this.uiStage = new Stage(new FitViewport(GameConstants.RESOLUTION_WIDTH, GameConstants.RESOLUTION_HEIGHT)); 
+        this.uiStage = new Stage(new FitViewport(GameConstants.RESOLUTION_WIDTH, GameConstants.RESOLUTION_HEIGHT));
         this.game = game;
         this.batch = new SpriteBatch();
 
@@ -47,7 +47,7 @@ public class MenuTestScreen extends ScreenAdapter  implements MenuInputObserver 
         imageActor.setScaling(Scaling.stretch); // This forces it to stretch to the actor's bounds
 
         // 2. Tell it to fill the entire stage
-        imageActor.setFillParent(true); 
+        imageActor.setFillParent(true);
 
         uiStage.addActor(imageActor);
     }
@@ -56,7 +56,7 @@ public class MenuTestScreen extends ScreenAdapter  implements MenuInputObserver 
     public void show(){
         Skin skin = new Skin(Gdx.files.internal(GameConstants.MENU_SKIN));
         Texture arrowTexture = new Texture(Gdx.files.internal("ui/arrow.png"));
-        skin.add("menu-selection-arrow", arrowTexture); 
+        skin.add("menu-selection-arrow", arrowTexture);
         shopMenu = new TestShopMenu(skin, game);
         this.uiStage.addActor(shopMenu);
         this.menuInputHandler = new MenuInputHandler(
@@ -72,7 +72,7 @@ public class MenuTestScreen extends ScreenAdapter  implements MenuInputObserver 
         this.menuInputHandler.addListener(this);
 
         multiplexer.addProcessor(menuInputHandler);
-        multiplexer.addProcessor(uiStage); 
+        multiplexer.addProcessor(uiStage);
         // 6. Tell LibGDX to use the multiplexer for all input events
         return multiplexer;
     }
@@ -85,7 +85,7 @@ public class MenuTestScreen extends ScreenAdapter  implements MenuInputObserver 
         // 2. Draw directly to the screen (Manual Layer)
         batch.begin();
         // Draws the image at x=100, y=100 with its original size
-        // batch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()); 
+        // batch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         batch.end();
 
 

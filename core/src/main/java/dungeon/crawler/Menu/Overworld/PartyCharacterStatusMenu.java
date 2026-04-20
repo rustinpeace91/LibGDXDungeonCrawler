@@ -1,8 +1,9 @@
-package dungeon.crawler.Menu;
+package dungeon.crawler.Menu.Overworld;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
+import dungeon.crawler.Menu.StandardStatusMenu;
 import dungeon.crawler.Utils.StringUtils;
 
 public class PartyCharacterStatusMenu extends StandardStatusMenu {
@@ -38,5 +39,14 @@ public class PartyCharacterStatusMenu extends StandardStatusMenu {
             )
         );
         this.setSize(200f, 300f);
+    }
+
+    public void setCharacter(PartyCharacter characterValue){
+        character = characterValue;
+    }
+
+    public void showCharacter(PartyCharacter character){
+        setCharacter(character);
+        displayCharacter();
     }
 }

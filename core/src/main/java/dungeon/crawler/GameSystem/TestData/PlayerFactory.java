@@ -33,5 +33,29 @@ public class PlayerFactory {
         return pc;
     }
 
+    public static PartyCharacter generatePartyMember() {
+        PartyCharacter pc = new PartyCharacter(
+            "Foighter",
+            30,
+            10,
+            30,
+            10,
+            0,
+            10,
+            Stance.STANDING,
+            new ArrayList<Condition>(),
+            false,
+            1,
+            10,
+            10,
+            10,
+            10,
+            CharacterClass.FIGHTER,
+            false
+        );
+        pc.equipWeapon(WeaponFactory.getIronSword());
+        return pc;
+    }
+
 
 }

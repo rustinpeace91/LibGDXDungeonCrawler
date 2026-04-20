@@ -1,4 +1,4 @@
-package dungeon.crawler.Menu;
+package dungeon.crawler.Menu.Overworld;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,18 +9,24 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import dungeon.crawler.GameConstants;
+import dungeon.crawler.GameSystem.GameState.GameState;
+import dungeon.crawler.Menu.BaseLinearMenu;
+import dungeon.crawler.Menu.Toggleable;
 import dungeon.crawler.Observers.MenuInputObserver;
 import dungeon.crawler.Observers.ScreenChangeObserver;
 
 public class OverworldMenu extends BaseLinearMenu implements Toggleable {
     private final List<MenuInputObserver> listeners = new ArrayList<>();
+    protected final GameState gameState;
 
     public OverworldMenu (
-        Skin skin
+        Skin skin,
+        GameState gameState
     ) {
         super(
             skin
         );
+        this.gameState = gameState;
         setToggleable(true);
     // TODO: Make into a for loop?
         // TextButton inventoryButton = new TextButton("inventory", skin);
@@ -34,10 +40,10 @@ public class OverworldMenu extends BaseLinearMenu implements Toggleable {
         // this.buttonList.add(searchButton);
 
 
-        
+
         // this.add(inventoryButton).row();
         // this.add(statusButton).row();
-        
+
         // this.add(partyButton).row();
         // this.add(searchButton).row();
         this.addButton("Inventory", new ChangeListener() {
@@ -50,17 +56,23 @@ public class OverworldMenu extends BaseLinearMenu implements Toggleable {
         this.addButton("Status", new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor){
-                
+                StatusSelectionMenu newMenu = new StatusSelectionMenu(
+                    skin,
+                    gameState
+                );
+                setSubMenu(newMenu);
+                openSubMenu(newMenu);
+
             }
         });
 
         this.addButton("Options", new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor){
-                
+
             }
         });
-        
+
         this.pack();
         this.addFocusListeners();
         this.setPosition(50, Gdx.graphics.getHeight() - this.getHeight() - 50);
@@ -114,6 +126,12 @@ public class OverworldMenu extends BaseLinearMenu implements Toggleable {
         for (MenuInputObserver listener : listeners) {
             listener.onMenuToggled(showMenu);
         }
+    }
+
+    @Override
+    public void openSubMenu(BaseLinearMenu nextMenu){
+        super.openSubMenu(nextMenu);
+        this.setVisible(true);
     }
 
 }
