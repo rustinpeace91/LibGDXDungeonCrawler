@@ -9,6 +9,7 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -21,9 +22,9 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-import dungeon.crawler.Menu.MenuInputHandler;
-import dungeon.crawler.Menu.OverworldMenu;
-import dungeon.crawler.Menu.PartyCharacterStatusMenu;
+import dungeon.crawler.Menu.InputHandlers.MenuInputHandler;
+import dungeon.crawler.Menu.Overworld.OverworldMenu;
+import dungeon.crawler.Menu.Overworld.PartyCharacterStatusMenu;
 import dungeon.crawler.Menu.StandardStatusMenu;
 import dungeon.crawler.Observers.MenuInputObserver;
 import dungeon.crawler.Observers.PlayerPositionObserver;
@@ -35,7 +36,7 @@ import dungeon.crawler.Player.PlayerInputHandler;
 import dungeon.crawler.Player.PlayerPositionHandler;
 import dungeon.crawler.Utils.StringUtils;
 
-public class WorldScreenRefactor extends ScreenAdapter 
+public class WorldScreenRefactor extends ScreenAdapter
 implements MenuInputObserver,
 ScreenChangeObserver,
 PlayerPositionObserver {
@@ -84,7 +85,7 @@ PlayerPositionObserver {
         this.spriteBatch = spriteBatch;
         this.map = new TmxMapLoader().load(mapFile);
         this.renderer = new OrthogonalTiledMapRenderer(map);
-        this.overWorld = screen.equals(GameConstants.GAME_SCREEN.WALK_OVERWORLD) ? true : false;
+        this.overWorld = screen.equals(GameConstants.GAME_SCREEN.WALK_OVERWORLD);
         setUpCamera();
         float screenCenterY = camera.viewportHeight / 2f;
         float screenCenterX = camera.viewportWidth / 2f;
@@ -120,6 +121,9 @@ PlayerPositionObserver {
         playerPosition.addObserver(characterSprite);
         playerPosition.addScreenChangeListener(game);
         this.skin = new Skin(Gdx.files.internal(GameConstants.MENU_SKIN));
+        // TODO: make this a feature of the skin
+        Texture arrowTexture = new Texture(Gdx.files.internal("ui/arrow.png"));
+        skin.add("menu-selection-arrow", arrowTexture);
         setUpMenu();
         //input
         InputMultiplexer multiplexer = setUpInput();
@@ -134,13 +138,16 @@ PlayerPositionObserver {
         // set up camera
         this.camera = new OrthographicCamera();
         camera.setToOrtho(false, GameConstants.RESOLUTION_WIDTH, GameConstants.RESOLUTION_HEIGHT);
-        camera.zoom=0.35f;
+        camera.zoom=0.25f;
         camera.update();
     }
 
     private void setUpMenu() {
         this.uiStage = new Stage(new ScreenViewport());
-        OverworldMenu menu = new OverworldMenu(this.skin);
+        OverworldMenu menu = new OverworldMenu(
+            this.skin,
+            game.gameState
+        );
         float x = 20;
         float y = Gdx.graphics.getHeight() - menu.getHeight() - 20;
         menu.setPosition(x, y);
@@ -150,14 +157,14 @@ PlayerPositionObserver {
             uiStage,
             menu
         );
-        this.menuInputHanlder.addListener(this);
+        menuInputHanlder.addListener(this);
 
-        statusMenu = new PartyCharacterStatusMenu(skin, this.game.gameState.player);
-        x = Gdx.graphics.getWidth() - statusMenu.getWidth() -20 ;
-        y = Gdx.graphics.getHeight() - statusMenu.getHeight() - 20;
-        statusMenu.setPosition(x, y + 20);
-        this.uiStage.addActor(statusMenu);
-
+        // statusMenu = new PartyCharacterStatusMenu(skin, this.game.gameState.player);
+        // x = Gdx.graphics.getWidth() - statusMenu.getWidth() -20 ;
+        // y = Gdx.graphics.getHeight() - statusMenu.getHeight() - 20;
+        // statusMenu.setPosition(x, y + 20);
+        // this.uiStage.addActor(statusMenu);
+        //
         goldMenu = new StandardStatusMenu(skin);
         String gold = String.valueOf(this.game.gameState.gold);
         goldMenu.setText(StringUtils.format("Gold: %s ", gold));
@@ -241,7 +248,7 @@ PlayerPositionObserver {
         skin.dispose();
     }
 
-
+    @Override
     public void onMenuToggled(boolean value) {
         menuVisible = value;
     }
@@ -268,7 +275,7 @@ PlayerPositionObserver {
         if(overWorld){
             Gdx.app.log("Tile", "Entered New Tile");
             float roll = MathUtils.random();
-            if ( roll < 0.16f) { 
+            if ( roll < 0.16f) {
                 notifyScreenChange(GameConstants.GAME_SCREEN.COMBAT);
             }
         }

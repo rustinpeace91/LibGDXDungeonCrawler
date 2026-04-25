@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import dungeon.crawler.GameConstants;
 import dungeon.crawler.MainGame;
+import dungeon.crawler.Menu.BaseLinearMenu;
 
 public class TestShopMenu extends BaseLinearMenu{
     private MainGame game;
@@ -22,8 +23,7 @@ public class TestShopMenu extends BaseLinearMenu{
         MainGame game
     ){
         super(
-            skin,
-            false
+            skin
         );
         this.game = game;
 

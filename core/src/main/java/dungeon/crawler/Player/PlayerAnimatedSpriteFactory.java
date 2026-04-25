@@ -34,7 +34,7 @@ return sprite;
 }
 
     private Map<String, Animation<TextureRegion>> buildWalkAnim(){
-    Texture fullSheet = new Texture("Sprites/mc_male.png");
+    Texture fullSheet = new Texture(GameConstants.CURRENT_SPRITE);
     Map<String, Animation<TextureRegion>> animationMap = new HashMap<String, Animation<TextureRegion>>();
 
     animationMap.put(
