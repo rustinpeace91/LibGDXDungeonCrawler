@@ -17,6 +17,7 @@ import dungeon.crawler.Observers.MenuInputObserver;
 public class MenuInputHandler extends InputAdapter{
 public Stage uiStage;
 public BaseLinearMenu currentMenuTable;
+public BaseLinearMenu rootMenu;
 public boolean showMenu = false;
 
 public int menuColumns = 0;
@@ -36,6 +37,8 @@ private final List<MenuInputObserver> listeners = new ArrayList<>();
     ) {
         this.uiStage = uiStage;
         this.currentMenuTable = currentMenuTable;
+        this.rootMenu = currentMenuTable;
+        
         handlerDisabled = false;
     }
 
@@ -51,6 +54,9 @@ private final List<MenuInputObserver> listeners = new ArrayList<>();
                 }
                 parent = parent.getParent();
             }
+        } else {
+            this.currentMenuTable = rootMenu;
+            return;
         }
     }
 
@@ -60,10 +66,16 @@ private final List<MenuInputObserver> listeners = new ArrayList<>();
             return true;
         }
         updateCurrentMenuFromFocus();
-        if(keyCode == Input.Keys.E && currentMenuTable.isToggleable) {
-            boolean currentVisibility = currentMenuTable.isVisible();
-            currentMenuTable.setMenuVisibility(!currentVisibility);
-            notifyOnMenuToggled(!currentVisibility);
+        if(keyCode == Input.Keys.E && rootMenu.isToggleable) {
+            boolean rootVisible = rootMenu.isVisible();
+            
+            if(rootVisible) {
+                currentMenuTable.closeMenuStack(); 
+            } else {
+                rootMenu.setMenuVisibility(true);
+            }
+            
+            notifyOnMenuToggled(!rootVisible);
             return true;
         }
 

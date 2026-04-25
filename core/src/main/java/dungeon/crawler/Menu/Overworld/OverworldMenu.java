@@ -94,8 +94,11 @@ public class OverworldMenu extends BaseLinearMenu implements Toggleable {
 
     @Override
     protected void setStage(Stage stage) {
+        // TODO: Move this logic OUTTA here. This runs when the menu closes too
         super.setStage(stage);
+        if(stage == null) return;
         setMenuVisibility(false);
+        this.addFocusListeners();
     }
 
     @Override

@@ -36,9 +36,9 @@ public class PlayerFactory {
     public static PartyCharacter generatePartyMember() {
         PartyCharacter pc = new PartyCharacter(
             "Foighter",
-            30,
-            10,
-            30,
+            45,
+            0,
+            45,
             10,
             0,
             10,
@@ -46,10 +46,10 @@ public class PlayerFactory {
             new ArrayList<Condition>(),
             false,
             1,
+            12,
             10,
-            10,
-            10,
-            10,
+            8,
+            6,
             CharacterClass.FIGHTER,
             false
         );

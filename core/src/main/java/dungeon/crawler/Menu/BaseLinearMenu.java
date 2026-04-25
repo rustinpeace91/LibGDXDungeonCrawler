@@ -34,6 +34,7 @@ public class BaseLinearMenu extends Table {
     protected BaseLinearMenu subMenu;
     protected BaseLinearMenu parentMenu;
     protected StandardStatusMenu subStatusMenu;
+    protected Image arrow;
 
     public BaseLinearMenu(
         Skin skin
@@ -46,6 +47,12 @@ public class BaseLinearMenu extends Table {
         Color semiTransparentGray = new Color(0.2f, 0.2f, 0.2f, 0.8f); 
         this.setBackground(skin.newDrawable("default-round", semiTransparentGray));
         this.defaults().pad(10).fillX().minWidth(150); // Set default padding for all cells
+
+        // 2. Setup the single Arrow instance for this menu
+        this.arrow = new Image(skin.getDrawable("menu-selection-arrow"));
+        this.arrow.setSize(12, 12);
+        this.arrow.setVisible(false);
+        this.addActor(arrow); // Add it once; we just move it later
     }
 
     @Override
@@ -81,6 +88,8 @@ public class BaseLinearMenu extends Table {
 
         this.add(newButton).row();
         newButton.addListener(listener);
+        // 3. Attach the behavior immediately
+        applyFocusBehavior(newButton);
         if(userObject != null){
             newButton.setUserObject(userObject);
         }
@@ -132,30 +141,18 @@ public class BaseLinearMenu extends Table {
         }
     }
 
-
-    public void addFocusListeners(){
-        // change logic. TODO: move variables to constants/properties
-        Color focusColor = Color.YELLOW;
-        Color defaultColor = Color.WHITE;
-        // Arrow button
-
-        Drawable arrowDrawable = skin.getDrawable("menu-selection-arrow");
-        Image arrow = new Image(arrowDrawable); 
-        // 1. Declare this once outside the loop to avoid memory churn
-        final Vector2 pos = new Vector2();
-        arrow.setSize(12, 12); 
-        arrow.setVisible(false); // Hide it until something is focused
-        this.addActor(arrow);
-        for (Actor actor : this.getChildren()) {
-            if(actor instanceof TextButton){
-                TextButton button = (TextButton) actor;
-                button.addListener(new FocusListener(){
-                @Override
-                public void keyboardFocusChanged(FocusEvent event, Actor actor, boolean focused) {
+    public void applyFocusBehavior(Actor actor){
+        if(!(actor instanceof TextButton)){
+            return;
+        }
+        actor.addListener(new FocusListener(){
+            @Override
+            public void keyboardFocusChanged(FocusEvent event, Actor a, boolean focused) {
                     TextButton button = (TextButton) actor;
                     Label label = button.getLabel();
                     if (focused) {
-                        label.setColor(focusColor);
+                        final Vector2 pos = new Vector2();
+                        label.setColor(Color.YELLOW);
                         // Get position relative to the WHOLE screen/stage
                         // 2. MATH FIX:
                         // Get the button's position relative to the OVERWORLDMENU (this)
@@ -169,12 +166,53 @@ public class BaseLinearMenu extends Table {
                         );
                         arrow.setVisible(true);
                     } else {
-                        label.setColor(defaultColor);
+                        label.setColor(Color.WHITE);
                     }
-                }
-                }); 
             }
-        }
+        });
+    }
+    public void addFocusListeners(){
+        // change logic. TODO: move variables to constants/properties
+        // Color focusColor = Color.YE/LLOW;
+        // Color defaultColor = Color.WHITE;
+        // // Arrow button
+
+        // Drawable arrowDrawable = skin.getDrawable("menu-selection-arrow");
+        // Image arrow = new Image(arrowDrawable); 
+        // // 1. Declare this once outside the loop to avoid memory churn
+        // final Vector2 pos = new Vector2();
+        // arrow.setSize(12, 12); 
+        // arrow.setVisible(false); // Hide it until something is focused
+        // this.addActor(arrow);
+        // for (Actor actor : this.getChildren()) {
+        //     if(actor instanceof TextButton){
+        //         TextButton button = (TextButton) actor;
+        //         button.addListener(new FocusListener(){
+        //         @Override
+        //         public void keyboardFocusChanged(FocusEvent event, Actor actor, boolean focused) {
+        //             TextButton button = (TextButton) actor;
+        //             Label label = button.getLabel();
+        //             if (focused) {
+        //                 label.setColor(focusColor);
+        //                 // Get position relative to the WHOLE screen/stage
+        //                 // 2. MATH FIX:
+        //                 // Get the button's position relative to the OVERWORLDMENU (this)
+        //                 // instead of the whole Stage.
+        //                 pos.set(button.getX(), button.getY());
+
+        //                 // Position the arrow to the left of the button's local X/Y
+        //                 arrow.setPosition(
+        //                     pos.x - arrow.getWidth(), 
+        //                     pos.y + (button.getHeight() - arrow.getHeight()) / 2
+        //                 );
+        //                 arrow.setVisible(true);
+        //             } else {
+        //                 label.setColor(defaultColor);
+        //             }
+        //         }
+        //         }); 
+        //     }
+        // }
     }
     public void resize(int width, int height) {
         throw new UnsupportedOperationException("Unimplemented method 'resize'");
@@ -199,6 +237,22 @@ public class BaseLinearMenu extends Table {
         }
     }
 
+
+    public BaseLinearMenu getRootMenu() {
+        return (parentMenu == null) ? this : parentMenu.getRootMenu();
+    }
+
+    public void closeMenuStack() {
+        this.setVisible(false); 
+        if (parentMenu != null) {
+            this.remove(); 
+            parentMenu.closeMenuStack();
+        } else {
+            if (getStage() != null) {
+                getStage().setKeyboardFocus(this.buttonList.first());
+            }
+        }
+    }
 
     public void setSubMenu(BaseLinearMenu subMenu) {
         this.subMenu = subMenu;

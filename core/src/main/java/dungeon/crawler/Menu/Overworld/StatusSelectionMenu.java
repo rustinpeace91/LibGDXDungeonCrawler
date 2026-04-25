@@ -29,14 +29,17 @@ public class StatusSelectionMenu extends BaseLinearMenu {
 
         // shut up linter
         this.subStatusMenu = partyStatusMenu;
+        this.isToggleable = true;
     }
 
 
 
     @Override
     protected void setStage(Stage stage){
-        // loop through party members, store name and object for status focus
+        // TODO: Move this logic OUTTA here. This runs when the menu closes too
         super.setStage(stage);
+        if(stage == null) return;
+
         if(gameState.party != null){
             gameState.party.forEach(
                 (key, character) -> {
@@ -66,11 +69,14 @@ public class StatusSelectionMenu extends BaseLinearMenu {
             float y = Gdx.graphics.getHeight() - getHeight() - 400;
             subStatusMenu.setPosition(
                 x, y
-            );
+            ); 
             stage.addActor(subStatusMenu);
 
             setMenuVisibility(true); 
         }
+        this.addFocusListeners();
+        this.buttonList = populateButtonList();
+        this.resetMenuSelection();
 
     }
 
@@ -94,7 +100,6 @@ public class StatusSelectionMenu extends BaseLinearMenu {
                             partyStatusMenu.setText(StringUtils.format("This is the status text for: \n %s", button.getText()));
 
                         }
-                        // subStatusMenu.setVisible(true);
                     } else {
                     }
                 }

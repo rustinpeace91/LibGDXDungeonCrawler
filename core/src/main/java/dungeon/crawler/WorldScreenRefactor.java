@@ -22,10 +22,10 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-import dungeon.crawler.Menu.Overworld.OverworldMenu;
-import dungeon.crawler.Menu.StandardStatusMenu;
 import dungeon.crawler.Menu.InputHandlers.MenuInputHandler;
+import dungeon.crawler.Menu.Overworld.OverworldMenu;
 import dungeon.crawler.Menu.Overworld.PartyCharacterStatusMenu;
+import dungeon.crawler.Menu.StandardStatusMenu;
 import dungeon.crawler.Observers.MenuInputObserver;
 import dungeon.crawler.Observers.PlayerPositionObserver;
 import dungeon.crawler.Observers.ScreenChangeObserver;
