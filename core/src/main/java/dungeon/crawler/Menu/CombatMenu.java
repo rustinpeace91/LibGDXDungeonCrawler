@@ -1,5 +1,6 @@
 package dungeon.crawler.Menu;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
@@ -9,15 +10,21 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import dungeon.crawler.GameSystem.GameState.CombatActionState;
+import dungeon.crawler.GameSystem.GameState.GameState;
 import dungeon.crawler.Observers.ActionSelectObserver;
 
 public class CombatMenu extends BaseLinearMenu {
 private final List<ActionSelectObserver> actionSelectObservers = new ArrayList<>();
+private GameState gameState;
+private List<Integer> partyIDs;
+private int currentCombatantID;
 
     public CombatMenu (
-        Skin skin
+        Skin skin,
+        GameState gameState
     ) {
         super(skin);
+        this.gameState = gameState;
         setToggleable(false);
     // TODO: Make into a for loop?
         // TextButton fightButton = new TextButton("Fight", skin);
@@ -36,8 +43,7 @@ private final List<ActionSelectObserver> actionSelectObservers = new ArrayList<>
             @Override
             public void changed(ChangeEvent event, Actor actor){
                 // TODO: remove hard code
-                int combatantId = 1;
-                notifyActionSelect(combatantId, CombatActionState.ATTACK);
+                handleAction(CombatActionState.ATTACK);
             }
         });
 
@@ -83,8 +89,24 @@ private final List<ActionSelectObserver> actionSelectObservers = new ArrayList<>
 
         this.pack();
         this.addFocusListeners();
+        this.partyIDs = new ArrayList<>(gameState.party.keySet());
+        Collections.sort(this.partyIDs);
     }
+    private void handleAction(CombatActionState state){
 
+        if (currentCombatantID < partyIDs.size()) {
+            int currentId = partyIDs.get(currentCombatantID);
+            
+            notifyActionSelect(currentId, state);
+            currentCombatantID++;
+            // TODO: Notify selection change
+            if (currentCombatantID < partyIDs.size()) {
+                resetMenuSelection();
+            } else {
+                notifyPlayerActionSelectComplete();
+            }
+        }
+    }
     public final void addMenuListeners(
         TextButton fightButton,
         TextButton inventoryButton,
@@ -105,7 +127,13 @@ private final List<ActionSelectObserver> actionSelectObservers = new ArrayList<>
 
     public void notifyActionSelect(int combatantId, CombatActionState actionState){
         for (ActionSelectObserver observer : actionSelectObservers) {
-            observer.onActionSelect(actionState);
+            observer.onActionSelect(combatantId, actionState);
+        }
+    }
+
+    public void notifyPlayerActionSelectComplete(){
+        for (ActionSelectObserver observer : actionSelectObservers) {
+            observer.onPlayerActionSelectComplete();
         }
     }
 
@@ -118,6 +146,7 @@ private final List<ActionSelectObserver> actionSelectObservers = new ArrayList<>
         if(value){
             this.buttonList = populateButtonList();
             resetMenuSelection();
+            currentCombatantID = 0;
         } else {
             getStage().setKeyboardFocus(null);
         }

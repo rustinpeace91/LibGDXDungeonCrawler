@@ -101,6 +101,7 @@ public class CombatScreen extends ScreenAdapter
         // 4. Add to Table
         // uiStage.addActor(table);
 
+
     }
 
     private void draw() {
@@ -160,7 +161,10 @@ public class CombatScreen extends ScreenAdapter
     private void setUpMenu() {
         // this.uiStage = new Stage(new ScreenViewport());
 
-        combatMenu = new CombatMenu(this.skin);
+        combatMenu = new CombatMenu(
+            this.skin,
+            this.game.gameState
+        );
 
         combatMenu.addScreenChangeObserver(game);
         combatMenu.addActionSelectObserver(this);
@@ -184,9 +188,6 @@ public class CombatScreen extends ScreenAdapter
 
         partyScreen = new CombatPartyOrderScreen(skin);
 
-        partyScreen.setText(
-            StringUtils.format("PLYR \n HP: %s \n MP: 0", String.valueOf(this.game.gameState.player.hp))
-        );
         partyScreen.setPosition(0, 0);
         this.uiStage.addActor(partyScreen);
 
@@ -208,7 +209,7 @@ public class CombatScreen extends ScreenAdapter
         this.menuInputHanlder.addListener(this);
         combatMenu.setActive(false);
         menuInputHanlder.setHandlerDisabled(true);
-
+        updatePartyScreen();
 
     }
 
@@ -224,11 +225,29 @@ public class CombatScreen extends ScreenAdapter
 
     public void advanceCombat(){
         if(eventScreen.isShowingMessage()){
-            partyScreen.setText(
-                StringUtils.format("PLYR \n HP: %s \n MP: 0", String.valueOf(this.game.gameState.player.hp))
-            );
+            updatePartyScreen();
         }
         logicHandler.advanceCombat();
+    }
+
+    public void updatePartyScreen(){
+        // TODO: move this to PartyScreen class
+        StringBuilder sb = new StringBuilder();
+        game.gameState.party.forEach(
+            (key, character) -> {
+                sb.append(
+                    StringUtils.format(
+                        "%s \n HP: %s \n MP: %s \n\n",
+                        character.name,
+                        String.valueOf(
+                            character.hp
+                        ),
+                        String.valueOf(character.mp)
+                    )
+                );
+            }
+        );
+        partyScreen.setText(sb.toString());
     }
 
     @Override
@@ -242,7 +261,7 @@ public class CombatScreen extends ScreenAdapter
 
         combatMenu.setPosition(worldWidth - combatMenu.getWidth(), 0);
         partyScreen.setPosition(0, 0);
-        partyScreen.setSize(worldWidth * 0.10f, worldHeight);
+        partyScreen.setSize(worldWidth * 0.15f, worldHeight);
         partyScreen.invalidate();
     }
 
@@ -258,8 +277,8 @@ public class CombatScreen extends ScreenAdapter
     }
 
     @Override
-    public void onActionSelect(CombatActionState actionState){
-        logicHandler.addAction(1, actionState, 1);
+    public void onActionSelect(int CombatantID, CombatActionState actionState){
+        logicHandler.addAction(CombatantID, actionState, 1);
         // CombatAction newAction = new CombatAction(
         //     1
         // )
@@ -267,10 +286,13 @@ public class CombatScreen extends ScreenAdapter
     }
 
     @Override
+    public void onPlayerActionSelectComplete(){
+        logicHandler.playerActionSelectComplete();
+    }
+
+    @Override
     public void onActionSelectComplete(){
         combatMenu.setActive(false);
-        menuInputHanlder.setHandlerDisabled(true);
-
         uiStage.setKeyboardFocus(eventScreen);
     }
 
@@ -283,6 +305,14 @@ public class CombatScreen extends ScreenAdapter
     @Override
     public void onLastMessageRead(){
 
+    }
+
+    @Override
+    public void onEventScreenFocus(){
+        uiStage.setKeyboardFocus(eventScreen);
+        //TODO: Figuyre out why returnFocus is not working
+        // combatMenu.setActive(false);
+        // menuInputHanlder.setHandlerDisabled(true);
     }
 
     @Override

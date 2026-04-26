@@ -25,6 +25,7 @@ public class CombatLogic {
     public ArrayList<CombatLogicObserver> combatLogicObservers;
     public int xpGained;
     private MainGame game;
+    private boolean returnFocus;
 
     public CombatLogic(
         CombatEventScreen eventScreen,
@@ -35,6 +36,7 @@ public class CombatLogic {
         this.actionQueue = new LinkedList<>();
         this.game = game;
         this.xpGained = 0;
+        this.returnFocus = false;
     }
     public void advanceCombat(){
         /* this is run every frame and is for actions that require to wait until messages are done
@@ -51,6 +53,11 @@ public class CombatLogic {
             
             case ACTIONSELECT:
                 // user is selecting action. Do nothing
+
+                if (returnFocus && !eventScreen.isShowingMessage()) {
+                    notifyOnCombatMenuFocus();
+                    returnFocus = false; // Reset flag so it only happens once
+                }
                 break;
 
             case ACTIONSELECT_COMPLETE:
@@ -75,6 +82,7 @@ public class CombatLogic {
                     advanceState(CombatPhase.ACTIONSELECT);
                 }
                 break;
+            // TODO: add some soert of RESOLVE_WAIT flow for animations etc.
             case ACTION_COMPLETE:
                 advanceState(CombatPhase.CHECK_CONDITIONS);
                 break;
@@ -120,6 +128,7 @@ public class CombatLogic {
 
     public void advanceState(CombatPhase nextPhase){
         phase =  nextPhase;
+        Gdx.app.log("StateCheck", "Current Phase: " + phase);
 
     }
 
@@ -186,10 +195,13 @@ public class CombatLogic {
             target
         );
         this.actionQueue.add(newAction);
-        Gdx.app.log("Combat", "Action added to queue");
-        if(id <= this.game.gameState.party.keySet().size()){
-            advanceState(CombatPhase.ACTIONSELECT_COMPLETE);
-        }
+        String actorName = ((PartyCharacter)currentCombatant).name;
+        String[] flavorText = new String[] {
+            StringUtils.format("%s has chosen to %s", actorName, actionState)
+        };
+        returnFocus = true;
+        eventScreen.addMessages(flavorText);
+        notifyOnEventScreenFocus();
     }
 
     public void checkWinConditions(){
@@ -229,7 +241,11 @@ public class CombatLogic {
             return;
         }
         //else 
-        advanceState(CombatPhase.NEW_ROUND);
+        if (actionQueue.isEmpty()) {
+            advanceState(CombatPhase.NEW_ROUND);
+        } else {
+            advanceState(CombatPhase.RESOLVE_NEXT_ACTION);
+        }
     }
 
     public void rewards(){
@@ -265,6 +281,12 @@ public class CombatLogic {
         }
     }
 
+    public void notifyOnEventScreenFocus(){
+        for(CombatLogicObserver listener: combatLogicObservers){
+            listener.onEventScreenFocus();
+        }
+    }
+
 
     public void notifyOnActionSelectComplete(){
         for(CombatLogicObserver listener: combatLogicObservers){
@@ -293,6 +315,10 @@ public class CombatLogic {
         }
     }
 
+    public void playerActionSelectComplete(){
+        advanceState(CombatPhase.ACTIONSELECT_COMPLETE);
+    }
+
     private void decideAction(EnemyCombatant enemy, int id){
         // for now we're just gonna roll some dice
         Random dice = new Random();
@@ -305,7 +331,10 @@ public class CombatLogic {
         }
         int initiative = enemy.rollInitiative();
         // TODO: Implement logic for selecting a target
-        Combatant target = this.game.gameState.party.get(1);
+        Random rand = new Random();
+        int partySize = this.game.gameState.party.size(); 
+        int randomIndex = rand.nextInt(partySize); 
+        Combatant target = this.game.gameState.party.get(randomIndex);
 
         CombatAction newAction = new CombatAction(
             id,
@@ -319,7 +348,7 @@ public class CombatLogic {
     }
 
     private void sortByInitiative(){
-        actionQueue.sort((a, b) -> Integer.compare(a.iniative, a.iniative));
+        actionQueue.sort((a, b) -> Integer.compare(b.iniative, a.iniative));
     }
 
     
