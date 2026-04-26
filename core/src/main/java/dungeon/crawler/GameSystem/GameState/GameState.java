@@ -26,8 +26,10 @@ public class GameState {
 
     public void setUpTestData(){
         player = PlayerFactory.generate();
+        PartyCharacter fighter = PlayerFactory.generatePartyMember();
         party = new HashMap<>();
         party.put(1, player);
+        party.put(2, fighter);
         overWorldCoordinates = new Vector2(0,0);
         currentEnemyRoster = new HashMap<>();
         gold = 20;

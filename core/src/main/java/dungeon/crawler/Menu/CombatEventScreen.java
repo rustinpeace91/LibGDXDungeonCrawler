@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
 
+import dungeon.crawler.GameConstants;
 import dungeon.crawler.Observers.EventScreenObserver;
 
 // Extend Table directly
@@ -24,9 +25,9 @@ public class CombatEventScreen extends Table {
         super(skin); // Pass skin to parent Table
         
         // Set the background and gray tint
-        this.setBackground(skin.getDrawable("default-round"));
+        this.setBackground(skin.getDrawable(GameConstants.SKIN_BACKGROUND_DEFAULT));
         Color semiTransparentGray = new Color(0.2f, 0.2f, 0.2f, 0.8f);
-        this.setBackground(skin.newDrawable("default-round", semiTransparentGray));
+        this.setBackground(skin.newDrawable(GameConstants.SKIN_BACKGROUND_DEFAULT, semiTransparentGray));
 
         messageLabel = new Label("", skin);
         observers = new ArrayList<>();

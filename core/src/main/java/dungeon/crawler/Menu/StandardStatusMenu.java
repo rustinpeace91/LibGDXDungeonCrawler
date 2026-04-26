@@ -6,6 +6,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
 
+import dungeon.crawler.GameConstants;
+
 // Extend Table directly
 public class StandardStatusMenu extends Table {
     private Label messageLabel;
@@ -15,9 +17,9 @@ public class StandardStatusMenu extends Table {
         this.setSize(156f, 120f); 
 
         // Set the background and gray tint
-        this.setBackground(skin.getDrawable("default-round"));
-        Color semiTransparentGray = new Color(0.2f, 0.2f, 0.2f, 0.8f);
-        this.setBackground(skin.newDrawable("default-round", semiTransparentGray));
+        this.setBackground(skin.getDrawable(GameConstants.SKIN_BACKGROUND_DEFAULT));
+        Color semiTransparentGray = new Color(0.2f, 0.2f, 0.2f, 1f);
+        this.setBackground(skin.newDrawable(GameConstants.SKIN_BACKGROUND_DEFAULT, semiTransparentGray));
 
         messageLabel = new Label("", skin);
         messageLabel.setWrap(true);

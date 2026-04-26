@@ -10,7 +10,7 @@ public class MapRegistry {
             1,
             "Portantia",
             GameConstants.GAME_SCREEN.WALK_TOWN,
-            "Maps/testmap.tmx",
+            GameConstants.TEST_MAP,
             13f,
             12f
         ),
@@ -27,7 +27,7 @@ public class MapRegistry {
             3,
             "Portantia",
             GameConstants.GAME_SCREEN.WALK_TOWN,
-            "Maps/testmap.tmx",
+            GameConstants.TEST_MAP,
             13f,
             12f
         ),
@@ -35,7 +35,7 @@ public class MapRegistry {
             4,
             "Portantia",
             GameConstants.GAME_SCREEN.WALK_TOWN,
-            "Maps/testmap.tmx",
+            GameConstants.TEST_MAP,
             9f,
             19f
         )
