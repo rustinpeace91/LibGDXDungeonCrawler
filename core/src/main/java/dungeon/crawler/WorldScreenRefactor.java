@@ -9,7 +9,6 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -121,9 +120,7 @@ PlayerPositionObserver {
         playerPosition.addObserver(characterSprite);
         playerPosition.addScreenChangeListener(game);
         this.skin = new Skin(Gdx.files.internal(GameConstants.MENU_SKIN));
-        // TODO: make this a feature of the skin
-        Texture arrowTexture = new Texture(Gdx.files.internal("ui/arrow.png"));
-        skin.add("menu-selection-arrow", arrowTexture);
+
         setUpMenu();
         //input
         InputMultiplexer multiplexer = setUpInput();
@@ -168,7 +165,7 @@ PlayerPositionObserver {
         goldMenu = new StandardStatusMenu(skin);
         String gold = String.valueOf(this.game.gameState.gold);
         goldMenu.setText(StringUtils.format("Gold: %s ", gold));
-        goldMenu.setPosition(x, y - 100);
+        goldMenu.setPosition(x, y - 150);
         this.uiStage.addActor(goldMenu);
 
     }

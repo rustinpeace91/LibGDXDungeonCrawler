@@ -58,15 +58,15 @@ public class StatusSelectionMenu extends BaseLinearMenu {
         }
 
         if(parentMenu != null){
-            this.setPosition(this.parentMenu.getOriginX() + 250, Gdx.graphics.getHeight() - this.getHeight() - 210);
+            this.setPosition(this.parentMenu.getOriginX() + 200, Gdx.graphics.getHeight() - this.getHeight() - 120);
         }
 
         this.pack();
         
         if (stage != null) {
 
-            float x = Gdx.graphics.getWidth() - getWidth() - 200;
-            float y = Gdx.graphics.getHeight() - getHeight() - 400;
+            float x = this.parentMenu.getWidth() + this.getWidth() + 40;
+            float y = Gdx.graphics.getHeight() - getHeight() - 200;
             subStatusMenu.setPosition(
                 x, y
             ); 

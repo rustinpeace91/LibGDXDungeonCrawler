@@ -41,15 +41,15 @@ public class BaseLinearMenu extends Table {
     ){
         super(skin);
         this.skin = skin;
-        Drawable background = skin.getDrawable("default-round"); 
+        Drawable background = skin.getDrawable(GameConstants.SKIN_BACKGROUND_DEFAULT); 
         this.buttonList = new Array<TextButton>();
         this.screenChangeObservers = new ArrayList<ScreenChangeObserver>();
         Color semiTransparentGray = new Color(0.2f, 0.2f, 0.2f, 0.8f); 
-        this.setBackground(skin.newDrawable("default-round", semiTransparentGray));
+        this.setBackground(skin.newDrawable(GameConstants.SKIN_BACKGROUND_DEFAULT, semiTransparentGray));
         this.defaults().pad(10).fillX().minWidth(150); // Set default padding for all cells
 
         // 2. Setup the single Arrow instance for this menu
-        this.arrow = new Image(skin.getDrawable("menu-selection-arrow"));
+        this.arrow = new Image(skin.getDrawable("arrow"));
         this.arrow.setSize(12, 12);
         this.arrow.setVisible(false);
         this.addActor(arrow); // Add it once; we just move it later

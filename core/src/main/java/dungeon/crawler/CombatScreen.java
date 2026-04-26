@@ -159,9 +159,7 @@ public class CombatScreen extends ScreenAdapter
 
     private void setUpMenu() {
         // this.uiStage = new Stage(new ScreenViewport());
-        Texture arrowTexture = new Texture(Gdx.files.internal("ui/arrow.png"));
 
-        skin.add("menu-selection-arrow", arrowTexture);
         combatMenu = new CombatMenu(this.skin);
 
         combatMenu.addScreenChangeObserver(game);

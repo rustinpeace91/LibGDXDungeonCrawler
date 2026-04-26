@@ -55,8 +55,6 @@ public class MenuTestScreen extends ScreenAdapter  implements MenuInputObserver 
     @Override
     public void show(){
         Skin skin = new Skin(Gdx.files.internal(GameConstants.MENU_SKIN));
-        Texture arrowTexture = new Texture(Gdx.files.internal("ui/arrow.png"));
-        skin.add("menu-selection-arrow", arrowTexture);
         shopMenu = new TestShopMenu(skin, game);
         this.uiStage.addActor(shopMenu);
         this.menuInputHandler = new MenuInputHandler(
