@@ -20,7 +20,7 @@ import dungeon.crawler.Menu.CombatEventScreen;
 import dungeon.crawler.Menu.CombatMenu;
 import dungeon.crawler.Menu.CombatPartyOrderScreen;
 import dungeon.crawler.Menu.CurrentFighterStatusScreen;
-import dungeon.crawler.Menu.MenuInputHandler;
+import dungeon.crawler.Menu.InputHandlers.MenuInputHandler;
 import dungeon.crawler.Observers.ActionSelectObserver;
 import dungeon.crawler.Observers.CombatLogicObserver;
 import dungeon.crawler.Observers.CombatScreenObserver;
@@ -28,8 +28,8 @@ import dungeon.crawler.Observers.EventScreenObserver;
 import dungeon.crawler.Observers.MenuInputObserver;
 import dungeon.crawler.Utils.StringUtils;
 
-public class CombatScreen extends ScreenAdapter 
-    implements MenuInputObserver, 
+public class CombatScreen extends ScreenAdapter
+    implements MenuInputObserver,
     ActionSelectObserver,
     EventScreenObserver,
     CombatLogicObserver {
@@ -54,7 +54,7 @@ public class CombatScreen extends ScreenAdapter
     private float worldHeight;
 
     private Image testRatImage;
-    
+
     public CombatScreen(
         MainGame game
     ) {
@@ -63,15 +63,15 @@ public class CombatScreen extends ScreenAdapter
 
         // 1. Setup Stage and Table
         // this.uiStage = new Stage(new ScreenViewport());
-        this.uiStage = new Stage(new FitViewport(GameConstants.RESOLUTION_WIDTH, GameConstants.RESOLUTION_HEIGHT)); 
+        this.uiStage = new Stage(new FitViewport(GameConstants.RESOLUTION_WIDTH, GameConstants.RESOLUTION_HEIGHT));
         // 2. Load your Skin (ensure path is correct)
         this.skin = new Skin(Gdx.files.internal(GameConstants.MENU_SKIN));
 
 
         this.batch = new SpriteBatch();
-        this.backgroundTexture = new Texture(Gdx.files.internal("libgdungeonPOC.png"));
+        this.backgroundTexture = new Texture(Gdx.files.internal("libgfieldPOC.png"));
             // 1. Load the PNG
-        Texture texture = new Texture(Gdx.files.internal("libgdungeonPOC.png"));
+        Texture texture = new Texture(Gdx.files.internal("libgfieldPOC.png"));
 
         // 2. Wrap it in an Image actor
         Image imageActor = new Image(texture);
@@ -83,7 +83,7 @@ public class CombatScreen extends ScreenAdapter
         imageActor.setScaling(Scaling.stretch); // This forces it to stretch to the actor's bounds
 
         // 2. Tell it to fill the entire stage
-        imageActor.setFillParent(true); 
+        imageActor.setFillParent(true);
 
         uiStage.addActor(imageActor);
 
@@ -114,7 +114,7 @@ public class CombatScreen extends ScreenAdapter
         // 2. Draw directly to the screen (Manual Layer)
         batch.begin();
         // Draws the image at x=100, y=100 with its original size
-        batch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()); 
+        batch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         batch.end();
 
         advanceCombat();
@@ -151,7 +151,6 @@ public class CombatScreen extends ScreenAdapter
             "prepare to fight"
         };
         eventScreen.addMessages(introText);
-        eventScreen.showNextMessage();
         this.uiStage.setKeyboardFocus(eventScreen);
         this.logicHandler = new CombatLogic(eventScreen, game);
         this.logicHandler.addListener(this);
@@ -160,24 +159,24 @@ public class CombatScreen extends ScreenAdapter
 
     private void setUpMenu() {
         // this.uiStage = new Stage(new ScreenViewport());
+
         combatMenu = new CombatMenu(this.skin);
 
         combatMenu.addScreenChangeObserver(game);
         combatMenu.addActionSelectObserver(this);
-        // menu.setOrigin(Align.right); 
+        // menu.setOrigin(Align.right);
         // menu.setOrigin(Align.bottom);
-        
+
         // consider making these mwnua  properties
         float x = Gdx.graphics.getWidth() - combatMenu.getWidth();
         float y = 0;
         combatMenu.setPosition(x, y);
         this.uiStage.addActor(combatMenu);
-        combatMenu = combatMenu;
 
         eventScreen = new CombatEventScreen(this.skin);
-        
+
         eventScreen.setPosition(
-            (uiStage.getWidth() - eventScreen.getWidth()) / 2f, 
+            (uiStage.getWidth() - eventScreen.getWidth()) / 2f,
             10f
         );
         this.uiStage.addActor(eventScreen);
@@ -207,14 +206,17 @@ public class CombatScreen extends ScreenAdapter
             combatMenu
         );
         this.menuInputHanlder.addListener(this);
-        this.menuInputHanlder.setShowMenu(false);
+        combatMenu.setActive(false);
+        menuInputHanlder.setHandlerDisabled(true);
+
+
     }
 
     public InputMultiplexer setUpInput() {
         InputMultiplexer multiplexer = new InputMultiplexer();
         // --- Configure the InputMultiplexer ---
         this.menuInputHanlder.addListener(this);
-        multiplexer.addProcessor(uiStage); 
+        multiplexer.addProcessor(uiStage);
         multiplexer.addProcessor(menuInputHanlder);
         // 6. Tell LibGDX to use the multiplexer for all input events
         return multiplexer;
@@ -241,7 +243,7 @@ public class CombatScreen extends ScreenAdapter
         combatMenu.setPosition(worldWidth - combatMenu.getWidth(), 0);
         partyScreen.setPosition(0, 0);
         partyScreen.setSize(worldWidth * 0.10f, worldHeight);
-        partyScreen.invalidate(); 
+        partyScreen.invalidate();
     }
 
     // TODO: untangle this from menuInputHanlder
@@ -251,7 +253,8 @@ public class CombatScreen extends ScreenAdapter
     @Override
     public void onActionMenuFocus(){
         uiStage.setKeyboardFocus(combatMenu);
-        menuInputHanlder.setShowMenu(true);
+        combatMenu.setActive(true);
+        menuInputHanlder.setHandlerDisabled(false);
     }
 
     @Override
@@ -265,7 +268,9 @@ public class CombatScreen extends ScreenAdapter
 
     @Override
     public void onActionSelectComplete(){
-        menuInputHanlder.setShowMenu(false);
+        combatMenu.setActive(false);
+        menuInputHanlder.setHandlerDisabled(true);
+
         uiStage.setKeyboardFocus(eventScreen);
     }
 
@@ -277,7 +282,7 @@ public class CombatScreen extends ScreenAdapter
 
     @Override
     public void onLastMessageRead(){
-        
+
     }
 
     @Override
