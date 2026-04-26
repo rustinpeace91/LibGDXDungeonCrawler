@@ -97,15 +97,16 @@ public class OverworldMenu extends BaseLinearMenu implements Toggleable {
         // TODO: Move this logic OUTTA here. This runs when the menu closes too
         super.setStage(stage);
         if(stage == null) return;
-        setMenuVisibility(false);
+        unFocus();
+        setVisible(false);
         this.addFocusListeners();
     }
 
     @Override
     public void notifyScreenChange(GameConstants.GAME_SCREEN screen){
-            for (ScreenChangeObserver observer : screenChangeObservers) {
-                observer.onScreenChange(screen);
-            }
+        for (ScreenChangeObserver observer : screenChangeObservers) {
+            observer.onScreenChange(screen);
+        }
     }
 
     @Override

@@ -131,14 +131,23 @@ public class BaseLinearMenu extends Table {
         getStage().setKeyboardFocus(buttonList.first());
     }
 
-    public void setMenuVisibility(boolean visible){
-        setVisible(visible);
-        if(visible){
-            this.buttonList = populateButtonList();
-            resetMenuSelection();
-        } else {
-            getStage().setKeyboardFocus(null);
+    public void refreshAndSetActive(){
+        if(getStage() == null) {
+            Gdx.app.log("Menu Error", "refreshAndSetActive called BEFORE linear menu added to stage");
+            // no return. Let it break the game
         }
+        setVisible(true);
+
+        this.buttonList = populateButtonList();
+        resetMenuSelection();
+    }
+
+    public void unFocus(){
+        if(getStage() == null) {
+            Gdx.app.log("Menu Error", "unFocus called BEFORE linear menu added to stage");
+            // no return. Let it break the game
+        }
+        getStage().setKeyboardFocus(null);
     }
 
     public void applyFocusBehavior(Actor actor){
@@ -222,13 +231,13 @@ public class BaseLinearMenu extends Table {
         this.setVisible(false);
         nextMenu.setParentMenu(this);
         this.getStage().addActor(nextMenu);
-        nextMenu.setMenuVisibility(true); 
+        nextMenu.refreshAndSetActive(); 
     }
 
     public void returnToParentMenu(){
         if (parentMenu != null) {
             this.setVisible(false);
-            parentMenu.setMenuVisibility(true);
+            parentMenu.refreshAndSetActive();
             this.remove();
             if(this.subStatusMenu != null){
                 this.subStatusMenu.setVisible(false);

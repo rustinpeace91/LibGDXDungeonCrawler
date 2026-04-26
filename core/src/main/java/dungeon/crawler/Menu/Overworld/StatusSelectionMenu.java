@@ -40,6 +40,28 @@ public class StatusSelectionMenu extends BaseLinearMenu {
         super.setStage(stage);
         if(stage == null) return;
 
+
+        if(parentMenu != null){
+            this.setPosition(this.parentMenu.getOriginX() + 200, Gdx.graphics.getHeight() - this.getHeight() - 120);
+        }
+
+        
+        this.addPartyButtons();
+        float x = this.parentMenu.getWidth() + this.getWidth() + 40;
+        float y = Gdx.graphics.getHeight() - getHeight() - 200;
+        subStatusMenu.setPosition(
+            x, y
+        ); 
+        stage.addActor(subStatusMenu);
+        refreshAndSetActive(); 
+        this.addFocusListeners();
+        this.buttonList = populateButtonList();
+        this.resetMenuSelection();
+
+    }
+
+
+    private void addPartyButtons(){
         if(gameState.party != null){
             gameState.party.forEach(
                 (key, character) -> {
@@ -56,32 +78,8 @@ public class StatusSelectionMenu extends BaseLinearMenu {
                 }
             );
         }
-
-        if(parentMenu != null){
-            this.setPosition(this.parentMenu.getOriginX() + 200, Gdx.graphics.getHeight() - this.getHeight() - 120);
-        }
-
         this.pack();
-        
-        if (stage != null) {
-
-            float x = this.parentMenu.getWidth() + this.getWidth() + 40;
-            float y = Gdx.graphics.getHeight() - getHeight() - 200;
-            subStatusMenu.setPosition(
-                x, y
-            ); 
-            stage.addActor(subStatusMenu);
-
-            setMenuVisibility(true); 
-        }
-        this.addFocusListeners();
-        this.buttonList = populateButtonList();
-        this.resetMenuSelection();
-
     }
-
-
-
     @Override
     public void addFocusListeners(){
         super.addFocusListeners();

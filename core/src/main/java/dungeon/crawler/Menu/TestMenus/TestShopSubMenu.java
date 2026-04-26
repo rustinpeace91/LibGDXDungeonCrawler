@@ -61,7 +61,7 @@ public class TestShopSubMenu extends BaseLinearMenu{
             );
             stage.addActor(subStatusMenu);
 
-            setMenuVisibility(true); 
+            refreshAndSetActive(); 
         }
     }
     

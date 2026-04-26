@@ -114,7 +114,7 @@ private final List<ActionSelectObserver> actionSelectObservers = new ArrayList<>
     }
 
     public void setActive(boolean value){
-        // simimalar to setMenuVisibility except we always want to keep this menu visible
+        // simimalar to refreshAndSetActive except we always want to keep this menu visible
         if(value){
             this.buttonList = populateButtonList();
             resetMenuSelection();

@@ -95,7 +95,7 @@ public class TestShopMenu extends BaseLinearMenu{
         super.setStage(stage);
         
         if (stage != null) {
-            setMenuVisibility(true); 
+            refreshAndSetActive(); 
         }
     }
 

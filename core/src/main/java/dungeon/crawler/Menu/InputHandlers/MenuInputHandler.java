@@ -72,7 +72,7 @@ private final List<MenuInputObserver> listeners = new ArrayList<>();
             if(rootVisible) {
                 currentMenuTable.closeMenuStack(); 
             } else {
-                rootMenu.setMenuVisibility(true);
+                rootMenu.refreshAndSetActive();
             }
             
             notifyOnMenuToggled(!rootVisible);
