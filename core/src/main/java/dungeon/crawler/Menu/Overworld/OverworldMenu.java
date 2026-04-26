@@ -69,7 +69,12 @@ public class OverworldMenu extends BaseLinearMenu implements Toggleable {
         this.addButton("Options", new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor){
-
+                OptionsMenu newMenu = new OptionsMenu(
+                    skin,
+                    gameState
+                );
+                setSubMenu(newMenu);
+                openSubMenu(newMenu);
             }
         });
 
