@@ -35,6 +35,7 @@ public class BaseLinearMenu extends Table {
     protected BaseLinearMenu parentMenu;
     protected StandardStatusMenu subStatusMenu;
     protected Image arrow;
+    protected int currentButtonIndex;
 
     public BaseLinearMenu(
         Skin skin
@@ -53,6 +54,7 @@ public class BaseLinearMenu extends Table {
         this.arrow.setSize(12, 12);
         this.arrow.setVisible(false);
         this.addActor(arrow); // Add it once; we just move it later
+        this.currentButtonIndex = -1;
     }
 
     @Override
@@ -112,17 +114,18 @@ public class BaseLinearMenu extends Table {
         Actor focusedItem = getStage().getKeyboardFocus();
 
         // int activeItem
-        int currentIndex = buttonList.indexOf((TextButton)focusedItem, true);
-        if(currentIndex == -1){
+        currentButtonIndex = buttonList.indexOf((TextButton)focusedItem, true);
+        if(currentButtonIndex == -1){
             Gdx.app.log("Menu", "Error: index is outside buttonList");
             getStage().setKeyboardFocus(buttonList.get(0));
             return;
         }
 
-        int newIndex = currentIndex + step;
+        int newIndex = currentButtonIndex + step;
         if (0 <= newIndex && newIndex < buttonList.size){
 
             getStage().setKeyboardFocus(buttonList.get(newIndex));
+            currentButtonIndex = newIndex;
         }
 
     }
@@ -140,6 +143,16 @@ public class BaseLinearMenu extends Table {
 
         this.buttonList = populateButtonList();
         resetMenuSelection();
+    }
+
+    public void recallMenuSelection(){
+        if(
+            currentButtonIndex != -1 &&
+            getStage() != null &&
+            currentButtonIndex < buttonList.size
+        ){
+            getStage().setKeyboardFocus(buttonList.get(currentButtonIndex));
+        }
     }
 
     public void unFocus(){
@@ -238,6 +251,7 @@ public class BaseLinearMenu extends Table {
         if (parentMenu != null) {
             this.setVisible(false);
             parentMenu.refreshAndSetActive();
+            parentMenu.recallMenuSelection();
             this.remove();
             if(this.subStatusMenu != null){
                 this.subStatusMenu.setVisible(false);
