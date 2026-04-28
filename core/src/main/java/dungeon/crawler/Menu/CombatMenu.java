@@ -100,6 +100,8 @@ private int currentCombatantID;
             notifyActionSelect(currentId, state);
             currentCombatantID++;
             // TODO: Notify selection change
+            // and here's why we can't have nice things. this is moving focus back to the menu
+            // before messages are being read. Sort it out
             if (currentCombatantID < partyIDs.size()) {
                 resetMenuSelection();
             } else {

@@ -95,7 +95,7 @@ public class CombatScreen extends ScreenAdapter
         // Position the rat relative to the screen size
         // Example: 20% from the left, 15% from the bottom
         testRatImage.setPosition(worldWidth * 0.45f, worldHeight * 0.15f);
-        testRatImage.setScale(0.45f);
+        testRatImage.setScale(0.90f);
         uiStage.addActor(testRatImage);
 
         // 4. Add to Table
@@ -279,10 +279,6 @@ public class CombatScreen extends ScreenAdapter
     @Override
     public void onActionSelect(int CombatantID, CombatActionState actionState){
         logicHandler.addAction(CombatantID, actionState, 1);
-        // CombatAction newAction = new CombatAction(
-        //     1
-        // )
-        // logicHandler.actionQueue.add(e)
     }
 
     @Override
@@ -309,10 +305,12 @@ public class CombatScreen extends ScreenAdapter
 
     @Override
     public void onEventScreenFocus(){
-        uiStage.setKeyboardFocus(eventScreen);
         //TODO: Figuyre out why returnFocus is not working
-        // combatMenu.setActive(false);
+        combatMenu.setActive(false);
+        uiStage.setKeyboardFocus(eventScreen);
         // menuInputHanlder.setHandlerDisabled(true);
+
+
     }
 
     @Override

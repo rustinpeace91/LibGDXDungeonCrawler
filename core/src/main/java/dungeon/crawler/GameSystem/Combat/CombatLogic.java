@@ -52,8 +52,6 @@ public class CombatLogic {
                 break;
             
             case ACTIONSELECT:
-                // user is selecting action. Do nothing
-
                 if (returnFocus && !eventScreen.isShowingMessage()) {
                     notifyOnCombatMenuFocus();
                     returnFocus = false; // Reset flag so it only happens once
