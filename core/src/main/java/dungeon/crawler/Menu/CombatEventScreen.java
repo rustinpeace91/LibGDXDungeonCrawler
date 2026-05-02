@@ -55,6 +55,7 @@ public class CombatEventScreen extends Table {
             messageLabel.setText(messageQueue.poll());
         } else {
             messageLabel.setText("");
+            notifyOnLastMessageRead();
         }
     }
     public void setText(String text) {
@@ -68,6 +69,12 @@ public class CombatEventScreen extends Table {
     public void notifyOnFirstMessageAdded(){
         for(EventScreenObserver observer: observers){
             observer.onFirstMessageAdded();
+        }
+    }
+
+    public void notifyOnLastMessageRead(){
+        for(EventScreenObserver observer: observers){
+            observer.onLastMessageRead();
         }
     }
 

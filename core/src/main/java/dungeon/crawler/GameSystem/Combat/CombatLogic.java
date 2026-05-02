@@ -52,10 +52,10 @@ public class CombatLogic {
                 break;
             
             case ACTIONSELECT:
-                if (returnFocus && !eventScreen.isShowingMessage()) {
-                    notifyOnCombatMenuFocus();
-                    returnFocus = false; // Reset flag so it only happens once
-                }
+                // if (returnFocus && !eventScreen.isShowingMessage()) {
+                //     notifyOnCombatMenuFocus();
+                //     returnFocus = false; // Reset flag so it only happens once
+                // }
                 break;
 
             case ACTIONSELECT_COMPLETE:

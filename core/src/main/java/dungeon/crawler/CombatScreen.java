@@ -272,7 +272,7 @@ public class CombatScreen extends ScreenAdapter
     @Override
     public void onActionMenuFocus(){
         uiStage.setKeyboardFocus(combatMenu);
-        combatMenu.setActive(true);
+        combatMenu.resetMenu();
         menuInputHanlder.setHandlerDisabled(false);
     }
 
@@ -294,13 +294,17 @@ public class CombatScreen extends ScreenAdapter
 
     @Override
     public void onFirstMessageAdded(){
+        combatMenu.setReadingMessages(true);
         // uiStage.setKeyboardFocus(eventScreen);
         // menuInputHanlder.setShowMenu(false);
     }
 
     @Override
     public void onLastMessageRead(){
-
+        if(logicHandler.phase == CombatPhase.ACTIONSELECT){
+            combatMenu.checkForCompletion();
+        }
+        combatMenu.setReadingMessages(false);
     }
 
     @Override

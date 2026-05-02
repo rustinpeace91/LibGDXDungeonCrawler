@@ -14,10 +14,14 @@ import dungeon.crawler.GameSystem.GameState.GameState;
 import dungeon.crawler.Observers.ActionSelectObserver;
 
 public class CombatMenu extends BaseLinearMenu {
-private final List<ActionSelectObserver> actionSelectObservers = new ArrayList<>();
-private GameState gameState;
-private List<Integer> partyIDs;
-private int currentCombatantID;
+    private final List<ActionSelectObserver> actionSelectObservers = new ArrayList<>();
+    private GameState gameState;
+    private List<Integer> partyIDs;
+    private int currentCombatantID;
+    private boolean readingMessages;
+
+    private boolean finishedAllActions = false;
+    private Actor currentActor;
 
     public CombatMenu (
         Skin skin,
@@ -102,11 +106,12 @@ private int currentCombatantID;
             // TODO: Notify selection change
             // and here's why we can't have nice things. this is moving focus back to the menu
             // before messages are being read. Sort it out
-            if (currentCombatantID < partyIDs.size()) {
-                resetMenuSelection();
-            } else {
-                notifyPlayerActionSelectComplete();
-            }
+            // if (
+            //     (currentCombatantID < partyIDs.size()) &&
+            //     !
+            // ){
+            //     resetMenuSelection();
+            // }
         }
     }
     public final void addMenuListeners(
@@ -143,16 +148,43 @@ private int currentCombatantID;
         actionSelectObservers.add(observer);
     }
 
+    public void checkForCompletion(){
+        if(readingMessages){
+            readingMessages = false;
+        }
+        if (
+            (currentCombatantID < partyIDs.size())
+        ){
+            resetMenuSelection();
+        } else {
+            notifyPlayerActionSelectComplete();
+        }
+
+    }
+
+    public void resetMenu(){
+        this.buttonList = populateButtonList();
+        resetMenuSelection();
+        currentCombatantID = 0;
+        finishedAllActions = false;
+    }
+
     public void setActive(boolean value){
         // simimalar to refreshAndSetActive except we always want to keep this menu visible
         if(value){
             this.buttonList = populateButtonList();
             resetMenuSelection();
-            currentCombatantID = 0;
         } else {
             getStage().setKeyboardFocus(null);
         }
     }
 
+    public void setFinishedAllActions(boolean finishedAllActions) {
+        this.finishedAllActions = finishedAllActions;
+    }
+
+    public void setReadingMessages(boolean readingMessages) {
+        this.readingMessages = readingMessages;
+    }
 
 }
