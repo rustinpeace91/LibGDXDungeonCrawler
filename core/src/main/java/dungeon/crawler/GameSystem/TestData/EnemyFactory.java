@@ -11,7 +11,7 @@ public class EnemyFactory {
         // Added 'new' keyword and proper ArrayList initialization
         return new EnemyCombatant(
             "rat",
-            1,
+            4,
             50,
             1,
             16,

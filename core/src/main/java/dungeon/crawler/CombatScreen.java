@@ -224,9 +224,7 @@ public class CombatScreen extends ScreenAdapter
     }
 
     public void advanceCombat(){
-        if(eventScreen.isShowingMessage()){
-            updatePartyScreen();
-        }
+
         logicHandler.advanceCombat();
     }
 
@@ -293,6 +291,11 @@ public class CombatScreen extends ScreenAdapter
     }
 
     @Override
+    public void onActionComplete(){
+        updatePartyScreen();
+    }
+
+    @Override
     public void onFirstMessageAdded(){
         combatMenu.setReadingMessages(true);
         // uiStage.setKeyboardFocus(eventScreen);
@@ -309,7 +312,6 @@ public class CombatScreen extends ScreenAdapter
 
     @Override
     public void onEventScreenFocus(){
-        //TODO: Figuyre out why returnFocus is not working
         combatMenu.setActive(false);
         uiStage.setKeyboardFocus(eventScreen);
         // menuInputHanlder.setHandlerDisabled(true);

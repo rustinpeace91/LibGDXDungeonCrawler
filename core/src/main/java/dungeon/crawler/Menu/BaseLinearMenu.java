@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -55,6 +56,7 @@ public class BaseLinearMenu extends Table {
         this.arrow.setVisible(false);
         this.addActor(arrow); // Add it once; we just move it later
         this.currentButtonIndex = -1;
+        this.handleTouchLogic();
     }
 
     @Override
@@ -192,6 +194,13 @@ public class BaseLinearMenu extends Table {
                     }
             }
         });
+    }
+
+    /*Handle Mouse/touchpad input. For now we are going to disable it completely as to not break focus
+    logic */
+    public void handleTouchLogic(){
+
+        this.setTouchable(Touchable.disabled);
     }
     public void addFocusListeners(){
         // change logic. TODO: move variables to constants/properties

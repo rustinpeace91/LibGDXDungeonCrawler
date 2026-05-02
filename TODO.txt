@@ -1,6 +1,7 @@
 3/16/22
 - Clean up state machine so all text shows without stupid enter bug
     - add another state for displaying an action seperate from calculating an action
+    - move all party member action logic to CombatLogic
 - Make menus suck less
 - Find way to store items/weapons in json
 - Clean up Notifier vs Observer nomenclature, pick one

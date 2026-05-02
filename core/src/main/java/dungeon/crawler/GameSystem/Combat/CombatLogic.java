@@ -80,8 +80,8 @@ public class CombatLogic {
                     advanceState(CombatPhase.ACTIONSELECT);
                 }
                 break;
-            // TODO: add some soert of RESOLVE_WAIT flow for animations etc.
             case ACTION_COMPLETE:
+                notifyOnActionComplete();
                 advanceState(CombatPhase.CHECK_CONDITIONS);
                 break;
             case CHECK_CONDITIONS:
@@ -289,6 +289,12 @@ public class CombatLogic {
     public void notifyOnActionSelectComplete(){
         for(CombatLogicObserver listener: combatLogicObservers){
             listener.onActionSelectComplete();
+        }
+    }
+
+    public void notifyOnActionComplete(){
+        for(CombatLogicObserver listener: combatLogicObservers){
+            listener.onActionComplete();
         }
     }
 
