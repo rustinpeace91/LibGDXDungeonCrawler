@@ -18,6 +18,7 @@ import dungeon.crawler.Observers.EventScreenObserver;
 // Extend Table directly
 public class CombatEventScreen extends Table {
     private Label messageLabel;
+    private boolean isShowing;
     public LinkedList<String> messageQueue;
     private ArrayList<EventScreenObserver> observers;
 
@@ -54,6 +55,7 @@ public class CombatEventScreen extends Table {
         if(!messageQueue.isEmpty()){
             messageLabel.setText(messageQueue.poll());
         } else {
+            isShowing = false;
             messageLabel.setText("");
             notifyOnLastMessageRead();
         }
@@ -81,12 +83,8 @@ public class CombatEventScreen extends Table {
     public void addMessages(String[] messages){
         if(messageQueue.isEmpty()){
             notifyOnFirstMessageAdded();
-
-            // for(EventScreenObserver observer: observers){
-            //     observer.onLastMessageRead();
-            // }
         }
-
+        isShowing = true;
         for(String s: messages){
             messageQueue.add(s);
         }
@@ -96,6 +94,7 @@ public class CombatEventScreen extends Table {
         }
     }
     public boolean isShowingMessage() {
-        return !messageQueue.isEmpty() || !messageLabel.textEquals("");
+        return isShowing;
+
     }
 }
