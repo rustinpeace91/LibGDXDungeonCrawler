@@ -275,6 +275,13 @@ public class CombatScreen extends ScreenAdapter
     }
 
     @Override
+    public void onActionMenuReset(){
+        uiStage.setKeyboardFocus(combatMenu);
+        combatMenu.initializeMenu();
+        menuInputHanlder.setHandlerDisabled(false);
+    }
+
+    @Override
     public void onActionSelect(int CombatantID, CombatActionState actionState){
         logicHandler.addAction(CombatantID, actionState, 1);
     }
@@ -304,9 +311,9 @@ public class CombatScreen extends ScreenAdapter
 
     @Override
     public void onLastMessageRead(){
-        if(logicHandler.phase == CombatPhase.ACTIONSELECT){
-            combatMenu.checkForCompletion();
-        }
+        // if(logicHandler.phase == CombatPhase.ACTIONSELECT){
+        //     combatMenu.checkForCompletion();
+        // }
         combatMenu.setReadingMessages(false);
     }
 
@@ -314,7 +321,7 @@ public class CombatScreen extends ScreenAdapter
     public void onEventScreenFocus(){
         combatMenu.setActive(false);
         uiStage.setKeyboardFocus(eventScreen);
-        // menuInputHanlder.setHandlerDisabled(true);
+        menuInputHanlder.setHandlerDisabled(true);
 
 
     }

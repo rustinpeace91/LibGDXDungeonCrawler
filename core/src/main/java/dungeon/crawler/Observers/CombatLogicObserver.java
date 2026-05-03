@@ -7,5 +7,6 @@ public interface CombatLogicObserver {
     public void onActionComplete();
     public void onLoss();
     public void onVictory();
+    public void onActionMenuReset();
 
 }

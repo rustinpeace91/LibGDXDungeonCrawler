@@ -8,11 +8,11 @@ import com.badlogic.gdx.Gdx;
 
 import dungeon.crawler.GameSystem.Character.Combatant;
 import dungeon.crawler.GameSystem.Character.Enemy;
+import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.GameSystem.GameState.CombatActionState;
 import dungeon.crawler.GameSystem.GameState.CombatPhase;
 import dungeon.crawler.GameSystem.Leveling.LevelTable;
 import dungeon.crawler.GameSystem.TestData.EnemyCombatant;
-import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.MainGame;
 import dungeon.crawler.Menu.CombatEventScreen;
 import dungeon.crawler.Observers.CombatLogicObserver;
@@ -23,6 +23,7 @@ public class CombatLogic {
     public LinkedList<CombatAction> actionQueue;
     public CombatEventScreen eventScreen;
     public ArrayList<CombatLogicObserver> combatLogicObservers;
+    private int currentCombatantID;
     public int xpGained;
     private MainGame game;
     private boolean returnFocus;
@@ -36,6 +37,7 @@ public class CombatLogic {
         this.actionQueue = new LinkedList<>();
         this.game = game;
         this.xpGained = 0;
+        this.currentCombatantID = 0;
         this.returnFocus = false;
     }
     public void advanceCombat(){
@@ -47,7 +49,7 @@ public class CombatLogic {
 
         switch(phase) {
             case INTRO:
-                notifyOnCombatMenuFocus();
+                notifyOnActionMenuReset();
                 advanceState(CombatPhase.ACTIONSELECT);
                 break;
             
@@ -59,6 +61,13 @@ public class CombatLogic {
                 break;
 
             case ACTIONSELECT_COMPLETE:
+                // After messages have been read
+                // check if all partymembers have gone
+                // if not transfer focus back to combat menu
+                checkForActionSelectCompletion();
+                break;
+
+            case INITIATIVE:
                 Gdx.app.log("Combat", "Enemies Decide their action");
                 decideEnemyActions();
                 sortByInitiative();
@@ -104,7 +113,7 @@ public class CombatLogic {
                 break;
 
             case NEW_ROUND:
-                notifyOnCombatMenuFocus();
+                notifyOnActionMenuReset();
                 advanceState(CombatPhase.ACTIONSELECT);
                 break;
                 
@@ -197,9 +206,24 @@ public class CombatLogic {
         String[] flavorText = new String[] {
             StringUtils.format("%s has chosen to %s", actorName, actionState)
         };
+        currentCombatantID++;
         returnFocus = true;
         eventScreen.addMessages(flavorText);
         notifyOnEventScreenFocus();
+        advanceState(CombatPhase.ACTIONSELECT_COMPLETE);
+    }
+
+    public void checkForActionSelectCompletion(){
+        if((
+            currentCombatantID < game.gameState.party.size()
+        )){
+            advanceState(CombatPhase.ACTIONSELECT);
+            // send signal to send focus back to action menu without resetting currentCombatantID
+            notifyOnCombatMenuFocus();
+        } else {
+            currentCombatantID = 0;
+            playerActionSelectComplete();
+        }
     }
 
     public void checkWinConditions(){
@@ -273,6 +297,13 @@ public class CombatLogic {
         combatLogicObservers.add(listener);
     }
 
+
+    public void notifyOnActionMenuReset(){
+        for(CombatLogicObserver listener: combatLogicObservers){
+            listener.onActionMenuReset();
+        }
+    }
+
     public void notifyOnCombatMenuFocus(){
         for(CombatLogicObserver listener: combatLogicObservers){
             listener.onActionMenuFocus();
@@ -320,7 +351,7 @@ public class CombatLogic {
     }
 
     public void playerActionSelectComplete(){
-        advanceState(CombatPhase.ACTIONSELECT_COMPLETE);
+        advanceState(CombatPhase.INITIATIVE);
     }
 
     private void decideAction(EnemyCombatant enemy, int id){

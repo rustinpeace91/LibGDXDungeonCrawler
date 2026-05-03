@@ -6,7 +6,6 @@ import java.util.List;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import dungeon.crawler.GameSystem.GameState.CombatActionState;
@@ -20,7 +19,6 @@ public class CombatMenu extends BaseLinearMenu {
     private int currentCombatantID;
     private boolean readingMessages;
 
-    private boolean finishedAllActions = false;
     private Actor currentActor;
 
     public CombatMenu (
@@ -97,38 +95,18 @@ public class CombatMenu extends BaseLinearMenu {
         Collections.sort(this.partyIDs);
     }
     private void handleAction(CombatActionState state){
+        if (currentCombatantID > 0){
+            Gdx.app.log("Combat", "yeah");
+        }
 
         if (currentCombatantID < partyIDs.size()) {
             int currentId = partyIDs.get(currentCombatantID);
-            
             notifyActionSelect(currentId, state);
             currentCombatantID++;
-            // TODO: Notify selection change
-            // and here's why we can't have nice things. this is moving focus back to the menu
-            // before messages are being read. Sort it out
-            // if (
-            //     (currentCombatantID < partyIDs.size()) &&
-            //     !
-            // ){
-            //     resetMenuSelection();
-            // }
+        } else {
+            Gdx.app.log("Combat", "Combatant ID index exceeds party size!!!!");
         }
-    }
-    public final void addMenuListeners(
-        TextButton fightButton,
-        TextButton inventoryButton,
-        TextButton runButton
-    ){
 
-        fightButton.addListener(
-            new ChangeListener(){
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    // TODO: remove hard code
-                    int combatantId = 1;
-                    notifyActionSelect(combatantId, CombatActionState.ATTACK);
-                }
-        });
     }
 
 
@@ -138,35 +116,39 @@ public class CombatMenu extends BaseLinearMenu {
         }
     }
 
-    public void notifyPlayerActionSelectComplete(){
-        for (ActionSelectObserver observer : actionSelectObservers) {
-            observer.onPlayerActionSelectComplete();
-        }
-    }
+    // public void notifyPlayerActionSelectComplete(){
+    //     for (ActionSelectObserver observer : actionSelectObservers) {
+    //         observer.onPlayerActionSelectComplete();
+    //     }
+    // }
 
     public void addActionSelectObserver(ActionSelectObserver observer) {
         actionSelectObservers.add(observer);
     }
 
-    public void checkForCompletion(){
-        if(readingMessages){
-            readingMessages = false;
-        }
-        if (
-            (currentCombatantID < partyIDs.size())
-        ){
-            resetMenuSelection();
-        } else {
-            notifyPlayerActionSelectComplete();
-        }
+    // public void checkForCompletion(){
+    //     if(readingMessages){
+    //         readingMessages = false;
+    //     }
+    //     if (
+    //         (currentCombatantID < partyIDs.size())
+    //     ){
+    //         resetMenuSelection();
+    //     } else {
+    //         notifyPlayerActionSelectComplete();
+    //     }
 
-    }
+    // }
 
     public void resetMenu(){
         this.buttonList = populateButtonList();
         resetMenuSelection();
+    }
+
+    public void initializeMenu(){
+        this.buttonList = populateButtonList();
+        resetMenuSelection();
         currentCombatantID = 0;
-        finishedAllActions = false;
     }
 
     public void setActive(boolean value){
@@ -179,9 +161,7 @@ public class CombatMenu extends BaseLinearMenu {
         }
     }
 
-    public void setFinishedAllActions(boolean finishedAllActions) {
-        this.finishedAllActions = finishedAllActions;
-    }
+
 
     public void setReadingMessages(boolean readingMessages) {
         this.readingMessages = readingMessages;
