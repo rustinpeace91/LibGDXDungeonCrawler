@@ -1,4 +1,4 @@
-package dungeon.crawler;
+package dungeon.crawler.Screens;
 
 
 import com.badlogic.gdx.Gdx;
@@ -13,9 +13,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import dungeon.crawler.GameConstants;
 import dungeon.crawler.GameSystem.Combat.CombatLogic;
 import dungeon.crawler.GameSystem.GameState.CombatActionState;
 import dungeon.crawler.GameSystem.GameState.CombatPhase;
+import dungeon.crawler.MainGame;
 import dungeon.crawler.Menu.CombatEventScreen;
 import dungeon.crawler.Menu.CombatMenu;
 import dungeon.crawler.Menu.CombatPartyOrderScreen;

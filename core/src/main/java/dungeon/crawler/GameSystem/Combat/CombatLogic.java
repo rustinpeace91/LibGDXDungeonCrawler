@@ -54,16 +54,9 @@ public class CombatLogic {
                 break;
             
             case ACTIONSELECT:
-                // if (returnFocus && !eventScreen.isShowingMessage()) {
-                //     notifyOnCombatMenuFocus();
-                //     returnFocus = false; // Reset flag so it only happens once
-                // }
                 break;
 
             case ACTIONSELECT_COMPLETE:
-                // After messages have been read
-                // check if all partymembers have gone
-                // if not transfer focus back to combat menu
                 checkForActionSelectCompletion();
                 break;
 
@@ -119,18 +112,6 @@ public class CombatLogic {
                 
                 
         }
-        // if no messages
-        // IF ACTIONSELECT_COMPLETE
-            // advance to ENEMY_ACTION
-
-
-        // if RESOLVE_NEXT_ACTION and actionQueue
-            // advance action
-            // perform action
-            // refresh queue (remove unusable party members)
-            // check for win conditions
-        // if RESOLVE NEXT_ACTION and not actionQUEUE
-            // advance to ACTIONSELECT
     }
 
     public void advanceState(CombatPhase nextPhase){
@@ -343,10 +324,11 @@ public class CombatLogic {
 
     private void decideEnemyActions(){
         for (int enemyID: this.game.gameState.currentEnemyRoster.keySet()){
-            decideAction(
+            actionQueue.add(EnemyAttackLogic.decideAction(
                 this.game.gameState.currentEnemyRoster.get(enemyID),
-                enemyID
-            );
+                enemyID,
+                this.game.gameState
+            ));
         }
     }
 
@@ -354,33 +336,6 @@ public class CombatLogic {
         advanceState(CombatPhase.INITIATIVE);
     }
 
-    private void decideAction(EnemyCombatant enemy, int id){
-        // for now we're just gonna roll some dice
-        Random dice = new Random();
-        int roll = (dice.nextInt(20) + 1);
-        CombatActionState enemyAction;
-        if(roll >=5){
-            enemyAction = CombatActionState.ATTACK;
-        } else {            
-            enemyAction = CombatActionState.DEFEND;
-        }
-        int initiative = enemy.rollInitiative();
-        // TODO: Implement logic for selecting a target
-        Random rand = new Random();
-        int partySize = this.game.gameState.party.size(); 
-        int randomIndex = rand.nextInt(partySize); 
-        Combatant target = this.game.gameState.party.get(randomIndex);
-
-        CombatAction newAction = new CombatAction(
-            id,
-            initiative,
-            enemy,
-            enemyAction,
-            target
-        );
-        this.actionQueue.add(newAction);
-
-    }
 
     private void sortByInitiative(){
         actionQueue.sort((a, b) -> Integer.compare(b.iniative, a.iniative));

@@ -13,6 +13,7 @@ import dungeon.crawler.GameSystem.TestData.EnemyFactory;
 import dungeon.crawler.Menu.TestMenus.MenuTestScreen;
 import dungeon.crawler.Observers.CombatScreenObserver;
 import dungeon.crawler.Observers.ScreenChangeObserver;
+import dungeon.crawler.Screens.CombatScreen;
 import dungeon.crawler.Screens.InnScreen;
 
 public class MainGame extends Game implements ScreenChangeObserver,
