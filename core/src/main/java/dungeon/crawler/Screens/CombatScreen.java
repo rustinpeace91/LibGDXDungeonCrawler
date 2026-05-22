@@ -19,9 +19,9 @@ import dungeon.crawler.GameSystem.GameState.CombatActionState;
 import dungeon.crawler.GameSystem.GameState.CombatPhase;
 import dungeon.crawler.MainGame;
 import dungeon.crawler.Menu.CombatEventScreen;
-import dungeon.crawler.Menu.CombatMenu;
 import dungeon.crawler.Menu.CombatPartyOrderScreen;
 import dungeon.crawler.Menu.CurrentFighterStatusScreen;
+import dungeon.crawler.Menu.Combat.CombatMenu;
 import dungeon.crawler.Menu.InputHandlers.MenuInputHandler;
 import dungeon.crawler.Observers.ActionSelectObserver;
 import dungeon.crawler.Observers.CombatLogicObserver;
@@ -284,8 +284,8 @@ public class CombatScreen extends ScreenAdapter
     }
 
     @Override
-    public void onActionSelect(int CombatantID, CombatActionState actionState){
-        logicHandler.addAction(CombatantID, actionState, 1);
+    public void onActionSelect(int CombatantID, CombatActionState actionState, int targetId){
+        logicHandler.addAction(CombatantID, actionState, targetId);
     }
 
     @Override

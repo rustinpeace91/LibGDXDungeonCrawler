@@ -1,4 +1,4 @@
-package dungeon.crawler.Menu;
+package dungeon.crawler.Menu.Combat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import dungeon.crawler.GameSystem.GameState.CombatActionState;
 import dungeon.crawler.GameSystem.GameState.GameState;
+import dungeon.crawler.Menu.BaseLinearMenu;
 import dungeon.crawler.Observers.ActionSelectObserver;
 
 public class CombatMenu extends BaseLinearMenu {
@@ -28,24 +29,25 @@ public class CombatMenu extends BaseLinearMenu {
         super(skin);
         this.gameState = gameState;
         setToggleable(false);
-    // TODO: Make into a for loop?
-        // TextButton fightButton = new TextButton("Fight", skin);
-        // TextButton magicButton = new TextButton("Magic", skin);
-        // TextButton defendButton = new TextButton("Defend", skin);
-        // TextButton inventoryButton = new TextButton("Inventory", skin);
-        // TextButton runButton = new TextButton("Run", skin);
-        this.defaults().size(110f, 30f).pad(5f);
-        // this.buttonList.add(fightButton);
-        // this.buttonList.add(magicButton);
-        // this.buttonList.add(defendButton);
-        // this.buttonList.add(inventoryButton);
-        // this.buttonList.add(runButton);
+        this.initializeVisualMenu();
+        this.partyIDs = new ArrayList<>(gameState.party.keySet());
+        Collections.sort(this.partyIDs);
+    }
 
+    private void initializeVisualMenu(){
+        this.clearChildren();
+        this.defaults().size(110f, 30f).pad(5f);
         this.addButton("Attack", new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor){
                 // TODO: remove hard code
-                handleAction(CombatActionState.ATTACK);
+                // handleAction(CombatActionState.ATTACK);
+                BaseLinearMenu nextMenu = new AttackSubMenu(
+                    skin,
+                    gameState
+                );
+                setSubMenu(nextMenu);
+                openSubMenu(nextMenu);
             }
         });
 
@@ -77,31 +79,19 @@ public class CombatMenu extends BaseLinearMenu {
             }
         });
 
-
-        // addMenuListeners(fightButton, inventoryButton, runButton);
-
-        // this.add(fightButton).fillX().row();
-        // this.add(magicButton).row();
-
-        // this.add(defendButton).row();
-        // this.add(inventoryButton).row();
-        // this.add(runButton).row();
-
         this.defaults().pad(2); 
 
         this.pack();
         this.addFocusListeners();
-        this.partyIDs = new ArrayList<>(gameState.party.keySet());
-        Collections.sort(this.partyIDs);
     }
-    private void handleAction(CombatActionState state){
+    private void handleAction(CombatActionState state, int targetId){
         if (currentCombatantID > 0){
             Gdx.app.log("Combat", "yeah");
         }
 
         if (currentCombatantID < partyIDs.size()) {
             int currentId = partyIDs.get(currentCombatantID);
-            notifyActionSelect(currentId, state);
+            notifyActionSelect(currentId, state, targetId);
             currentCombatantID++;
         } else {
             Gdx.app.log("Combat", "Combatant ID index exceeds party size!!!!");
@@ -110,9 +100,9 @@ public class CombatMenu extends BaseLinearMenu {
     }
 
 
-    public void notifyActionSelect(int combatantId, CombatActionState actionState){
+    public void notifyActionSelect(int combatantId, CombatActionState actionState, int targetId){
         for (ActionSelectObserver observer : actionSelectObservers) {
-            observer.onActionSelect(combatantId, actionState);
+            observer.onActionSelect(combatantId, actionState, targetId);
         }
     }
 
@@ -126,19 +116,11 @@ public class CombatMenu extends BaseLinearMenu {
         actionSelectObservers.add(observer);
     }
 
-    // public void checkForCompletion(){
-    //     if(readingMessages){
-    //         readingMessages = false;
-    //     }
-    //     if (
-    //         (currentCombatantID < partyIDs.size())
-    //     ){
-    //         resetMenuSelection();
-    //     } else {
-    //         notifyPlayerActionSelectComplete();
-    //     }
 
-    // }
+
+    public void handleAttackSelection(int id){
+        handleAction(CombatActionState.ATTACK, id);
+    }
 
     public void resetMenu(){
         this.buttonList = populateButtonList();
