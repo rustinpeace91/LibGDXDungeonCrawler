@@ -9,7 +9,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
@@ -18,10 +20,10 @@ import dungeon.crawler.GameSystem.Combat.CombatLogic;
 import dungeon.crawler.GameSystem.GameState.CombatActionState;
 import dungeon.crawler.GameSystem.GameState.CombatPhase;
 import dungeon.crawler.MainGame;
+import dungeon.crawler.Menu.Combat.CombatMenu;
 import dungeon.crawler.Menu.CombatEventScreen;
 import dungeon.crawler.Menu.CombatPartyOrderScreen;
 import dungeon.crawler.Menu.CurrentFighterStatusScreen;
-import dungeon.crawler.Menu.Combat.CombatMenu;
 import dungeon.crawler.Menu.InputHandlers.MenuInputHandler;
 import dungeon.crawler.Observers.ActionSelectObserver;
 import dungeon.crawler.Observers.CombatLogicObserver;
@@ -56,6 +58,7 @@ public class CombatScreen extends ScreenAdapter
     private float worldHeight;
 
     private Image testRatImage;
+    private Label testRatCount;
 
     public CombatScreen(
         MainGame game
@@ -88,8 +91,11 @@ public class CombatScreen extends ScreenAdapter
         imageActor.setFillParent(true);
 
         uiStage.addActor(imageActor);
-
-
+        // TODO: remove all testRatCount logic
+        testRatCount = new Label(
+            StringUtils.format("%s Rats", String.valueOf(this.game.gameState.currentEnemyRoster.size())),
+            skin
+        );
         Texture ratTexture = new Texture(Gdx.files.internal("Sprites/Enemies/testrat2.png"));
         testRatImage = new Image(ratTexture );
 
@@ -97,8 +103,11 @@ public class CombatScreen extends ScreenAdapter
         // Position the rat relative to the screen size
         // Example: 20% from the left, 15% from the bottom
         testRatImage.setPosition(worldWidth * 0.45f, worldHeight * 0.15f);
+        testRatCount.setAlignment(Align.center);
+        testRatCount.setPosition(450, 250);
         testRatImage.setScale(0.90f);
         uiStage.addActor(testRatImage);
+        uiStage.addActor(testRatCount);
 
         // 4. Add to Table
         // uiStage.addActor(table);
@@ -110,6 +119,17 @@ public class CombatScreen extends ScreenAdapter
     }
     @Override
     public void render(float delta) {
+
+        // RAT COUNT LOGIC. REMOVE LATER
+        int enemyCount = this.game.gameState.currentEnemyRoster.size();
+
+        String ratText = StringUtils.format("%s Rats", String.valueOf(enemyCount));
+        if(enemyCount == 1){
+            ratText = StringUtils.format("%s Rat", String.valueOf(enemyCount));
+        }
+        testRatCount.setText(
+            ratText
+        );
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -150,7 +170,7 @@ public class CombatScreen extends ScreenAdapter
         // phase = CombatPhase.INTRO;
         String enemyName = game.gameState.currentEnemyRoster.get(1).name;
         String[] introText = new String[] {
-            StringUtils.format("A %s pops up!", enemyName),
+            StringUtils.format("A pack of %ss pops up!", enemyName),
             "prepare to fight"
         };
         eventScreen.addMessages(introText);

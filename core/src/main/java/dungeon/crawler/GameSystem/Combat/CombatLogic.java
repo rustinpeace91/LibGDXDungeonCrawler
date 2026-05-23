@@ -270,7 +270,20 @@ public class CombatLogic {
 
     public void rewards(){
                 // TODO: bad
-        this.game.gameState.player.xp = this.game.gameState.player.xp + xpGained;
+        // this.game.gameState.player.xp = this.game.gameState.player.xp + xpGained;
+        // int xpForEach = xpGained / this.game.gameState.party.size();
+        int xpForEach = (int) Math.ceil((double) xpGained / this.game.gameState.party.size());
+
+        this.game.gameState.party.entrySet().stream().forEach(partyEntry -> {
+            PartyCharacter partyMember = partyEntry.getValue();
+            partyMember.xp = partyMember.xp + xpForEach;
+
+            int nextLevel = partyMember.level + 1;
+            if(partyMember.xp >= LevelTable.getRequiredXp(nextLevel)){
+                ArrayList<String> messages = partyMember.LevelUp(nextLevel);
+                eventScreen.addMessages(messages.toArray(new String[0]));
+            }
+        });
 
         Random roll = new Random();
         int addGold = roll.nextInt(20) + 1;
@@ -283,11 +296,7 @@ public class CombatLogic {
             }
         );
 
-        int nextLevel = this.game.gameState.player.level + 1;
-        if(game.gameState.player.xp >= LevelTable.getRequiredXp(nextLevel)){
-            ArrayList<String> messages = game.gameState.player.LevelUp(nextLevel);
-            eventScreen.addMessages(messages.toArray(new String[0]));
-        }
+
 
     }
 
