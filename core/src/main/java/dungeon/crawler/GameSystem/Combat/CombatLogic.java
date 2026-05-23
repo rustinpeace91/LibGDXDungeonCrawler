@@ -2,17 +2,19 @@ package dungeon.crawler.GameSystem.Combat;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.JsonValue.ValueType;
 
 import dungeon.crawler.GameSystem.Character.Combatant;
 import dungeon.crawler.GameSystem.Character.Enemy;
+import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.GameSystem.GameState.CombatActionState;
 import dungeon.crawler.GameSystem.GameState.CombatPhase;
 import dungeon.crawler.GameSystem.Leveling.LevelTable;
 import dungeon.crawler.GameSystem.TestData.EnemyCombatant;
-import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.MainGame;
 import dungeon.crawler.Menu.CombatEventScreen;
 import dungeon.crawler.Observers.CombatLogicObserver;
@@ -23,8 +25,10 @@ public class CombatLogic {
     public LinkedList<CombatAction> actionQueue;
     public CombatEventScreen eventScreen;
     public ArrayList<CombatLogicObserver> combatLogicObservers;
+    private int currentCombatantID;
     public int xpGained;
     private MainGame game;
+    private boolean returnFocus;
 
     public CombatLogic(
         CombatEventScreen eventScreen,
@@ -35,6 +39,8 @@ public class CombatLogic {
         this.actionQueue = new LinkedList<>();
         this.game = game;
         this.xpGained = 0;
+        this.currentCombatantID = 0;
+        this.returnFocus = false;
     }
     public void advanceCombat(){
         /* this is run every frame and is for actions that require to wait until messages are done
@@ -45,15 +51,18 @@ public class CombatLogic {
 
         switch(phase) {
             case INTRO:
-                notifyOnCombatMenuFocus();
+                notifyOnActionMenuReset();
                 advanceState(CombatPhase.ACTIONSELECT);
                 break;
             
             case ACTIONSELECT:
-                // user is selecting action. Do nothing
                 break;
 
             case ACTIONSELECT_COMPLETE:
+                checkForActionSelectCompletion();
+                break;
+
+            case INITIATIVE:
                 Gdx.app.log("Combat", "Enemies Decide their action");
                 decideEnemyActions();
                 sortByInitiative();
@@ -76,6 +85,7 @@ public class CombatLogic {
                 }
                 break;
             case ACTION_COMPLETE:
+                notifyOnActionComplete();
                 advanceState(CombatPhase.CHECK_CONDITIONS);
                 break;
             case CHECK_CONDITIONS:
@@ -98,28 +108,17 @@ public class CombatLogic {
                 break;
 
             case NEW_ROUND:
-                notifyOnCombatMenuFocus();
+                notifyOnActionMenuReset();
                 advanceState(CombatPhase.ACTIONSELECT);
                 break;
                 
                 
         }
-        // if no messages
-        // IF ACTIONSELECT_COMPLETE
-            // advance to ENEMY_ACTION
-
-
-        // if RESOLVE_NEXT_ACTION and actionQueue
-            // advance action
-            // perform action
-            // refresh queue (remove unusable party members)
-            // check for win conditions
-        // if RESOLVE NEXT_ACTION and not actionQUEUE
-            // advance to ACTIONSELECT
     }
 
     public void advanceState(CombatPhase nextPhase){
         phase =  nextPhase;
+        Gdx.app.log("StateCheck", "Current Phase: " + phase);
 
     }
 
@@ -134,33 +133,48 @@ public class CombatLogic {
                 String damageText = "";
                 // fuck this
                 boolean targetDead = false;
-                Gdx.app.log("Combat", "Attack Made");
-                AttackDamage damage = currentAction.combatant.attack();
-                int defense = currentAction.target.defend(damage);
-                Gdx.app.log("Combat", StringUtils.format(
-                    "Roll: %s", String.valueOf(damage.toHit)
-                ));
-
-                if(damage.toHit > defense){
-                    int damageDealt = currentAction.target.takeHit(damage);
-                    damageText = StringUtils.format("%s hit for %s damage",currentAction.target.getName(), String.valueOf(damageDealt));
-                    targetDead = currentAction.target.checkDeath();
-
+                if(currentAction.target.checkDeath()){
+                    // TODO: implement target switching logic;
+                    Map.Entry<Integer, Combatant> availableCombatant = CombatUtils.returnAliveCombatants(
+                        game.gameState.currentEnemyRoster
+                    ).entrySet().stream().findAny().orElse(null);
+                    if(availableCombatant.getValue() != null){
+                        currentAction.target = availableCombatant.getValue();
+                        handleAction(currentAction);
+                    } else {
+                        eventScreen.addMessages(new String[] {StringUtils.format("%s swings at nothing as all enemies are dead", currentAction.combatant.getName())});
+                    }
                 } else {
-                    damageText = "The attack missed!";
-                    targetDead = false;
-                }
+                    Gdx.app.log("Combat", "Attack Made");
+                    AttackDamage damage = currentAction.combatant.attack();
+                    int defense = currentAction.target.defend(damage);
+                    Gdx.app.log("Combat", StringUtils.format(
+                        "Roll: %s", String.valueOf(damage.toHit)
+                    ));
 
-                eventScreen.addMessages(new String[] {damage.flavorText, damageText});
-                if(targetDead){
-                    eventScreen.addMessages(new String[] {StringUtils.format("%s has died", currentAction.target.getName())});
+                    if(damage.toHit > defense){
+                        int damageDealt = currentAction.target.takeHit(damage);
+                        damageText = StringUtils.format("%s hit for %s damage",currentAction.target.getName(), String.valueOf(damageDealt));
+                        targetDead = currentAction.target.checkDeath();
+
+                    } else {
+                        damageText = "The attack missed!";
+                        targetDead = false;
+                    }
+
+                    eventScreen.addMessages(new String[] {damage.flavorText, damageText});
+                    if(targetDead){
+                        eventScreen.addMessages(new String[] {StringUtils.format("%s has died", currentAction.target.getName())});
+                    }
                 }
+  
                 advanceState(CombatPhase.ACTION_COMPLETE);
 
                 break;
             case DEFEND:
                 Gdx.app.log("Combat", "Defense Made");
                 eventScreen.addMessages(new String[] {"the enemy stares at you dumbfounded"});
+                advanceState(CombatPhase.ACTION_COMPLETE);
                 break;
             case HEAL:
                 Gdx.app.log("Combat", "heal Made");
@@ -186,9 +200,27 @@ public class CombatLogic {
             target
         );
         this.actionQueue.add(newAction);
-        Gdx.app.log("Combat", "Action added to queue");
-        if(id <= this.game.gameState.party.keySet().size()){
-            advanceState(CombatPhase.ACTIONSELECT_COMPLETE);
+        String actorName = ((PartyCharacter)currentCombatant).name;
+        String[] flavorText = new String[] {
+            StringUtils.format("%s has chosen to %s", actorName, actionState)
+        };
+        currentCombatantID++;
+        returnFocus = true;
+        eventScreen.addMessages(flavorText);
+        notifyOnEventScreenFocus();
+        advanceState(CombatPhase.ACTIONSELECT_COMPLETE);
+    }
+
+    public void checkForActionSelectCompletion(){
+        if((
+            currentCombatantID < game.gameState.party.size()
+        )){
+            advanceState(CombatPhase.ACTIONSELECT);
+            // send signal to send focus back to action menu without resetting currentCombatantID
+            notifyOnCombatMenuFocus();
+        } else {
+            currentCombatantID = 0;
+            playerActionSelectComplete();
         }
     }
 
@@ -229,12 +261,29 @@ public class CombatLogic {
             return;
         }
         //else 
-        advanceState(CombatPhase.NEW_ROUND);
+        if (actionQueue.isEmpty()) {
+            advanceState(CombatPhase.NEW_ROUND);
+        } else {
+            advanceState(CombatPhase.RESOLVE_NEXT_ACTION);
+        }
     }
 
     public void rewards(){
                 // TODO: bad
-        this.game.gameState.player.xp = this.game.gameState.player.xp + xpGained;
+        // this.game.gameState.player.xp = this.game.gameState.player.xp + xpGained;
+        // int xpForEach = xpGained / this.game.gameState.party.size();
+        int xpForEach = (int) Math.ceil((double) xpGained / this.game.gameState.party.size());
+
+        this.game.gameState.party.entrySet().stream().forEach(partyEntry -> {
+            PartyCharacter partyMember = partyEntry.getValue();
+            partyMember.xp = partyMember.xp + xpForEach;
+
+            int nextLevel = partyMember.level + 1;
+            if(partyMember.xp >= LevelTable.getRequiredXp(nextLevel)){
+                ArrayList<String> messages = partyMember.LevelUp(nextLevel);
+                eventScreen.addMessages(messages.toArray(new String[0]));
+            }
+        });
 
         Random roll = new Random();
         int addGold = roll.nextInt(20) + 1;
@@ -247,16 +296,19 @@ public class CombatLogic {
             }
         );
 
-        int nextLevel = this.game.gameState.player.level + 1;
-        if(game.gameState.player.xp >= LevelTable.getRequiredXp(nextLevel)){
-            ArrayList<String> messages = game.gameState.player.LevelUp(nextLevel);
-            eventScreen.addMessages(messages.toArray(new String[0]));
-        }
+
 
     }
 
     public void addListener(CombatLogicObserver listener){
         combatLogicObservers.add(listener);
+    }
+
+
+    public void notifyOnActionMenuReset(){
+        for(CombatLogicObserver listener: combatLogicObservers){
+            listener.onActionMenuReset();
+        }
     }
 
     public void notifyOnCombatMenuFocus(){
@@ -265,10 +317,22 @@ public class CombatLogic {
         }
     }
 
+    public void notifyOnEventScreenFocus(){
+        for(CombatLogicObserver listener: combatLogicObservers){
+            listener.onEventScreenFocus();
+        }
+    }
+
 
     public void notifyOnActionSelectComplete(){
         for(CombatLogicObserver listener: combatLogicObservers){
             listener.onActionSelectComplete();
+        }
+    }
+
+    public void notifyOnActionComplete(){
+        for(CombatLogicObserver listener: combatLogicObservers){
+            listener.onActionComplete();
         }
     }
 
@@ -286,40 +350,21 @@ public class CombatLogic {
 
     private void decideEnemyActions(){
         for (int enemyID: this.game.gameState.currentEnemyRoster.keySet()){
-            decideAction(
+            actionQueue.add(EnemyAttackLogic.decideAction(
                 this.game.gameState.currentEnemyRoster.get(enemyID),
-                enemyID
-            );
+                enemyID,
+                this.game.gameState
+            ));
         }
     }
 
-    private void decideAction(EnemyCombatant enemy, int id){
-        // for now we're just gonna roll some dice
-        Random dice = new Random();
-        int roll = (dice.nextInt(20) + 1);
-        CombatActionState enemyAction;
-        if(roll >=5){
-            enemyAction = CombatActionState.ATTACK;
-        } else {            
-            enemyAction = CombatActionState.DEFEND;
-        }
-        int initiative = enemy.rollInitiative();
-        // TODO: Implement logic for selecting a target
-        Combatant target = this.game.gameState.party.get(1);
-
-        CombatAction newAction = new CombatAction(
-            id,
-            initiative,
-            enemy,
-            enemyAction,
-            target
-        );
-        this.actionQueue.add(newAction);
-
+    public void playerActionSelectComplete(){
+        advanceState(CombatPhase.INITIATIVE);
     }
+
 
     private void sortByInitiative(){
-        actionQueue.sort((a, b) -> Integer.compare(a.iniative, a.iniative));
+        actionQueue.sort((a, b) -> Integer.compare(b.iniative, a.iniative));
     }
 
     

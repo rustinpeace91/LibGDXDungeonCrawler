@@ -13,6 +13,7 @@ import dungeon.crawler.GameSystem.TestData.EnemyFactory;
 import dungeon.crawler.Menu.TestMenus.MenuTestScreen;
 import dungeon.crawler.Observers.CombatScreenObserver;
 import dungeon.crawler.Observers.ScreenChangeObserver;
+import dungeon.crawler.Screens.CombatScreen;
 import dungeon.crawler.Screens.InnScreen;
 
 public class MainGame extends Game implements ScreenChangeObserver,
@@ -62,7 +63,9 @@ public class MainGame extends Game implements ScreenChangeObserver,
         }
         else if(screen == GameConstants.GAME_SCREEN.COMBAT){
             EnemyCombatant enemy = EnemyFactory.generate();
+
             this.gameState.currentEnemyRoster.put(1, enemy);
+            this.gameState.currentEnemyRoster.put(2, EnemyFactory.generate());
             CombatScreen combatScreen = new CombatScreen(this);
             setScreen(combatScreen);
         } else if(screen == GameConstants.GAME_SCREEN.TEST_SCREEN){

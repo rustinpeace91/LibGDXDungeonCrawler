@@ -81,6 +81,7 @@ public class OverworldMenu extends BaseLinearMenu implements Toggleable {
         this.pack();
         this.addFocusListeners();
         this.setPosition(50, Gdx.graphics.getHeight() - this.getHeight() - 50);
+
         // addMenuListeners(partyButton, searchButton, testNewMenu);
     }
 

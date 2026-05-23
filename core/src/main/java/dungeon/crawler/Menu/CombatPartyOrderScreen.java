@@ -14,7 +14,7 @@ public class CombatPartyOrderScreen extends Table {
 
     public CombatPartyOrderScreen(Skin skin) {
         super(skin); // Pass skin to parent Table
-        this.setSize(128f, 480f); 
+        this.setSize(250f, 480f); 
 
         // Set the background and gray tint
         this.setBackground(skin.getDrawable(GameConstants.SKIN_BACKGROUND_DEFAULT));

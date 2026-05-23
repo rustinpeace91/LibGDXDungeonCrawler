@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -30,7 +31,7 @@ public class BaseLinearMenu extends Table {
     protected Skin skin;
     protected boolean showMenu;
     public boolean isToggleable;
-    
+
     protected BaseLinearMenu subMenu;
     protected BaseLinearMenu parentMenu;
     protected StandardStatusMenu subStatusMenu;
@@ -42,25 +43,20 @@ public class BaseLinearMenu extends Table {
     ){
         super(skin);
         this.skin = skin;
-        Drawable background = skin.getDrawable(GameConstants.SKIN_BACKGROUND_DEFAULT); 
+        Drawable background = skin.getDrawable(GameConstants.SKIN_BACKGROUND_DEFAULT);
         this.buttonList = new Array<TextButton>();
         this.screenChangeObservers = new ArrayList<ScreenChangeObserver>();
-        Color semiTransparentGray = new Color(0.2f, 0.2f, 0.2f, 0.8f); 
+        Color semiTransparentGray = new Color(0.2f, 0.2f, 0.2f, 0.8f);
         this.setBackground(skin.newDrawable(GameConstants.SKIN_BACKGROUND_DEFAULT, semiTransparentGray));
         this.defaults().pad(10).fillX().minWidth(150); // Set default padding for all cells
-
-        // 2. Setup the single Arrow instance for this menu
-        this.arrow = new Image(skin.getDrawable("arrow"));
-        this.arrow.setSize(12, 12);
-        this.arrow.setVisible(false);
-        this.addActor(arrow); // Add it once; we just move it later
-        this.currentButtonIndex = -1;
+        this.initializeArrow();
+        this.handleTouchLogic();
     }
 
     @Override
     protected void setStage(Stage stage) {
         super.setStage(stage);
-        
+
         this.buttonList = populateButtonList();
     }
 
@@ -84,7 +80,7 @@ public class BaseLinearMenu extends Table {
     public void addButton(
         String buttonName,
         ChangeListener listener,
-        Object userObject 
+        Object userObject
     ){
         TextButton newButton = new TextButton(buttonName, skin);
 
@@ -163,6 +159,16 @@ public class BaseLinearMenu extends Table {
         getStage().setKeyboardFocus(null);
     }
 
+    public void initializeArrow(){
+        // 2. Setup the single Arrow instance for this menu
+        this.arrow = new Image(skin.getDrawable("arrow"));
+        this.arrow.setSize(12, 12);
+        this.arrow.setVisible(false);
+        this.addActor(arrow); // Add it once; we just move it later
+        this.currentButtonIndex = -1;
+    }
+
+
     public void applyFocusBehavior(Actor actor){
         if(!(actor instanceof TextButton)){
             return;
@@ -183,7 +189,7 @@ public class BaseLinearMenu extends Table {
 
                         // Position the arrow to the left of the button's local X/Y
                         arrow.setPosition(
-                            pos.x - arrow.getWidth(), 
+                            pos.x - arrow.getWidth(),
                             pos.y + (button.getHeight() - arrow.getHeight()) / 2
                         );
                         arrow.setVisible(true);
@@ -193,6 +199,13 @@ public class BaseLinearMenu extends Table {
             }
         });
     }
+
+    /*Handle Mouse/touchpad input. For now we are going to disable it completely as to not break focus
+    logic */
+    public void handleTouchLogic(){
+
+        this.setTouchable(Touchable.disabled);
+    }
     public void addFocusListeners(){
         // change logic. TODO: move variables to constants/properties
         // Color focusColor = Color.YE/LLOW;
@@ -200,10 +213,10 @@ public class BaseLinearMenu extends Table {
         // // Arrow button
 
         // Drawable arrowDrawable = skin.getDrawable("menu-selection-arrow");
-        // Image arrow = new Image(arrowDrawable); 
+        // Image arrow = new Image(arrowDrawable);
         // // 1. Declare this once outside the loop to avoid memory churn
         // final Vector2 pos = new Vector2();
-        // arrow.setSize(12, 12); 
+        // arrow.setSize(12, 12);
         // arrow.setVisible(false); // Hide it until something is focused
         // this.addActor(arrow);
         // for (Actor actor : this.getChildren()) {
@@ -224,7 +237,7 @@ public class BaseLinearMenu extends Table {
 
         //                 // Position the arrow to the left of the button's local X/Y
         //                 arrow.setPosition(
-        //                     pos.x - arrow.getWidth(), 
+        //                     pos.x - arrow.getWidth(),
         //                     pos.y + (button.getHeight() - arrow.getHeight()) / 2
         //                 );
         //                 arrow.setVisible(true);
@@ -232,7 +245,7 @@ public class BaseLinearMenu extends Table {
         //                 label.setColor(defaultColor);
         //             }
         //         }
-        //         }); 
+        //         });
         //     }
         // }
     }
@@ -244,7 +257,7 @@ public class BaseLinearMenu extends Table {
         this.setVisible(false);
         nextMenu.setParentMenu(this);
         this.getStage().addActor(nextMenu);
-        nextMenu.refreshAndSetActive(); 
+        nextMenu.refreshAndSetActive();
     }
 
     public void returnToParentMenu(){
@@ -266,9 +279,9 @@ public class BaseLinearMenu extends Table {
     }
 
     public void closeMenuStack() {
-        this.setVisible(false); 
+        this.setVisible(false);
         if (parentMenu != null) {
-            this.remove(); 
+            this.remove();
             parentMenu.closeMenuStack();
         } else {
             if (getStage() != null) {
