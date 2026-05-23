@@ -36,6 +36,7 @@ public class CombatMenu extends BaseLinearMenu {
 
     private void initializeVisualMenu(){
         this.clearChildren();
+        this.initializeArrow();
         this.defaults().size(110f, 30f).pad(5f);
         this.addButton("Attack", new ChangeListener() {
             @Override
@@ -79,7 +80,7 @@ public class CombatMenu extends BaseLinearMenu {
             }
         });
 
-        this.defaults().pad(2); 
+        this.defaults().pad(2);
 
         this.pack();
         this.addFocusListeners();
