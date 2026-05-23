@@ -2,9 +2,11 @@ package dungeon.crawler.GameSystem.Combat;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.JsonValue.ValueType;
 
 import dungeon.crawler.GameSystem.Character.Combatant;
 import dungeon.crawler.GameSystem.Character.Enemy;
@@ -131,33 +133,48 @@ public class CombatLogic {
                 String damageText = "";
                 // fuck this
                 boolean targetDead = false;
-                Gdx.app.log("Combat", "Attack Made");
-                AttackDamage damage = currentAction.combatant.attack();
-                int defense = currentAction.target.defend(damage);
-                Gdx.app.log("Combat", StringUtils.format(
-                    "Roll: %s", String.valueOf(damage.toHit)
-                ));
-
-                if(damage.toHit > defense){
-                    int damageDealt = currentAction.target.takeHit(damage);
-                    damageText = StringUtils.format("%s hit for %s damage",currentAction.target.getName(), String.valueOf(damageDealt));
-                    targetDead = currentAction.target.checkDeath();
-
+                if(currentAction.target.checkDeath()){
+                    // TODO: implement target switching logic;
+                    Map.Entry<Integer, Combatant> availableCombatant = CombatUtils.returnAliveCombatants(
+                        game.gameState.currentEnemyRoster
+                    ).entrySet().stream().findAny().orElse(null);
+                    if(availableCombatant.getValue() != null){
+                        currentAction.target = availableCombatant.getValue();
+                        handleAction(currentAction);
+                    } else {
+                        eventScreen.addMessages(new String[] {StringUtils.format("%s swings at nothing as all enemies are dead", currentAction.combatant.getName())});
+                    }
                 } else {
-                    damageText = "The attack missed!";
-                    targetDead = false;
-                }
+                    Gdx.app.log("Combat", "Attack Made");
+                    AttackDamage damage = currentAction.combatant.attack();
+                    int defense = currentAction.target.defend(damage);
+                    Gdx.app.log("Combat", StringUtils.format(
+                        "Roll: %s", String.valueOf(damage.toHit)
+                    ));
 
-                eventScreen.addMessages(new String[] {damage.flavorText, damageText});
-                if(targetDead){
-                    eventScreen.addMessages(new String[] {StringUtils.format("%s has died", currentAction.target.getName())});
+                    if(damage.toHit > defense){
+                        int damageDealt = currentAction.target.takeHit(damage);
+                        damageText = StringUtils.format("%s hit for %s damage",currentAction.target.getName(), String.valueOf(damageDealt));
+                        targetDead = currentAction.target.checkDeath();
+
+                    } else {
+                        damageText = "The attack missed!";
+                        targetDead = false;
+                    }
+
+                    eventScreen.addMessages(new String[] {damage.flavorText, damageText});
+                    if(targetDead){
+                        eventScreen.addMessages(new String[] {StringUtils.format("%s has died", currentAction.target.getName())});
+                    }
                 }
+  
                 advanceState(CombatPhase.ACTION_COMPLETE);
 
                 break;
             case DEFEND:
                 Gdx.app.log("Combat", "Defense Made");
                 eventScreen.addMessages(new String[] {"the enemy stares at you dumbfounded"});
+                advanceState(CombatPhase.ACTION_COMPLETE);
                 break;
             case HEAL:
                 Gdx.app.log("Combat", "heal Made");

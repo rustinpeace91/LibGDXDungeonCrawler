@@ -11,12 +11,12 @@ public class EnemyFactory {
         // Added 'new' keyword and proper ArrayList initialization
         return new EnemyCombatant(
             "rat",
-            4,
+            2,
             50,
             1,
             16,
             0,
-            56,
+            6,
             0,
             3,
             Stance.STANDING,
