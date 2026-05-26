@@ -13,6 +13,13 @@ public class GameConstants {
         TEST_SCREEN
     };
 
+    public enum PLAYER_STATS {
+        STRENGTH,
+        AGILITY,
+        INTELLIGENCE,
+        PERCEPTION
+    }
+
     // screen
     public static final int RESOLUTION_WIDTH = 960;
     public static final int RESOLUTION_HEIGHT = 720;
