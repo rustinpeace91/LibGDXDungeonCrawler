@@ -14,8 +14,7 @@ public class WeaponFactory {
             "swings", 
             false, 
             null, 
-            null,
-            null
+            null        
         );
     }
 }

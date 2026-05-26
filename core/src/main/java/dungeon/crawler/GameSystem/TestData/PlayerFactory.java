@@ -2,14 +2,17 @@ package dungeon.crawler.GameSystem.TestData;
 
 import java.util.ArrayList;
 
-import dungeon.crawler.GameSystem.Character.CharacterClass;
 import dungeon.crawler.GameSystem.Character.Condition;
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.GameSystem.Character.Stance;
+import dungeon.crawler.GameSystem.Character.Class.HeroClass;
 
-public class PlayerFactory {
+public class PlayerFactory{
 
-    public static PartyCharacter generate() {
+	public static PartyCharacter generate() {
+    	
+    	HeroClass hc = new HeroClass();
+    	// TODO: Get base stats from charClass method
         PartyCharacter pc = new PartyCharacter(
             "Hero",
             30,
@@ -26,13 +29,16 @@ public class PlayerFactory {
             10,
             10,
             10,
-            CharacterClass.HERO,
+            hc,
             true
         );
         pc.equipWeapon(WeaponFactory.getIronSword());
         return pc;
     }
-
+	
+	// TODO: make fighter class
+	HeroClass fc = new HeroClass();
+	// TODO: Get base stats from charClass method
     public static PartyCharacter generatePartyMember() {
         PartyCharacter pc = new PartyCharacter(
             "Foighter",
@@ -50,7 +56,7 @@ public class PlayerFactory {
             10,
             8,
             6,
-            CharacterClass.FIGHTER,
+            fc,
             false
         );
         pc.equipWeapon(WeaponFactory.getIronSword());

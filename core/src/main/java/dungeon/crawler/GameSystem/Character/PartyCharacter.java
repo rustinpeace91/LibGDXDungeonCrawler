@@ -3,6 +3,7 @@ package dungeon.crawler.GameSystem.Character;
 import java.util.ArrayList;
 import java.util.Random;
 
+import dungeon.crawler.GameSystem.Character.Class.ClassLogic;
 import dungeon.crawler.GameSystem.Combat.AttackDamage;
 import dungeon.crawler.GameSystem.Inventory.Weapon;
 import dungeon.crawler.Utils.StringUtils;
@@ -18,7 +19,7 @@ public class PartyCharacter extends Character implements Combatant{
     public int toHit;
     public Weapon equippedWeapon;
     public Weapon fist;
-    public CharacterClass charClass;
+    public ClassLogic charClass;
 
     public PartyCharacter(
             String name,
@@ -36,7 +37,7 @@ public class PartyCharacter extends Character implements Combatant{
             int agility,
             int intelligence,
             int perception,
-            CharacterClass charClass,
+            ClassLogic charClass,
             boolean isHero
 
     ) {
@@ -58,8 +59,7 @@ public class PartyCharacter extends Character implements Combatant{
             "punches",
             false,
             null,
-            null,
-            (ArrayList<CharacterClass>) null
+            null
         );
         this.charClass = charClass;
     }
@@ -136,57 +136,9 @@ public class PartyCharacter extends Character implements Combatant{
     public ArrayList<String> LevelUp(int newLevel) {
         ArrayList<String> messages = new ArrayList();
         level = newLevel;
-        switch(charClass) {
-            case HERO:
-                Random rand = new Random();
-                int newStr = rand.nextInt(3) + 1;
-                messages.add(
-                    StringUtils.format("You are now level %s", String.valueOf(level))
-                );
-                if(newStr > 0){
-                    strength = strength + newStr;
-                    messages.add(
-                        StringUtils.format(
-                            "Strength increased by %s",
-                            String.valueOf(newStr)
-                        )
-                    );
-                }
-                int newaGi = rand.nextInt(4) + 1;
-                if(newaGi > 0){
-                    agility = agility + newaGi;
-                    messages.add(
-                        StringUtils.format(
-                            "Agility increased by %s",
-                            String.valueOf(newaGi)
-                        )
-                    );
-                }
-                int newInt = rand.nextInt(2);
-                    if(newInt > 0){
-                        intelligence = intelligence + newInt;
-                        messages.add(
-                            StringUtils.format(
-                                "Intelligence increased by %s",
-                                String.valueOf(newInt)
-                            )
-                        );
-                    }
-                int newPerc = rand.nextInt(2);
-                if(newPerc > 0){
-                    perception = perception + newPerc;
-                    messages.add(
-                        StringUtils.format(
-                            "Perception increased by %s",
-                            String.valueOf(newPerc)
-                        )
-                    );
-                }
-                break;
-            default:
-                break;
-
-        }
+        // get new stats from charClass.levelUp()
+        // adjust existing stats
+        // return messages
         return messages;
     }
 
