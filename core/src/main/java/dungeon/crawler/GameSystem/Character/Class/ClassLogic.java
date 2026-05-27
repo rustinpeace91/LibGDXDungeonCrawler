@@ -8,4 +8,8 @@ public interface ClassLogic{
     public Map<GameConstants.PLAYER_STATS, Integer> returnBaseStats();
     public Map<GameConstants.PLAYER_STATS, Integer> returnLevelUpStats();
     public String getName();
+    public int getBaseHP();
+    public int getBaseMP();
+    public int getLevelUpHP();
+    public int getLevelUpMP();
 }

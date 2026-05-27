@@ -3,8 +3,12 @@ package dungeon.crawler.GameSystem.Character.Class;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+
 import dungeon.crawler.GameConstants;
-import static dungeon.crawler.GameConstants.PLAYER_STATS.*;
+import static dungeon.crawler.GameConstants.PLAYER_STATS.AGILITY;
+import static dungeon.crawler.GameConstants.PLAYER_STATS.INTELLIGENCE;
+import static dungeon.crawler.GameConstants.PLAYER_STATS.PERCEPTION;
+import static dungeon.crawler.GameConstants.PLAYER_STATS.STRENGTH;
 
 public class FighterClass implements ClassLogic{
     private String name;
@@ -44,8 +48,32 @@ public class FighterClass implements ClassLogic{
     }
 
     @Override
+    public int getBaseMP() {
+        // TODO Auto-generated method stub
+        return 10;
+    }
+
+    @Override
+    public int getLevelUpMP() {
+        // TODO Auto-generated method stub
+        return 10;
+    }
+
+    @Override
     public String getName() {
         return this.name;
+    }
+
+    @Override
+    public int getBaseHP() {
+        // TODO Auto-generated method stub
+        return 48;
+    }
+
+    @Override
+    public int getLevelUpHP() {
+        // TODO Auto-generated method stub
+        return 12;
     }
 
 }

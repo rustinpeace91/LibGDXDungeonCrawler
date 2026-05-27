@@ -1,45 +1,55 @@
 package dungeon.crawler.GameSystem.TestData;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
+import dungeon.crawler.GameConstants;
 import dungeon.crawler.GameSystem.Character.Condition;
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.GameSystem.Character.Stance;
+
+import static dungeon.crawler.GameConstants.PLAYER_STATS.*;
+
+import dungeon.crawler.GameSystem.Character.Class.FighterClass;
 import dungeon.crawler.GameSystem.Character.Class.HeroClass;
 
 public class PlayerFactory{
 
 	public static PartyCharacter generate() {
-    	
+
     	HeroClass hc = new HeroClass();
     	// TODO: Get base stats from charClass method
+        //
+        Map<GameConstants.PLAYER_STATS, Integer> statMap = hc.returnBaseStats();
+
         PartyCharacter pc = new PartyCharacter(
             "Hero",
-            30,
-            10,
-            30,
-            10,
+            hc.getBaseHP(),
+            hc.getBaseMP(),
+            hc.getBaseHP(),
+            hc.getBaseHP(),
             0,
-            10,
             Stance.STANDING,
             new ArrayList<Condition>(),
             false,
             1,
-            10,
-            10,
-            10,
-            10,
+            statMap.get(STRENGTH),
+            statMap.get(AGILITY),
+            statMap.get(INTELLIGENCE),
+            statMap.get(PERCEPTION),
             hc,
             true
         );
         pc.equipWeapon(WeaponFactory.getIronSword());
         return pc;
     }
-	
-	// TODO: make fighter class
-	HeroClass fc = new HeroClass();
-	// TODO: Get base stats from charClass method
+
+
     public static PartyCharacter generatePartyMember() {
+
+        FighterClass fc = new FighterClass();
+        Map<GameConstants.PLAYER_STATS, Integer> statMap = fc.returnBaseStats();
         PartyCharacter pc = new PartyCharacter(
             "Foighter",
             45,
@@ -47,15 +57,14 @@ public class PlayerFactory{
             45,
             10,
             0,
-            10,
             Stance.STANDING,
             new ArrayList<Condition>(),
             false,
             1,
-            12,
-            10,
-            8,
-            6,
+            statMap.get(STRENGTH),
+            statMap.get(AGILITY),
+            statMap.get(INTELLIGENCE),
+            statMap.get(PERCEPTION),
             fc,
             false
         );

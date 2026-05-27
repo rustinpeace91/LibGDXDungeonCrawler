@@ -3,9 +3,9 @@ package dungeon.crawler.GameSystem.Combat;
 import java.util.Random;
 
 import dungeon.crawler.GameSystem.Character.Combatant;
+import dungeon.crawler.GameSystem.Character.EnemyCombatant;
 import dungeon.crawler.GameSystem.GameState.CombatActionState;
 import dungeon.crawler.GameSystem.GameState.GameState;
-import dungeon.crawler.GameSystem.TestData.EnemyCombatant;
 
 public class EnemyAttackLogic {
     public static CombatAction decideAction(

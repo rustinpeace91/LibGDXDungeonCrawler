@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class Enemy extends Character {
     public int earnedXP;
+    protected int defense;
     
     public Enemy(
         String name,
@@ -18,9 +19,10 @@ public class Enemy extends Character {
         ArrayList<Condition> conditions,
         boolean isDead
     ) {
-        super(name, maxHp, maxMP, hp, mp, defense, stance, conditions, isDead);
+        super(name, maxHp, maxMP, hp, mp, stance, conditions, isDead);
         this.earnedXP = earnedXP;
         this.initiative = initiative;
+        this.defense = defense;
     }
 
 }

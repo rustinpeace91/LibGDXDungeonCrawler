@@ -11,4 +11,5 @@ public interface Combatant {
     boolean checkDeath();
     boolean canAttack();
     String getName();
+    int getDefense();
 }

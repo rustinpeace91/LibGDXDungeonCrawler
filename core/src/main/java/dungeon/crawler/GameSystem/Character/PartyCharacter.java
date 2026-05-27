@@ -28,7 +28,6 @@ public class PartyCharacter extends Character implements Combatant{
             int hp,
             int mp,
             int xp,
-            int defense,
             Stance stance,
             ArrayList<Condition> conditions,
             boolean isDead,
@@ -41,7 +40,7 @@ public class PartyCharacter extends Character implements Combatant{
             boolean isHero
 
     ) {
-        super(name, maxHp, maxMP, hp, mp, defense, stance, conditions, isDead);
+        super(name, maxHp, maxMP, hp, mp, stance, conditions, isDead);
         this.level = level;
         this.strength = strength;
         this.agility = agility;
@@ -93,9 +92,7 @@ public class PartyCharacter extends Character implements Combatant{
     @Override
     public int defend(AttackDamage attack) {
         // TODO Auto-generated method stub
-        return defense;
-
-        
+        return getDefense();
     }
 
     @Override
@@ -150,5 +147,11 @@ public class PartyCharacter extends Character implements Combatant{
         } else {
             return fist;
         }
+    }
+
+    @Override
+    public int getDefense() {
+        // TODO Auto-generated method stub
+        return 10;
     }
 }

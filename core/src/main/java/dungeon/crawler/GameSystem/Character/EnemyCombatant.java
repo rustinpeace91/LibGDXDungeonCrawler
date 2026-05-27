@@ -1,12 +1,8 @@
-package dungeon.crawler.GameSystem.TestData;
+package dungeon.crawler.GameSystem.Character;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-import dungeon.crawler.GameSystem.Character.Combatant;
-import dungeon.crawler.GameSystem.Character.Condition;
-import dungeon.crawler.GameSystem.Character.Enemy;
-import dungeon.crawler.GameSystem.Character.Stance;
 import dungeon.crawler.GameSystem.Combat.AttackDamage;
 import dungeon.crawler.Utils.StringUtils;
 
@@ -47,7 +43,6 @@ public class EnemyCombatant extends Enemy implements Combatant {
     public int defend(AttackDamage attack) {
         // TODO Auto-generated method stub
         return defense;
-        
     }
 
     @Override
@@ -77,6 +72,12 @@ public class EnemyCombatant extends Enemy implements Combatant {
     @Override
     public String getName(){
         return name;
+    }
+
+    @Override
+    public int getDefense() {
+        // TODO Auto-generated method stub
+        return defense;
     }
     
 }
