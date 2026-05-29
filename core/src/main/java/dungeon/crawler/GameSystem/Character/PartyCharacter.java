@@ -22,22 +22,22 @@ public class PartyCharacter extends Character implements Combatant{
     public ClassLogic charClass;
 
     public PartyCharacter(
-            String name,
-            int maxHp,
-            int maxMP,
-            int hp,
-            int mp,
-            int xp,
-            Stance stance,
-            ArrayList<Condition> conditions,
-            boolean isDead,
-            int level,
-            int strength,
-            int agility,
-            int intelligence,
-            int perception,
-            ClassLogic charClass,
-            boolean isHero
+        String name,
+        int maxHp,
+        int maxMP,
+        int hp,
+        int mp,
+        int xp,
+        Stance stance,
+        ArrayList<Condition> conditions,
+        boolean isDead,
+        int level,
+        int strength,
+        int agility,
+        int intelligence,
+        int perception,
+        ClassLogic charClass,
+        boolean isHero
 
     ) {
         super(name, maxHp, maxMP, hp, mp, stance, conditions, isDead);
@@ -133,9 +133,7 @@ public class PartyCharacter extends Character implements Combatant{
     public ArrayList<String> LevelUp(int newLevel) {
         ArrayList<String> messages = new ArrayList();
         level = newLevel;
-        // get new stats from charClass.levelUp()
-        // adjust existing stats
-        // return messages
+
         return messages;
     }
 

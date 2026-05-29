@@ -18,6 +18,7 @@ import dungeon.crawler.GameSystem.Character.Class.HeroClass;
 public class PlayerFactory{
 
     public static ClassLogic classSelector(String selector){
+        // TODO: for when we implement savegames
         switch(selector){
             case "Hero":
                 ClassLogic hc = new HeroClass();
