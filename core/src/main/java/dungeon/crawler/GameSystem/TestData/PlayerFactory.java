@@ -11,10 +11,25 @@ import dungeon.crawler.GameSystem.Character.Stance;
 
 import static dungeon.crawler.GameConstants.PLAYER_STATS.*;
 
+import dungeon.crawler.GameSystem.Character.Class.ClassLogic;
 import dungeon.crawler.GameSystem.Character.Class.FighterClass;
 import dungeon.crawler.GameSystem.Character.Class.HeroClass;
 
 public class PlayerFactory{
+
+    public static ClassLogic classSelector(String selector){
+        switch(selector){
+            case "Hero":
+                ClassLogic hc = new HeroClass();
+                return hc;
+            case "Fighter":
+                ClassLogic fc = new FighterClass();
+                return fc;
+            default:
+                throw new IllegalArgumentException("Unknown class type: " + selector);
+
+        }
+    }
 
 	public static PartyCharacter generate() {
 
@@ -51,7 +66,7 @@ public class PlayerFactory{
         FighterClass fc = new FighterClass();
         Map<GameConstants.PLAYER_STATS, Integer> statMap = fc.returnBaseStats();
         PartyCharacter pc = new PartyCharacter(
-            "Foighter",
+            "Fightman",
             45,
             0,
             45,
