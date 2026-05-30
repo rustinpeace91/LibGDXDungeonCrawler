@@ -1,8 +1,11 @@
 package dungeon.crawler.GameSystem.Character;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Random;
 
+import dungeon.crawler.GameConstants;
+import static dungeon.crawler.GameConstants.PLAYER_STATS.*;
 import dungeon.crawler.GameSystem.Character.Class.ClassLogic;
 import dungeon.crawler.GameSystem.Combat.AttackDamage;
 import dungeon.crawler.GameSystem.Inventory.Weapon;
@@ -133,6 +136,23 @@ public class PartyCharacter extends Character implements Combatant{
     public ArrayList<String> LevelUp(int newLevel) {
         ArrayList<String> messages = new ArrayList();
         level = newLevel;
+
+        Map<GameConstants.PLAYER_STATS, Integer> levelUpStats = charClass.returnLevelUpStats();
+        levelUpStats.entrySet().stream()
+            .filter(entry -> entry.getValue() > 0)
+            .forEach(
+                entry -> {
+                    messages.add(
+                        StringUtils.format(
+                            "%s increased by %s", GameConstants.STAT_NAMES.get(entry.getKey()), entry.getValue()
+                        )
+                    );
+                }
+            );
+        this.strength = levelUpStats.get(STRENGTH);
+        this.intelligence = levelUpStats.get(INTELLIGENCE);
+        this.agility = levelUpStats.get(AGILITY);
+        this.perception = levelUpStats.get(PERCEPTION);
 
         return messages;
     }

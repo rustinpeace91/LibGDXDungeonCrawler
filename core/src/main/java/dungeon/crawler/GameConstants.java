@@ -49,5 +49,12 @@ public class GameConstants {
         PlayerDirection.DOWN, "WalkDown",
         PlayerDirection.LEFT, "WalkLeft"
     );
+    public static final Map<PLAYER_STATS, String> STAT_NAMES = Map.of(
+        PLAYER_STATS.STRENGTH, "Strength",
+        PLAYER_STATS.AGILITY, "Agility",
+        PLAYER_STATS.INTELLIGENCE, "Intelligence",
+        PLAYER_STATS.PERCEPTION, "Perception"
+
+    );
 
 }
