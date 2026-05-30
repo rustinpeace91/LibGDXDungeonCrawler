@@ -52,6 +52,7 @@ public class EnemyCombatant extends Enemy implements Combatant {
         return attack.damage;
     }
 
+
     @Override
     public int rollInitiative(){
         Random rand = new Random();
@@ -79,5 +80,24 @@ public class EnemyCombatant extends Enemy implements Combatant {
         // TODO Auto-generated method stub
         return defense;
     }
-    
+
+    @Override
+    public int heal(int amount){
+        int boost;
+        if(hp + amount > maxHp){
+            boost = maxHp - hp;
+            hp = maxHp;
+        } else{
+            hp = hp + amount;
+            boost = amount;
+        }
+        return boost;
+    }
+
+    @Override
+    public void spendMp(int amount) {
+        // TODO Auto-generated method stub
+
+    }
+
 }

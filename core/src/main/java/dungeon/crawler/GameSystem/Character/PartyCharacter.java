@@ -172,4 +172,27 @@ public class PartyCharacter extends Character implements Combatant{
         // TODO Auto-generated method stub
         return 10;
     }
+
+    @Override
+    public int heal(int amount){
+        int boost;
+        if(hp + amount > maxHp){
+            boost = maxHp - hp;
+            hp = maxHp;
+        } else{
+            hp = hp + amount;
+            boost = amount;
+        }
+        return boost;
+    }
+
+    @Override
+    public void spendMp(int amount) {
+        if(mp - amount < maxMP){
+            mp = 0;
+            // log something here this should never happen
+        } else{
+            mp = mp - amount;
+        }
+    }
 }
