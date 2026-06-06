@@ -1,5 +1,7 @@
 package dungeon.crawler.GameSystem.Character.Class;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -9,6 +11,11 @@ import static dungeon.crawler.GameConstants.PLAYER_STATS.AGILITY;
 import static dungeon.crawler.GameConstants.PLAYER_STATS.INTELLIGENCE;
 import static dungeon.crawler.GameConstants.PLAYER_STATS.PERCEPTION;
 import static dungeon.crawler.GameConstants.PLAYER_STATS.STRENGTH;
+import static dungeon.crawler.GameSystem.Inventory.ItemTypes.ArmorTypes.*;
+import static dungeon.crawler.GameSystem.Inventory.ItemTypes.WeaponTypes.*;
+
+import dungeon.crawler.GameSystem.Inventory.ItemTypes.ArmorTypes;
+import dungeon.crawler.GameSystem.Inventory.ItemTypes.WeaponTypes;
 import dungeon.crawler.GameSystem.Magic.MagicSystem;
 
 public class HeroClass implements ClassLogic{
@@ -92,6 +99,34 @@ public class HeroClass implements ClassLogic{
     @Override
     public void fillSpells(int level) {
         // TODO Auto-generated method stub
-        
+
+    }
+
+    @Override
+    public ArrayList<ArmorTypes> getArmorRestrictions() {
+        ArmorTypes[] types = {
+            BASIC,
+            LIGHT,
+            MEDIUM
+        };
+        ArrayList<ArmorTypes> typeList = new ArrayList<ArmorTypes>(Arrays.asList(types));
+        return typeList;
+    }
+
+    @Override
+    public ArrayList<WeaponTypes> getWeaponRestrictions() {
+        WeaponTypes[] types = {
+            SHORTSWORD,
+            LONGSWORD,
+            GREATSWORD,
+            STAFF,
+            CLUB,
+            SPEAR,
+            SLING,
+            CROSSBOW,
+            SHORTBOW
+        };
+        ArrayList<WeaponTypes> typeList = new ArrayList<WeaponTypes>(Arrays.asList(types));
+        return typeList;
     }
 }

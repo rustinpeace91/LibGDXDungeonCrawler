@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import dungeon.crawler.GameSystem.Character.Condition;
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.GameSystem.Combat.Elemental;
+import dungeon.crawler.GameSystem.Inventory.ItemTypes.WeaponTypes;
+
 
 public class Weapon extends Item{
     public int toHit;
@@ -36,6 +38,6 @@ public class Weapon extends Item{
 //        this.classRestrictions = classRestrictions;
     }
 //    public ArrayList<CharacterClass> classRestrictions;
-    
-    
+
+
 }
