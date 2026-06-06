@@ -5,8 +5,8 @@ import java.util.Map;
 
 import com.badlogic.gdx.math.Vector2;
 
+import dungeon.crawler.GameSystem.Character.EnemyCombatant;
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
-import dungeon.crawler.GameSystem.TestData.EnemyCombatant;
 import dungeon.crawler.GameSystem.TestData.PlayerFactory;
 
 public class GameState {
@@ -27,9 +27,11 @@ public class GameState {
     public void setUpTestData(){
         player = PlayerFactory.generate();
         PartyCharacter fighter = PlayerFactory.generatePartyMember();
+        PartyCharacter wizard = PlayerFactory.generateWizard();
         party = new HashMap<>();
         party.put(0, player);
         party.put(1, fighter);
+        party.put(2, wizard);
         overWorldCoordinates = new Vector2(0,0);
         currentEnemyRoster = new HashMap<>();
         gold = 20;

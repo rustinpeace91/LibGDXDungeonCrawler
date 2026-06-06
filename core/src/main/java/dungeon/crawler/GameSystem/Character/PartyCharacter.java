@@ -5,7 +5,10 @@ import java.util.Map;
 import java.util.Random;
 
 import dungeon.crawler.GameConstants;
-import static dungeon.crawler.GameConstants.PLAYER_STATS.*;
+import static dungeon.crawler.GameConstants.PLAYER_STATS.AGILITY;
+import static dungeon.crawler.GameConstants.PLAYER_STATS.INTELLIGENCE;
+import static dungeon.crawler.GameConstants.PLAYER_STATS.PERCEPTION;
+import static dungeon.crawler.GameConstants.PLAYER_STATS.STRENGTH;
 import dungeon.crawler.GameSystem.Character.Class.ClassLogic;
 import dungeon.crawler.GameSystem.Combat.AttackDamage;
 import dungeon.crawler.GameSystem.Inventory.Weapon;
@@ -153,7 +156,6 @@ public class PartyCharacter extends Character implements Combatant{
         this.intelligence = levelUpStats.get(INTELLIGENCE);
         this.agility = levelUpStats.get(AGILITY);
         this.perception = levelUpStats.get(PERCEPTION);
-
         return messages;
     }
 

@@ -9,6 +9,7 @@ import static dungeon.crawler.GameConstants.PLAYER_STATS.AGILITY;
 import static dungeon.crawler.GameConstants.PLAYER_STATS.INTELLIGENCE;
 import static dungeon.crawler.GameConstants.PLAYER_STATS.PERCEPTION;
 import static dungeon.crawler.GameConstants.PLAYER_STATS.STRENGTH;
+import dungeon.crawler.GameSystem.Magic.MagicSystem;
 
 public class FighterClass implements ClassLogic{
     private String name;
@@ -74,6 +75,24 @@ public class FighterClass implements ClassLogic{
     public int getLevelUpHP() {
         // TODO Auto-generated method stub
         return 12;
+    }
+
+    @Override
+    public MagicSystem getMagicSystem() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public boolean isMagicUser() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public void fillSpells(int level) {
+        // TODO Auto-generated method stub
+        
     }
 
 }

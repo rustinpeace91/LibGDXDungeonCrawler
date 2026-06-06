@@ -1,5 +1,7 @@
 package dungeon.crawler.GameSystem.Character.Class;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -10,11 +12,23 @@ import static dungeon.crawler.GameConstants.PLAYER_STATS.INTELLIGENCE;
 import static dungeon.crawler.GameConstants.PLAYER_STATS.PERCEPTION;
 import static dungeon.crawler.GameConstants.PLAYER_STATS.STRENGTH;
 import dungeon.crawler.GameSystem.Magic.MagicSystem;
+import dungeon.crawler.GameSystem.Magic.Spell;
+import dungeon.crawler.GameSystem.Magic.Spells.CureMinor;
 
-public class HeroClass implements ClassLogic{
+public class WizardClass implements ClassLogic{
+
     private String name;
-    public HeroClass(){
-        this.name = "hero";
+    private MagicSystem magicSystem;
+
+    public WizardClass(){
+        this.name = "wizard";
+        this.magicSystem = new MagicSystem();
+    }
+
+    public Map<Integer, ArrayList<Spell>> getWizardSpellLevels(){
+        Map<Integer, ArrayList<Spell>> map = new HashMap<>();
+        map.put(1, new ArrayList<>(Arrays.asList(new CureMinor())));
+        return map;
     }
 
     @Override
@@ -28,17 +42,29 @@ public class HeroClass implements ClassLogic{
     }
 
     @Override
+    public void fillSpells(int level){
+        ArrayList<Spell> spells = new ArrayList();
+        Map<Integer, ArrayList<Spell>> spellMap = getWizardSpellLevels();
+        for(int i = 1; i <= level; i++){
+            if(spellMap.containsKey(i)){
+                spells.addAll(spellMap.get(i));
+            }
+        }
+        magicSystem.setSpells(spells);
+    }
+
+    @Override
     public Map<GameConstants.PLAYER_STATS, Integer> returnLevelUpStats() {
         Map<GameConstants.PLAYER_STATS, Integer> statMap = new HashMap<>();
 
         Random random = new Random();
-        statMap.put(STRENGTH, random.nextInt(2) + 1);
+        statMap.put(STRENGTH, 0);
         statMap.put(AGILITY, 0);
-        statMap.put(INTELLIGENCE, 0);
-        statMap.put(PERCEPTION, random.nextInt(3) + 1);
+        statMap.put(INTELLIGENCE, random.nextInt(4) + 1);
+        statMap.put(PERCEPTION, 0);
 
         GameConstants.PLAYER_STATS[] otherStats = new  GameConstants.PLAYER_STATS[]{
-            INTELLIGENCE, AGILITY
+            STRENGTH, AGILITY, PERCEPTION
         };
 
 
@@ -80,18 +106,12 @@ public class HeroClass implements ClassLogic{
     @Override
     public MagicSystem getMagicSystem() {
         // TODO Auto-generated method stub
-        return null;
+        return magicSystem;
     }
 
     @Override
     public boolean isMagicUser() {
         // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public void fillSpells(int level) {
-        // TODO Auto-generated method stub
-        
+        return true;
     }
 }

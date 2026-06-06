@@ -14,6 +14,7 @@ import static dungeon.crawler.GameConstants.PLAYER_STATS.*;
 import dungeon.crawler.GameSystem.Character.Class.ClassLogic;
 import dungeon.crawler.GameSystem.Character.Class.FighterClass;
 import dungeon.crawler.GameSystem.Character.Class.HeroClass;
+import dungeon.crawler.GameSystem.Character.Class.WizardClass;
 
 public class PlayerFactory{
 
@@ -86,6 +87,32 @@ public class PlayerFactory{
         );
         pc.equipWeapon(WeaponFactory.getIronSword());
         return pc;
+    }
+
+    public static PartyCharacter generateWizard() {
+        WizardClass fc = new WizardClass();
+        Map<GameConstants.PLAYER_STATS, Integer> statMap = fc.returnBaseStats();
+        PartyCharacter pc = new PartyCharacter(
+            "Wixxian",
+            15,
+            0,
+            15,
+            20,
+            0,
+            Stance.STANDING,
+            new ArrayList<Condition>(),
+            false,
+            1,
+            statMap.get(STRENGTH),
+            statMap.get(AGILITY),
+            statMap.get(INTELLIGENCE),
+            statMap.get(PERCEPTION),
+            fc,
+            false
+        );
+        pc.charClass.fillSpells(1);
+        return pc;
+
     }
 
 
