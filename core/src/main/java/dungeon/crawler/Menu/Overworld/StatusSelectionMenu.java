@@ -39,16 +39,16 @@ public class StatusSelectionMenu extends BaseLinearMenu {
         // TODO: Move this logic OUTTA here. This runs when the menu closes too
         super.setStage(stage);
         if(stage == null) return;
+        this.addPartyButtons();
 
 
         if(parentMenu != null){
-            this.setPosition(this.parentMenu.getOriginX() + 200, Gdx.graphics.getHeight() - this.getHeight() - 120);
+            this.setPosition(this.parentMenu.getOriginX() + 200, Gdx.graphics.getHeight() - this.getHeight());
         }
 
         
-        this.addPartyButtons();
         float x = this.parentMenu.getWidth() + this.getWidth() + 40;
-        float y = Gdx.graphics.getHeight() - getHeight() - 200;
+        float y = Gdx.graphics.getHeight() - getHeight() - 150;
         subStatusMenu.setPosition(
             x, y
         ); 

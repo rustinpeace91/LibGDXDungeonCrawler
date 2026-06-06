@@ -13,6 +13,13 @@ public class GameConstants {
         TEST_SCREEN
     };
 
+    public enum PLAYER_STATS {
+        STRENGTH,
+        AGILITY,
+        INTELLIGENCE,
+        PERCEPTION
+    }
+
     // screen
     public static final int RESOLUTION_WIDTH = 960;
     public static final int RESOLUTION_HEIGHT = 720;
@@ -41,6 +48,13 @@ public class GameConstants {
         PlayerDirection.RIGHT, "WalkRight",
         PlayerDirection.DOWN, "WalkDown",
         PlayerDirection.LEFT, "WalkLeft"
+    );
+    public static final Map<PLAYER_STATS, String> STAT_NAMES = Map.of(
+        PLAYER_STATS.STRENGTH, "Strength",
+        PLAYER_STATS.AGILITY, "Agility",
+        PLAYER_STATS.INTELLIGENCE, "Intelligence",
+        PLAYER_STATS.PERCEPTION, "Perception"
+
     );
 
 }

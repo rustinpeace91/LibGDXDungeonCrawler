@@ -2,7 +2,6 @@ package dungeon.crawler.GameSystem.Inventory;
 
 import java.util.ArrayList;
 
-import dungeon.crawler.GameSystem.Character.CharacterClass;
 import dungeon.crawler.GameSystem.Character.Condition;
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.GameSystem.Combat.Elemental;
@@ -24,8 +23,7 @@ public class Weapon extends Item{
         String flavorTextVerb,
         boolean ranged,
         Condition condition,
-        Elemental elemental,
-        ArrayList<CharacterClass> classRestrictions
+        Elemental elemental
     ) {
         super(name, owner);
         this.toHit = toHit;
@@ -35,9 +33,9 @@ public class Weapon extends Item{
         this.ranged = ranged;
         this.condition = condition;
         this.elemental = elemental;
-        this.classRestrictions = classRestrictions;
+//        this.classRestrictions = classRestrictions;
     }
-    public ArrayList<CharacterClass> classRestrictions;
+//    public ArrayList<CharacterClass> classRestrictions;
     
     
 }

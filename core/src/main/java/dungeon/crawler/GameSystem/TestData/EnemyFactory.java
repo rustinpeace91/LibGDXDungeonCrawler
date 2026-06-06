@@ -3,6 +3,7 @@ package dungeon.crawler.GameSystem.TestData;
 import java.util.ArrayList;
 
 import dungeon.crawler.GameSystem.Character.Condition;
+import dungeon.crawler.GameSystem.Character.EnemyCombatant;
 import dungeon.crawler.GameSystem.Character.Stance;
 
 public class EnemyFactory {

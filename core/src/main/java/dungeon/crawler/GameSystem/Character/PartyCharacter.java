@@ -1,8 +1,15 @@
 package dungeon.crawler.GameSystem.Character;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Random;
 
+import dungeon.crawler.GameConstants;
+import static dungeon.crawler.GameConstants.PLAYER_STATS.AGILITY;
+import static dungeon.crawler.GameConstants.PLAYER_STATS.INTELLIGENCE;
+import static dungeon.crawler.GameConstants.PLAYER_STATS.PERCEPTION;
+import static dungeon.crawler.GameConstants.PLAYER_STATS.STRENGTH;
+import dungeon.crawler.GameSystem.Character.Class.ClassLogic;
 import dungeon.crawler.GameSystem.Combat.AttackDamage;
 import dungeon.crawler.GameSystem.Inventory.Weapon;
 import dungeon.crawler.Utils.StringUtils;
@@ -18,29 +25,28 @@ public class PartyCharacter extends Character implements Combatant{
     public int toHit;
     public Weapon equippedWeapon;
     public Weapon fist;
-    public CharacterClass charClass;
+    public ClassLogic charClass;
 
     public PartyCharacter(
-            String name,
-            int maxHp,
-            int maxMP,
-            int hp,
-            int mp,
-            int xp,
-            int defense,
-            Stance stance,
-            ArrayList<Condition> conditions,
-            boolean isDead,
-            int level,
-            int strength,
-            int agility,
-            int intelligence,
-            int perception,
-            CharacterClass charClass,
-            boolean isHero
+        String name,
+        int maxHp,
+        int maxMP,
+        int hp,
+        int mp,
+        int xp,
+        Stance stance,
+        ArrayList<Condition> conditions,
+        boolean isDead,
+        int level,
+        int strength,
+        int agility,
+        int intelligence,
+        int perception,
+        ClassLogic charClass,
+        boolean isHero
 
     ) {
-        super(name, maxHp, maxMP, hp, mp, defense, stance, conditions, isDead);
+        super(name, maxHp, maxMP, hp, mp, stance, conditions, isDead);
         this.level = level;
         this.strength = strength;
         this.agility = agility;
@@ -52,14 +58,13 @@ public class PartyCharacter extends Character implements Combatant{
         this.fist = new Weapon(
             "fist",
             (PartyCharacter) this,
-            this.agility,
+            Math.round(agility / 10),
             1,
             10,
             "punches",
             false,
             null,
-            null,
-            (ArrayList<CharacterClass>) null
+            null
         );
         this.charClass = charClass;
     }
@@ -93,9 +98,7 @@ public class PartyCharacter extends Character implements Combatant{
     @Override
     public int defend(AttackDamage attack) {
         // TODO Auto-generated method stub
-        return defense;
-
-        
+        return getDefense();
     }
 
     @Override
@@ -136,57 +139,23 @@ public class PartyCharacter extends Character implements Combatant{
     public ArrayList<String> LevelUp(int newLevel) {
         ArrayList<String> messages = new ArrayList();
         level = newLevel;
-        switch(charClass) {
-            case HERO:
-                Random rand = new Random();
-                int newStr = rand.nextInt(3) + 1;
-                messages.add(
-                    StringUtils.format("You are now level %s", String.valueOf(level))
-                );
-                if(newStr > 0){
-                    strength = strength + newStr;
-                    messages.add(
-                        StringUtils.format(
-                            "Strength increased by %s",
-                            String.valueOf(newStr)
-                        )
-                    );
-                }
-                int newaGi = rand.nextInt(4) + 1;
-                if(newaGi > 0){
-                    agility = agility + newaGi;
-                    messages.add(
-                        StringUtils.format(
-                            "Agility increased by %s",
-                            String.valueOf(newaGi)
-                        )
-                    );
-                }
-                int newInt = rand.nextInt(2);
-                    if(newInt > 0){
-                        intelligence = intelligence + newInt;
-                        messages.add(
-                            StringUtils.format(
-                                "Intelligence increased by %s",
-                                String.valueOf(newInt)
-                            )
-                        );
-                    }
-                int newPerc = rand.nextInt(2);
-                if(newPerc > 0){
-                    perception = perception + newPerc;
-                    messages.add(
-                        StringUtils.format(
-                            "Perception increased by %s",
-                            String.valueOf(newPerc)
-                        )
-                    );
-                }
-                break;
-            default:
-                break;
 
-        }
+        Map<GameConstants.PLAYER_STATS, Integer> levelUpStats = charClass.returnLevelUpStats();
+        levelUpStats.entrySet().stream()
+            .filter(entry -> entry.getValue() > 0)
+            .forEach(
+                entry -> {
+                    messages.add(
+                        StringUtils.format(
+                            "%s increased by %s", GameConstants.STAT_NAMES.get(entry.getKey()), entry.getValue()
+                        )
+                    );
+                }
+            );
+        this.strength = levelUpStats.get(STRENGTH);
+        this.intelligence = levelUpStats.get(INTELLIGENCE);
+        this.agility = levelUpStats.get(AGILITY);
+        this.perception = levelUpStats.get(PERCEPTION);
         return messages;
     }
 
@@ -197,6 +166,35 @@ public class PartyCharacter extends Character implements Combatant{
             return equippedWeapon;
         } else {
             return fist;
+        }
+    }
+
+    @Override
+    public int getDefense() {
+        // TODO Auto-generated method stub
+        return 10;
+    }
+
+    @Override
+    public int heal(int amount){
+        int boost;
+        if(hp + amount > maxHp){
+            boost = maxHp - hp;
+            hp = maxHp;
+        } else{
+            hp = hp + amount;
+            boost = amount;
+        }
+        return boost;
+    }
+
+    @Override
+    public void spendMp(int amount) {
+        if(mp - amount < maxMP){
+            mp = 0;
+            // log something here this should never happen
+        } else{
+            mp = mp - amount;
         }
     }
 }

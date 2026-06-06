@@ -14,7 +14,6 @@ import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.GameSystem.GameState.CombatActionState;
 import dungeon.crawler.GameSystem.GameState.CombatPhase;
 import dungeon.crawler.GameSystem.Leveling.LevelTable;
-import dungeon.crawler.GameSystem.TestData.EnemyCombatant;
 import dungeon.crawler.MainGame;
 import dungeon.crawler.Menu.CombatEventScreen;
 import dungeon.crawler.Observers.CombatLogicObserver;
