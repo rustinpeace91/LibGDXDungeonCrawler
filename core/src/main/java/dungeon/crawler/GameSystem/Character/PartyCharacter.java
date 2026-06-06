@@ -58,7 +58,7 @@ public class PartyCharacter extends Character implements Combatant{
         this.fist = new Weapon(
             "fist",
             (PartyCharacter) this,
-            this.agility,
+            Math.round(agility / 10),
             1,
             10,
             "punches",

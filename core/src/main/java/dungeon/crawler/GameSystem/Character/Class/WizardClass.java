@@ -34,10 +34,10 @@ public class WizardClass implements ClassLogic{
     @Override
     public Map<GameConstants.PLAYER_STATS, Integer> returnBaseStats() {
         Map<GameConstants.PLAYER_STATS, Integer> statMap = new HashMap<>();
-        statMap.put(STRENGTH, 10);
-        statMap.put(AGILITY, 10);
-        statMap.put(INTELLIGENCE, 10);
-        statMap.put(PERCEPTION, 10);
+        statMap.put(STRENGTH, 8);
+        statMap.put(AGILITY, 8);
+        statMap.put(INTELLIGENCE, 12);
+        statMap.put(PERCEPTION, 12);
         return statMap;
     }
 
