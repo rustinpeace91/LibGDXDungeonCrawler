@@ -1,18 +1,22 @@
 package dungeon.crawler.GameSystem.Inventory;
 
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
+import dungeon.crawler.GameSystem.Character.Class.ClassLogic;
+import dungeon.crawler.GameSystem.Inventory.ItemTypes.ArmorTypes;
 import dungeon.crawler.GameSystem.Inventory.ItemTypes.EquipmentSlot;
 import dungeon.crawler.GameSystem.Inventory.ItemTypes.ItemType;
 
 public class Armor extends Item{
     public int defenseBonus;
     public EquipmentSlot slot;
+    public ArmorTypes armorType;
     public Armor(
         String name,
         PartyCharacter owner,
         int defenseBonus,
-        EquipmentSlot slot,
-        int value
+        int value,
+        ArmorTypes armorType,
+        EquipmentSlot slot
     ) {
         super(
             name,
@@ -22,5 +26,11 @@ public class Armor extends Item{
         );
         this.defenseBonus = defenseBonus;
         this.slot = slot;
+        this.armorType = armorType;
+    }
+
+
+    public boolean canEquip(ClassLogic charClass){
+        return charClass.getArmorRestrictions().contains(armorType);
     }
 }

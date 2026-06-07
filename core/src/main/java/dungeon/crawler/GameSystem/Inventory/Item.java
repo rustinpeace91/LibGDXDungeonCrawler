@@ -1,6 +1,7 @@
 package dungeon.crawler.GameSystem.Inventory;
 
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
+import dungeon.crawler.GameSystem.Character.Class.ClassLogic;
 // import dungeon.crawler.GameSystem.TestData.PlayerCharacter;
 import dungeon.crawler.GameSystem.Inventory.ItemTypes.ItemType;
 
@@ -24,4 +25,17 @@ public class Item implements ItemLogic {
         // TODO Auto-generated method stub
         return null;
     }
+
+    @Override
+    public boolean equippable() {
+        ItemType itemType = returnItemType();
+        return itemType == ItemType.ARMOR || itemType == ItemType.WEAPON;
+    }
+
+    @Override
+    public boolean canEquip(ClassLogic charClass) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
 }

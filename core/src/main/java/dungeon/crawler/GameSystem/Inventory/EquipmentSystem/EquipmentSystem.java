@@ -8,6 +8,9 @@ import dungeon.crawler.GameSystem.Inventory.ItemTypes.ItemType;
 public class EquipmentSystem {
     private Weapon rightHand;
     private Armor leftHand;
+    private Armor head;
+    private Armor body;
+    private Armor feet;
 
     public EquipmentSystem(){
 
@@ -26,9 +29,6 @@ public class EquipmentSystem {
         this.body = body;
         this.feet = feet;
     }
-    private Armor head;
-    private Armor body;
-    private Armor feet;
 
     public void equipItem(Item item){
         if(item.returnItemType() == ItemType.WEAPON){
@@ -36,10 +36,24 @@ public class EquipmentSystem {
             rightHand = mainWeapon;
             // equipItem
         } else if (item.returnItemType() == ItemType.ARMOR){
-            // check class restrictions
-            // case for limb
+            // consider using visitor pattern if this gets more complicated
+            // item.equip(this)
+            // item knows which slot it belongs to and chooses method
+            Armor equippableArmor = (Armor) item;
+            switch(equippableArmor.slot){
+                case LEFT_HAND:
+                    leftHand = equippableArmor;
+                case HEAD:
+                    head = equippableArmor;
+                case BODY:
+                    body = equippableArmor;
+                case FEET:
+                    feet = equippableArmor;
+                default:
+                    throw new IllegalArgumentException("Unknown Equipment Slot");
+            }
         } else {
-            // throw error of some sort
+            throw new IllegalArgumentException("Unknown Item Type");
         }
 
     }
