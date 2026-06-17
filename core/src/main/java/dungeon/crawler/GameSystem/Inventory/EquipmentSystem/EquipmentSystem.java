@@ -58,5 +58,9 @@ public class EquipmentSystem {
 
     }
 
+    public Weapon getWeapon(){
+        return rightHand;
+    }
+
 
 }

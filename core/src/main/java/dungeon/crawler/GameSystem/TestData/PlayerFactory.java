@@ -58,7 +58,7 @@ public class PlayerFactory{
             hc,
             true
         );
-        pc.equipWeapon(WeaponFactory.getIronSword());
+        pc.equip(WeaponFactory.getIronSword());
         return pc;
     }
 
@@ -85,7 +85,7 @@ public class PlayerFactory{
             fc,
             false
         );
-        pc.equipWeapon(WeaponFactory.getIronSword());
+        pc.equip(WeaponFactory.getIronSword());
         return pc;
     }
 

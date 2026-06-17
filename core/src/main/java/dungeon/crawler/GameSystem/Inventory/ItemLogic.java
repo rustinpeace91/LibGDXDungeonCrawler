@@ -1,3 +1,5 @@
+package dungeon.crawler.GameSystem.Inventory;
+
 import dungeon.crawler.GameSystem.Character.Class.ClassLogic;
 import dungeon.crawler.GameSystem.Inventory.ItemTypes.ItemType;
 

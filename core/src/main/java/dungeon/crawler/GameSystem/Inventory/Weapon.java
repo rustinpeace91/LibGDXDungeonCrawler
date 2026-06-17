@@ -1,10 +1,8 @@
 package dungeon.crawler.GameSystem.Inventory;
 
-import java.util.ArrayList;
-
+import dungeon.crawler.GameSystem.Character.Class.ClassLogic;
 import dungeon.crawler.GameSystem.Character.Condition;
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
-import dungeon.crawler.GameSystem.Character.Class.ClassLogic;
 import dungeon.crawler.GameSystem.Combat.Elemental;
 import dungeon.crawler.GameSystem.Inventory.ItemTypes.Handed;
 import dungeon.crawler.GameSystem.Inventory.ItemTypes.ItemType;
@@ -58,5 +56,9 @@ public class Weapon extends Item{
         return charClass.getWeaponRestrictions().contains(weaponType);
     }
 
+    @Override
+    public ItemType returnItemType() {
+        return ItemType.WEAPON;
+    }
 
 }

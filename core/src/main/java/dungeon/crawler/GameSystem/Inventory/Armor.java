@@ -1,7 +1,7 @@
 package dungeon.crawler.GameSystem.Inventory;
 
-import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.GameSystem.Character.Class.ClassLogic;
+import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.GameSystem.Inventory.ItemTypes.ArmorTypes;
 import dungeon.crawler.GameSystem.Inventory.ItemTypes.EquipmentSlot;
 import dungeon.crawler.GameSystem.Inventory.ItemTypes.ItemType;
@@ -32,5 +32,10 @@ public class Armor extends Item{
 
     public boolean canEquip(ClassLogic charClass){
         return charClass.getArmorRestrictions().contains(armorType);
+    }
+
+    @Override
+    public ItemType returnItemType() {
+        return ItemType.ARMOR;
     }
 }

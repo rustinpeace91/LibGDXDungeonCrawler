@@ -151,10 +151,11 @@ public class PartyCharacter extends Character implements Combatant{
     // }
     //
     public String equip(Item item){
+        String x = "yea";
+
         if(!item.equippable()){
             return StringUtils.format("%s is not an equippable item!", item.name);
         }
-
         if(item.canEquip(charClass)){
             this.equipment.equipItem(item);
             return StringUtils.format("%s equipped!", item.name);
