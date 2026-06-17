@@ -15,6 +15,8 @@ import dungeon.crawler.GameSystem.Inventory.Item;
 import dungeon.crawler.GameSystem.Inventory.Weapon;
 import dungeon.crawler.GameSystem.Inventory.EquipmentSystem.EquipmentSystem;
 import dungeon.crawler.GameSystem.Inventory.InventorySystem.InventorySystem;
+import dungeon.crawler.GameSystem.Inventory.ItemTypes.Handed;
+import dungeon.crawler.GameSystem.Inventory.ItemTypes.WeaponTypes;
 import dungeon.crawler.Utils.StringUtils;
 
 public class PartyCharacter extends Character implements Combatant{
@@ -70,9 +72,14 @@ public class PartyCharacter extends Character implements Combatant{
             "punches",
             false,
             null,
-            null
+            null,
+            0,
+            WeaponTypes.STAFF,
+            Handed.ONE_HANDED
         );
         this.charClass = charClass;
+        this.equipment = new EquipmentSystem();
+        this.inventory = new InventorySystem(new ArrayList<Item>());
     }
 
     public int calculateToHit(){
@@ -189,10 +196,17 @@ public class PartyCharacter extends Character implements Combatant{
     }
 
     public Weapon getWeapon(){
+        // if(
+        //     equippedWeapon != null
+        // ){
+        //     return equippedWeapon;
+        // } else {
+        //     return fist;
+        // }
         if(
-            equippedWeapon != null
-        ){
-            return equippedWeapon;
+            equipment.getWeapon()!= null
+        ) {
+            return equipment.getWeapon();
         } else {
             return fist;
         }
