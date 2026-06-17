@@ -1,10 +1,13 @@
 package dungeon.crawler.GameSystem.Inventory;
 
-import java.util.ArrayList;
-
+import dungeon.crawler.GameSystem.Character.Class.ClassLogic;
 import dungeon.crawler.GameSystem.Character.Condition;
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.GameSystem.Combat.Elemental;
+import dungeon.crawler.GameSystem.Inventory.ItemTypes.Handed;
+import dungeon.crawler.GameSystem.Inventory.ItemTypes.ItemType;
+import dungeon.crawler.GameSystem.Inventory.ItemTypes.WeaponTypes;
+
 
 public class Weapon extends Item{
     public int toHit;
@@ -14,6 +17,8 @@ public class Weapon extends Item{
     public boolean ranged;
     public Condition condition;
     public Elemental elemental;
+    public WeaponTypes weaponType;
+    public Handed handed;
     public Weapon(
         String name,
         PartyCharacter owner,
@@ -23,9 +28,17 @@ public class Weapon extends Item{
         String flavorTextVerb,
         boolean ranged,
         Condition condition,
-        Elemental elemental
+        Elemental elemental,
+        int value,
+        WeaponTypes weaponType,
+        Handed handed
     ) {
-        super(name, owner);
+        super(
+            name,
+            owner,
+            value,
+            ItemType.WEAPON
+        );
         this.toHit = toHit;
         this.damageLow = damageLow;
         this.damageHigh = damageHigh;
@@ -33,9 +46,19 @@ public class Weapon extends Item{
         this.ranged = ranged;
         this.condition = condition;
         this.elemental = elemental;
-//        this.classRestrictions = classRestrictions;
+        this.weaponType = weaponType;
+        this.handed = handed;
     }
 //    public ArrayList<CharacterClass> classRestrictions;
-    
-    
+//
+
+    public boolean canEquip(ClassLogic charClass){
+        return charClass.getWeaponRestrictions().contains(weaponType);
+    }
+
+    @Override
+    public ItemType returnItemType() {
+        return ItemType.WEAPON;
+    }
+
 }

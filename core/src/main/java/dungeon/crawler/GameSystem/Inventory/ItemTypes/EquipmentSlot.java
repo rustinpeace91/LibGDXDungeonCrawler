@@ -1,4 +1,4 @@
-package dungeon.crawler.GameSystem.Inventory;
+package dungeon.crawler.GameSystem.Inventory.ItemTypes;
 
 public enum EquipmentSlot {
     HEAD,

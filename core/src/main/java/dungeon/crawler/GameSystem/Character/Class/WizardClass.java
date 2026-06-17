@@ -11,6 +11,12 @@ import static dungeon.crawler.GameConstants.PLAYER_STATS.AGILITY;
 import static dungeon.crawler.GameConstants.PLAYER_STATS.INTELLIGENCE;
 import static dungeon.crawler.GameConstants.PLAYER_STATS.PERCEPTION;
 import static dungeon.crawler.GameConstants.PLAYER_STATS.STRENGTH;
+
+import dungeon.crawler.GameSystem.Inventory.ItemTypes.ArmorTypes;
+import dungeon.crawler.GameSystem.Inventory.ItemTypes.WeaponTypes;
+import static dungeon.crawler.GameSystem.Inventory.ItemTypes.ArmorTypes.*;
+import static dungeon.crawler.GameSystem.Inventory.ItemTypes.WeaponTypes.*;
+
 import dungeon.crawler.GameSystem.Magic.MagicSystem;
 import dungeon.crawler.GameSystem.Magic.Spell;
 import dungeon.crawler.GameSystem.Magic.Spells.CureMinor;
@@ -113,5 +119,23 @@ public class WizardClass implements ClassLogic{
     public boolean isMagicUser() {
         // TODO Auto-generated method stub
         return true;
+    }
+
+    @Override
+    public ArrayList<ArmorTypes> getArmorRestrictions() {
+        ArmorTypes[] types = {
+            BASIC
+        };
+        ArrayList<ArmorTypes> typeList = new ArrayList<ArmorTypes>(Arrays.asList(types));
+        return typeList;
+    }
+
+    @Override
+    public ArrayList<WeaponTypes> getWeaponRestrictions() {
+        WeaponTypes[] types = {
+            STAFF
+        };
+        ArrayList<WeaponTypes> typeList = new ArrayList<WeaponTypes>(Arrays.asList(types));
+        return typeList;
     }
 }

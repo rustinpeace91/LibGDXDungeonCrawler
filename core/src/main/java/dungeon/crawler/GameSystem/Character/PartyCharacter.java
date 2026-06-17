@@ -11,7 +11,12 @@ import static dungeon.crawler.GameConstants.PLAYER_STATS.PERCEPTION;
 import static dungeon.crawler.GameConstants.PLAYER_STATS.STRENGTH;
 import dungeon.crawler.GameSystem.Character.Class.ClassLogic;
 import dungeon.crawler.GameSystem.Combat.AttackDamage;
+import dungeon.crawler.GameSystem.Inventory.Item;
 import dungeon.crawler.GameSystem.Inventory.Weapon;
+import dungeon.crawler.GameSystem.Inventory.EquipmentSystem.EquipmentSystem;
+import dungeon.crawler.GameSystem.Inventory.InventorySystem.InventorySystem;
+import dungeon.crawler.GameSystem.Inventory.ItemTypes.Handed;
+import dungeon.crawler.GameSystem.Inventory.ItemTypes.WeaponTypes;
 import dungeon.crawler.Utils.StringUtils;
 
 public class PartyCharacter extends Character implements Combatant{
@@ -23,9 +28,12 @@ public class PartyCharacter extends Character implements Combatant{
     public int perception;
     public boolean isHero;
     public int toHit;
-    public Weapon equippedWeapon;
+    // public Weapon equippedWeapon;
     public Weapon fist;
     public ClassLogic charClass;
+
+    public InventorySystem inventory;
+    public EquipmentSystem equipment;
 
     public PartyCharacter(
         String name,
@@ -64,9 +72,14 @@ public class PartyCharacter extends Character implements Combatant{
             "punches",
             false,
             null,
-            null
+            null,
+            0,
+            WeaponTypes.STAFF,
+            Handed.ONE_HANDED
         );
         this.charClass = charClass;
+        this.equipment = new EquipmentSystem();
+        this.inventory = new InventorySystem(new ArrayList<Item>());
     }
 
     public int calculateToHit(){
@@ -132,8 +145,32 @@ public class PartyCharacter extends Character implements Combatant{
         return name;
     }
 
-    public void equipWeapon(Weapon weapon){
-        this.equippedWeapon = weapon;
+    // public void equipWeapon(Weapon weapon){
+    //     // this.equippedWeapon = weapon;
+    //     this.equipment.equipItem()
+    // }
+    //
+    public String equip(Item item){
+        String x = "yea";
+
+        if(!item.equippable()){
+            return StringUtils.format("%s is not an equippable item!", item.name);
+        }
+        if(item.canEquip(charClass)){
+            this.equipment.equipItem(item);
+            return StringUtils.format("%s equipped!", item.name);
+        }
+
+        return StringUtils.format("%s cannot use a %s", charClass.getName(), item.name);
+
+    }
+
+    public String addToInventory(Item item){
+        if(inventory.enoughSpace()){
+            inventory.addToInventory(item);
+            return StringUtils.format("%s added", item.name);
+        }
+        return StringUtils.format("inventory full!");
     }
 
     public ArrayList<String> LevelUp(int newLevel) {
@@ -160,10 +197,17 @@ public class PartyCharacter extends Character implements Combatant{
     }
 
     public Weapon getWeapon(){
+        // if(
+        //     equippedWeapon != null
+        // ){
+        //     return equippedWeapon;
+        // } else {
+        //     return fist;
+        // }
         if(
-            equippedWeapon != null
-        ){
-            return equippedWeapon;
+            equipment.getWeapon()!= null
+        ) {
+            return equipment.getWeapon();
         } else {
             return fist;
         }

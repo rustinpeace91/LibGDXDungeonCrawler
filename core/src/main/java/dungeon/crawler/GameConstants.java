@@ -57,4 +57,6 @@ public class GameConstants {
 
     );
 
+    public static final int MAX_PLAYER_INVENTORY_SPACE = 10;
+
 }
