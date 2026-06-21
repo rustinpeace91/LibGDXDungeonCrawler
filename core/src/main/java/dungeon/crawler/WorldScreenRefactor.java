@@ -20,7 +20,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.vabrant.console.ConsoleCache;
+import com.vabrant.console.gui.GUIConsole;
 
+import dungeon.crawler.GameSystem.TestData.ConsoleExecutionStrategy;
 import dungeon.crawler.Menu.InputHandlers.MenuInputHandler;
 import dungeon.crawler.Menu.Overworld.OverworldMenu;
 import dungeon.crawler.Menu.Overworld.PartyCharacterStatusMenu;
@@ -71,6 +74,8 @@ PlayerPositionObserver {
 // observers
     public ArrayList<ScreenChangeObserver> screenChangeObservers;
 
+    public GUIConsole console;
+
 
     public WorldScreenRefactor(
         MainGame game,
@@ -85,6 +90,11 @@ PlayerPositionObserver {
         this.map = new TmxMapLoader().load(mapFile);
         this.renderer = new OrthogonalTiledMapRenderer(map);
         this.overWorld = screen.equals(GameConstants.GAME_SCREEN.WALK_OVERWORLD);
+        ConsoleCache cache = new ConsoleCache();
+        this.console=new GUIConsole();
+        console.setCache(cache);
+        ConsoleExecutionStrategy strategy = new ConsoleExecutionStrategy();
+        console.setStrategy(strategy);
         setUpCamera();
         float screenCenterY = camera.viewportHeight / 2f;
         float screenCenterX = camera.viewportWidth / 2f;
@@ -125,7 +135,6 @@ PlayerPositionObserver {
         //input
         InputMultiplexer multiplexer = setUpInput();
         Gdx.input.setInputProcessor(multiplexer);
-
         // screen change
         this.screenChangeObservers = new ArrayList<ScreenChangeObserver>();
         this.screenChangeObservers.add(game);
@@ -174,6 +183,7 @@ PlayerPositionObserver {
         InputMultiplexer multiplexer = new InputMultiplexer();
         // --- Configure the InputMultiplexer ---
         multiplexer.addProcessor(menuInputHanlder);
+        multiplexer.addProcessor(console.getInput());
         // 6. Tell LibGDX to use the multiplexer for all input events
         return multiplexer;
     }
@@ -210,6 +220,8 @@ PlayerPositionObserver {
             uiStage.act(Gdx.graphics.getDeltaTime());
             uiStage.draw();
         }
+        console.draw();
+
     }
 
     @Override
