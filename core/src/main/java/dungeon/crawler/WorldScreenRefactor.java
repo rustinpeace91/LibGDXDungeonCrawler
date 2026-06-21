@@ -23,7 +23,6 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.vabrant.console.ConsoleCache;
 import com.vabrant.console.gui.GUIConsole;
 
-import dungeon.crawler.GameSystem.TestData.ConsoleExecutionStrategy;
 import dungeon.crawler.Menu.InputHandlers.MenuInputHandler;
 import dungeon.crawler.Menu.Overworld.OverworldMenu;
 import dungeon.crawler.Menu.Overworld.PartyCharacterStatusMenu;
@@ -91,10 +90,8 @@ PlayerPositionObserver {
         this.renderer = new OrthogonalTiledMapRenderer(map);
         this.overWorld = screen.equals(GameConstants.GAME_SCREEN.WALK_OVERWORLD);
         ConsoleCache cache = new ConsoleCache();
-        this.console=new GUIConsole();
+        this.console=this.game.debugConsoleHandler.console;
         console.setCache(cache);
-        ConsoleExecutionStrategy strategy = new ConsoleExecutionStrategy();
-        console.setStrategy(strategy);
         setUpCamera();
         float screenCenterY = camera.viewportHeight / 2f;
         float screenCenterX = camera.viewportWidth / 2f;
@@ -214,7 +211,7 @@ PlayerPositionObserver {
         spriteBatch.begin();
         characterSprite.render(spriteBatch);
         spriteBatch.end();
-        if(menuVisible) {
+        if(menuVisible && console.isHidden()) {
             String gold = String.valueOf(this.game.gameState.gold);
             goldMenu.setText(StringUtils.format("Gold: %s ", gold));
             uiStage.act(Gdx.graphics.getDeltaTime());
