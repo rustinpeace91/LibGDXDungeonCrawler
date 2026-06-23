@@ -3,6 +3,7 @@ package dungeon.crawler.GameSystem.DebugConsole;
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.GameSystem.GameState.GameState;
 import dungeon.crawler.Utils.PartyUtils;
+import dungeon.crawler.Utils.StringUtils;
 
 public class DebugConsoleCommands {
     private GameState gameState;
@@ -11,9 +12,9 @@ public class DebugConsoleCommands {
     ){
         this.gameState = gameState;
     }
-    // For now. Syntax is method_name; param1, param2
-    public void parseCommand(String command){
-        String[] args = command.split(";");
+    // For now. Syntax is method_name param1,param2
+    public String parseCommand(String command){
+        String[] args = command.split(" ");
         String methodName = args[0];
         switch(methodName){
             case "heal":
@@ -22,21 +23,24 @@ public class DebugConsoleCommands {
                 String health = params[1];
                 try {
                     int healthAmount = Integer.parseInt(health);
-                    heal(name, healthAmount);
-
+                    String message = heal(name, healthAmount);
+                    return message;
                 } catch(Exception e) {
-                    throw e;
+                    return e.getMessage();
                 }
-                break;
+                // break;
             default:
-                throw new IllegalArgumentException("Invalid command");
+                return StringUtils.format("Invalid Command %s", command);
         }
     }
 
-    public void heal(String name, int amount){
+    public String heal(String name, int amount){
         PartyCharacter character = PartyUtils.returnPartyMemberByName(this.gameState.party, name);
+        String returnLog = "";
         if(character != null){
             int boost = character.heal(amount);
+            returnLog = StringUtils.format("%s healed for %s HP", character.name, String.valueOf(boost));
         }
+        return returnLog;
     }
 }
