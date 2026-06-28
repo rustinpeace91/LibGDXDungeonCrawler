@@ -20,7 +20,8 @@ public class ConsoleExecutionStrategy implements ExecutionStrategy{
     public Object execute(ExecutionStrategyInput t) throws Exception {
         String input = t.getText();
         try {
-            commandHandler.parseCommand(input);
+            String output = commandHandler.parseCommand(input);
+            Gdx.app.log("Console", output);
         } catch(Exception e){
             // no complicated handling, just don't break the damn game for now
             Gdx.app.log("Console", StringUtils.format("ERROR: %s", e.getMessage()));
