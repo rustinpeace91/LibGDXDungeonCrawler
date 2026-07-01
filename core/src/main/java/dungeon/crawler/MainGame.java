@@ -8,6 +8,7 @@ import dungeon.crawler.AssetManager.Assets;
 import dungeon.crawler.Data.Maps.MapRegistry;
 import dungeon.crawler.Data.Maps.ScreenTransitionProperties;
 import dungeon.crawler.GameSystem.Character.EnemyCombatant;
+import dungeon.crawler.GameSystem.DebugConsole.DebugConsoleWrapper;
 import dungeon.crawler.GameSystem.GameState.GameState;
 import dungeon.crawler.GameSystem.TestData.EnemyFactory;
 import dungeon.crawler.Menu.TestMenus.MenuTestScreen;
@@ -21,7 +22,7 @@ public class MainGame extends Game implements ScreenChangeObserver,
     SpriteBatch spriteBatch;
     public GameState gameState;
     public Assets assets;
-    // public DebugConsoleWrapper debugConsoleHandler;
+    public DebugConsoleWrapper debugConsoleHandler;
 
     @Override
     public void create() {
@@ -30,7 +31,7 @@ public class MainGame extends Game implements ScreenChangeObserver,
         gameState.updateWorldMap(mapFile);
         spriteBatch = new SpriteBatch();
         gameState.updateScreenID(1);
-        // this.debugConsoleHandler = new DebugConsoleWrapper(gameState);
+        this.debugConsoleHandler = new DebugConsoleWrapper(gameState);
         assets = new Assets();
         assets.load();
         assets.finishLoading();
