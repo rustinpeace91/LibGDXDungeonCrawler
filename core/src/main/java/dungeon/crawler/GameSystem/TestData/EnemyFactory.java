@@ -5,11 +5,13 @@ import java.util.ArrayList;
 import dungeon.crawler.GameSystem.Character.Condition;
 import dungeon.crawler.GameSystem.Character.EnemyCombatant;
 import dungeon.crawler.GameSystem.Character.Stance;
+import dungeon.crawler.TestData;
 
 public class EnemyFactory {
 
     public static EnemyCombatant generate() {
         // Added 'new' keyword and proper ArrayList initialization
+        TestData data = new TestData(1, "cool");
         return new EnemyCombatant(
             "rat",
             2,

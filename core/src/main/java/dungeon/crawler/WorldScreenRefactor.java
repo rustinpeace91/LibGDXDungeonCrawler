@@ -212,6 +212,7 @@ PlayerPositionObserver {
         characterSprite.render(spriteBatch);
         spriteBatch.end();
         if(menuVisible && console.isHidden()) {
+        // if(menuVisible){
             String gold = String.valueOf(this.game.gameState.gold);
             goldMenu.setText(StringUtils.format("Gold: %s ", gold));
             uiStage.act(Gdx.graphics.getDeltaTime());
