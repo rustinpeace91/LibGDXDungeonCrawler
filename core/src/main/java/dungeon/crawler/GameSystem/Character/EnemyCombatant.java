@@ -11,6 +11,7 @@ public class EnemyCombatant extends Enemy implements Combatant {
 
     public EnemyCombatant(
         String name,
+        String identifier,
         int toHit,
         int earnedXP,
         int initiative,
@@ -23,7 +24,7 @@ public class EnemyCombatant extends Enemy implements Combatant {
         ArrayList<Condition> conditions,
         boolean isDead
     ) {
-        super(name, earnedXP, initiative, maxHp, maxMP, hp, mp, defense, stance, conditions, isDead);
+        super(name,identifier, earnedXP, initiative, maxHp, maxMP, hp, mp, defense, stance, conditions, isDead);
         this.toHit = toHit;
     }
 

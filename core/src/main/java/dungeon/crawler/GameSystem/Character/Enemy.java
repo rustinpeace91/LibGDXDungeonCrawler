@@ -5,9 +5,11 @@ import java.util.ArrayList;
 public class Enemy extends Character {
     public int earnedXP;
     protected int defense;
+    protected String identifier;
     
     public Enemy(
         String name,
+        String identifier,
         int earnedXP,
         int initiative,
         int maxHp,

@@ -64,10 +64,11 @@ public class MainGame extends Game implements ScreenChangeObserver,
             backToOverworld();
         }
         else if(screen == GameConstants.GAME_SCREEN.COMBAT){
-            EnemyCombatant enemy = EnemyFactory.generate();
+            EnemyFactory factory = new EnemyFactory();
+            EnemyCombatant enemy = factory.generate();
 
             this.gameState.currentEnemyRoster.put(1, enemy);
-            this.gameState.currentEnemyRoster.put(2, EnemyFactory.generate());
+            this.gameState.currentEnemyRoster.put(2, factory.generate());
             CombatScreen combatScreen = new CombatScreen(this);
             setScreen(combatScreen);
         } else if(screen == GameConstants.GAME_SCREEN.TEST_SCREEN){
