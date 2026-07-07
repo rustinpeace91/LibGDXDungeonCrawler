@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import dungeon.crawler.GameSystem.Combat.AttackDamage;
-import dungeon.crawler.Utils.StringUtils;
 
 public class EnemyCombatant extends Enemy implements Combatant {
     public int toHit;
+    private int attackMin;
+    private int attackMax;
+    private String attackText;
 
     public EnemyCombatant(
         String name,
@@ -20,12 +22,31 @@ public class EnemyCombatant extends Enemy implements Combatant {
         int hp,
         int mp,
         int defense,
+        int attackMin,
+        int attackMax,
+        String attackText,
         Stance stance,
         ArrayList<Condition> conditions,
         boolean isDead
     ) {
-        super(name,identifier, earnedXP, initiative, maxHp, maxMP, hp, mp, defense, stance, conditions, isDead);
+        super(
+            name,
+            identifier,
+            earnedXP,
+            initiative,
+            maxHp,
+            maxMP,
+            hp,
+            mp,
+            defense,
+            stance,
+            conditions,
+            isDead
+        );
         this.toHit = toHit;
+        this.attackMin = attackMin;
+        this.attackMax = attackMax;
+        this.attackText = attackText;
     }
 
     @Override
@@ -35,8 +56,8 @@ public class EnemyCombatant extends Enemy implements Combatant {
         // nextInt(20) gives 0-19, so +1 gives 1-20
         int randomNumber = rand.nextInt(20) + 1;
         int toHitRoll = randomNumber + toHit;
-        int damageRoll = rand.nextInt(10) + 1;
-        String flavorText = StringUtils.format("The %s takes a bite!", this.name);
+        int damageRoll = rand.nextInt(attackMax) + attackMin;
+        String flavorText = attackText;
         return new AttackDamage(toHitRoll, damageRoll,  flavorText, false);
     }
 

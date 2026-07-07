@@ -1,5 +1,6 @@
 package dungeon.crawler.Data.Enemies;
 
+
 data class EnemyParams(
     val name: String,
     val id: String,
@@ -10,7 +11,9 @@ data class EnemyParams(
     val maxMP: Int,
     val hp: Int,
     val mp: Int,
-    val defense: Int
+    val defense: Int,
+    val attackDamage: Pair<Int, Int>,
+    val attackText: String
 )
 
 class EnemyRegistry {
@@ -40,9 +43,45 @@ object DataInitializer {
                 1,
                 16,
                 0,
-                6,
+                16,
                 0,
-                3
+                3,
+                Pair(1, 10),
+                "rat takes a bite"
+            )
+        )
+        registry.registerEnemy(
+            "spider",
+            EnemyParams(
+                "spider",
+                "spider",
+                2,
+                100,
+                2,
+                30,
+                0,
+                30,
+                0,
+                5,
+                Pair(2, 20),
+                "spider takes a bite"
+            )
+        )
+        registry.registerEnemy(
+            "skeleton",
+            EnemyParams(
+                "skeleton",
+                "skeleton",
+                3,
+                200,
+                2,
+                50,
+                0,
+                50,
+                0,
+                5,
+                Pair(4, 50),
+                "skeleton takes a bite"
             )
         )
         return registry;

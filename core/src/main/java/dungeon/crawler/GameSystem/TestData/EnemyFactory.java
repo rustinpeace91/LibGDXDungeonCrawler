@@ -35,6 +35,9 @@ public class EnemyFactory {
             params.getHp(),
             params.getMp(),
             params.getDefense(),
+            params.getAttackDamage().component1(),
+            params.getAttackDamage().component2(),
+            params.getAttackText(),
             Stance.STANDING,
             new ArrayList<Condition>(), 
             false
