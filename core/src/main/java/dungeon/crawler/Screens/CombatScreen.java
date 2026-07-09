@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import dungeon.crawler.GameConstants;
 import dungeon.crawler.GameSystem.Combat.CombatLogic;
+import dungeon.crawler.GameSystem.Combat.EnemyRenderer;
 import dungeon.crawler.GameSystem.GameState.CombatActionState;
 import dungeon.crawler.GameSystem.GameState.CombatPhase;
 import dungeon.crawler.MainGame;
@@ -40,6 +41,7 @@ public class CombatScreen extends ScreenAdapter
     private MainGame game;
 
     private Stage uiStage;
+    private Stage enemyStage;
     private Skin skin;
 
     private MenuInputHandler menuInputHanlder;
@@ -50,6 +52,7 @@ public class CombatScreen extends ScreenAdapter
     private CombatEventScreen  eventScreen;
     private CombatMenu combatMenu;
     private CombatPartyOrderScreen partyScreen;
+    private EnemyRenderer enemyRenderer;
 
     private Texture backgroundTexture;
     private CombatScreenObserver combatScreenObserver;
@@ -69,6 +72,8 @@ public class CombatScreen extends ScreenAdapter
         // 1. Setup Stage and Table
         // this.uiStage = new Stage(new ScreenViewport());
         this.uiStage = new Stage(new FitViewport(GameConstants.RESOLUTION_WIDTH, GameConstants.RESOLUTION_HEIGHT));
+        this.enemyStage = new Stage(new FitViewport(GameConstants.RESOLUTION_WIDTH, GameConstants.RESOLUTION_HEIGHT));
+        this.enemyRenderer = new EnemyRenderer(this.game.gameState, this.enemyStage);
         // 2. Load your Skin (ensure path is correct)
         this.skin = new Skin(Gdx.files.internal(GameConstants.MENU_SKIN));
 
@@ -177,6 +182,7 @@ public class CombatScreen extends ScreenAdapter
         this.uiStage.setKeyboardFocus(eventScreen);
         this.logicHandler = new CombatLogic(eventScreen, game);
         this.logicHandler.addListener(this);
+        this.enemyRenderer.intializeEnemySprites();
         this.logicHandler.advanceState(CombatPhase.INTRO);
     }
 
@@ -322,6 +328,7 @@ public class CombatScreen extends ScreenAdapter
     @Override
     public void onActionComplete(){
         updatePartyScreen();
+        enemyRenderer.updateEnemySprites();
     }
 
     @Override
@@ -370,6 +377,7 @@ public class CombatScreen extends ScreenAdapter
     @Override
     public void dispose(){
         uiStage.dispose();
+        enemyRenderer.dispose();
         // clean up mf
     }
 

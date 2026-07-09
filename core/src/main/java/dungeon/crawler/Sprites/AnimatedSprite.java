@@ -13,47 +13,46 @@ public class AnimatedSprite {
     private String currentState;
     private float stateTime;
     private Sprite sprite;
-    
+
     public boolean walking;
-    
-  
-public AnimatedSprite(
-Map<String, Animation<TextureRegion>> animations,
-String initialState,
-float x,
-float y,
-float sx,
-float sy
-) {
-this.currentState = initialState;
-this.stateTime = 0f;
+
+
+    public AnimatedSprite(
+        Map<String, Animation<TextureRegion>> animations,
+        String initialState,
+        float x,
+        float y,
+        float sx,
+        float sy
+    ) {
+        this.currentState = initialState;
+        this.stateTime = 0f;
         TextureRegion firstFrame = animations.get(initialState).getKeyFrame(0);
 
-this.animations = animations;
-this.sprite = new Sprite(firstFrame);
-this.sprite.setPosition(x, y);
-this.sprite.setSize(sx, sy);
-this.walking = false;
+        this.animations = animations;
+        this.sprite = new Sprite(firstFrame);
+        this.sprite.setPosition(x, y);
+        this.sprite.setSize(sx, sy);
+        this.walking = false;
 
-}
+    }
 
-public void setState(String newState) {
-if(!newState.equals(currentState)) {
-currentState = newState;
-stateTime = 0f;
-}
-}
+    public void setState(String newState) {
+        if(!newState.equals(currentState)) {
+            currentState = newState;
+            stateTime = 0f;
+        }
+    }
 
-public String getState() {
-return currentState;
-}
+    public String getState() {
+        return currentState;
+    }
 
-public void update(float delta) {
-stateTime += delta;
+    public void update(float delta) {
+        stateTime += delta;
         Animation<TextureRegion> currentAnimation = animations.get(currentState);
         sprite.setRegion(currentAnimation.getKeyFrame(stateTime, true));
-
-}
+    }
 
     public void render(SpriteBatch batch) {
         sprite.draw(batch);
@@ -63,8 +62,8 @@ stateTime += delta;
         sprite.translate(dx, dy);
     }
 
-public Sprite getSprite() {
-return sprite;
-}
+    public Sprite getSprite() {
+        return sprite;
+    }
 
 }

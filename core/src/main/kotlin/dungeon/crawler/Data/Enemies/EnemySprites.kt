@@ -9,7 +9,8 @@ data class EnemySpriteParams(
 )
 
 class EnemySpriteRegistry{
-    private val enemySpriteMap = mutableMapOf<String, EnemySpriteParams>();
+    val enemySpriteMap = mutableMapOf<String, EnemySpriteParams>();
+
     init {
 
     }
