@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class EnemyAnimatedSprite extends AnimatedSprite {
-    private String enemyID;
+    public String enemyID;
     public EnemyAnimatedSprite(
         String enemyID,
         Map<String, Animation<TextureRegion>> animations,

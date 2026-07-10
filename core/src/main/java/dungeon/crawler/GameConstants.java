@@ -27,6 +27,8 @@ public class GameConstants {
     // player
     public static final float TOWN_MOVEMENT_DURATION = 0.15f;
     public static final float OVERWORLD_MOVEMENT_DURATION = 0.25f;
+
+    public static final float ENEMY_ANIMATION_SPEED = 0.5f;
     // public static final float SPRITE_WIDTH = 16;
     // public static final float SPRITE_HEIGHT = 16;
     public static final float SPRITE_WIDTH = 16;
