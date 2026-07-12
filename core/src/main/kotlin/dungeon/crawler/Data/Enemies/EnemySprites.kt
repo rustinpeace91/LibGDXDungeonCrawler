@@ -6,13 +6,15 @@ data class EnemySpriteParams(
     val id: String,
     val frame1: String,
     val frame2: String,
+    val width: Float,
+    val height: Float
 )
 
 class EnemySpriteRegistry{
     val enemySpriteMap = mutableMapOf<String, EnemySpriteParams>();
 
     init {
-
+        initializeSpriteData();
     }
 
     fun initializeSpriteData() {
@@ -20,6 +22,8 @@ class EnemySpriteRegistry{
             id = "rat",
             frame1 = "Sprites/Enemies/ratanim/testrat1.png",
             frame2 = "Sprites/Enemies/ratanim/testrat2.png",
+            width = 100f,
+            height = 100f
         )
     }
 

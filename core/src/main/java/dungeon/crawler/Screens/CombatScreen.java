@@ -60,8 +60,6 @@ public class CombatScreen extends ScreenAdapter
     private float worldWidth;
     private float worldHeight;
 
-    private Image testRatImage;
-    private Label testRatCount;
 
     public CombatScreen(
         MainGame game
@@ -95,24 +93,12 @@ public class CombatScreen extends ScreenAdapter
         // 2. Tell it to fill the entire stage
         imageActor.setFillParent(true);
 
-        uiStage.addActor(imageActor);
-        // TODO: remove all testRatCount logic
-        testRatCount = new Label(
-            StringUtils.format("%s Rats", String.valueOf(this.game.gameState.currentEnemyRoster.size())),
-            skin
-        );
-        Texture ratTexture = new Texture(Gdx.files.internal("Sprites/Enemies/testrat2.png"));
-        testRatImage = new Image(ratTexture );
+//        uiStage.addActor(imageActor);
 
 
         // Position the rat relative to the screen size
         // Example: 20% from the left, 15% from the bottom
-        testRatImage.setPosition(worldWidth * 0.45f, worldHeight * 0.15f);
-        testRatCount.setAlignment(Align.center);
-        testRatCount.setPosition(450, 250);
-        testRatImage.setScale(0.90f);
-        uiStage.addActor(testRatImage);
-        uiStage.addActor(testRatCount);
+
 
         // 4. Add to Table
         // uiStage.addActor(table);
@@ -132,9 +118,7 @@ public class CombatScreen extends ScreenAdapter
         if(enemyCount == 1){
             ratText = StringUtils.format("%s Rat", String.valueOf(enemyCount));
         }
-        testRatCount.setText(
-            ratText
-        );
+
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -143,6 +127,8 @@ public class CombatScreen extends ScreenAdapter
         batch.begin();
         // Draws the image at x=100, y=100 with its original size
         batch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        enemyRenderer.draw(batch);
+
         batch.end();
 
         advanceCombat();
@@ -283,7 +269,8 @@ public class CombatScreen extends ScreenAdapter
 
         this.worldWidth = uiStage.getViewport().getWorldWidth();
         this.worldHeight = uiStage.getViewport().getWorldHeight();
-        testRatImage.setPosition(worldWidth * 0.45f, worldHeight * 0.15f);
+
+        enemyRenderer.resize(width, height);
 
         combatMenu.setPosition(worldWidth - combatMenu.getWidth(), 0);
         partyScreen.setPosition(0, 0);

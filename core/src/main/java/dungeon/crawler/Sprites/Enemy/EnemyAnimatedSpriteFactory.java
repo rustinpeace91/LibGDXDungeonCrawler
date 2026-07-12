@@ -30,9 +30,7 @@ public class EnemyAnimatedSpriteFactory
     public EnemyAnimatedSprite create(
         String enemyID,
         float x,
-        float y,
-        float sx,
-        float sy
+        float y
     ){
         EnemySpriteParams params = this.enemySpriteRegistry.getEnemySpriteMap().get(enemyID);
         Map<String, Animation<TextureRegion>> animations = new HashMap<>();
@@ -57,8 +55,8 @@ public class EnemyAnimatedSpriteFactory
             "idle",
             x,
             y,
-            sx,
-            sy
+            params.getWidth(),
+            params.getHeight()
         );
     }
 
