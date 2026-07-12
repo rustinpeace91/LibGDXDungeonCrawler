@@ -127,7 +127,7 @@ public class CombatScreen extends ScreenAdapter
         batch.begin();
         // Draws the image at x=100, y=100 with its original size
         batch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        enemyRenderer.draw(batch);
+        enemyRenderer.draw(batch, delta);
 
         batch.end();
 

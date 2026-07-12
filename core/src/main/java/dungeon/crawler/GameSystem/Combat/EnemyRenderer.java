@@ -1,6 +1,11 @@
 package dungeon.crawler.GameSystem.Combat;
 
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
+
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import dungeon.crawler.Data.Enemies.EnemySpriteRegistry;
 import dungeon.crawler.GameSystem.Character.Combatant;
@@ -9,6 +14,7 @@ import dungeon.crawler.GameSystem.Character.EnemyCombatant;
 import dungeon.crawler.GameSystem.GameState.GameState;
 import dungeon.crawler.Sprites.Enemy.EnemyAnimatedSprite;
 import dungeon.crawler.Sprites.Enemy.EnemyAnimatedSpriteFactory;
+import dungeon.crawler.Sprites.Explosion.ExplosionAnimationFactory;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -24,6 +30,9 @@ public class EnemyRenderer {
     private EnemySpriteRegistry enemySpriteRegistry;
     private Map<Integer, EnemyAnimatedSprite> enemySpriteRoster;
     private EnemyAnimatedSpriteFactory enemySpriteFactory;
+    private ExplosionAnimationFactory explosionAnimationFactory;
+    private Animation<TextureRegion> explosionAnimation;
+
     public EnemyRenderer(
         GameState gameState,
         Stage enemyStage
@@ -31,6 +40,8 @@ public class EnemyRenderer {
         this.gameState = gameState;
         this.enemyStage = enemyStage;
         this.enemySpriteRegistry = new EnemySpriteRegistry();
+        this.explosionAnimationFactory = new ExplosionAnimationFactory();
+        this.explosionAnimation = explosionAnimationFactory.create();
         this.enemySpriteRoster = new HashMap<>();
         this.enemySpriteFactory = new EnemyAnimatedSpriteFactory();
         this.worldWidth = enemyStage.getViewport().getWorldWidth();
@@ -48,6 +59,7 @@ public class EnemyRenderer {
                 0f
             );
             // + last sprites width?
+            // figure out how to center multiple sprites. math is hard
             float xCoord = worldWidth * 0.45f;
             if(enemyEntry.getKey() > 1){
                 xCoord = xCoord + 100f;
@@ -60,10 +72,12 @@ public class EnemyRenderer {
         }
     }
 
-    public void draw(SpriteBatch batch){
+    public void draw(SpriteBatch batch, float delta){
         // batch.draw(animation.getFrame, actor.getX(), actor.getY)
+        enemyStage.act();
         for (Map.Entry<Integer, EnemyAnimatedSprite> enemyEntry: enemySpriteRoster.entrySet()){
             EnemyAnimatedSprite enemy = enemyEntry.getValue();
+            enemy.update(delta);
             enemy.render(batch);
         }
 
@@ -82,6 +96,7 @@ public class EnemyRenderer {
 
             if (!aliveEnemies.containsKey(entry.getKey())) {
                 EnemyAnimatedSprite dyingSprite = entry.getValue();
+                spawnQuickExplosion(enemyStage, dyingSprite.getSprite().getX(), dyingSprite.getSprite().getY());
                 it.remove();
             }
         }
@@ -97,9 +112,35 @@ public class EnemyRenderer {
     }
     public void dispose(){
         // dispose of all assets here
+        explosionAnimationFactory.dispose();
         enemySpriteFactory.dispose();
     }
 
 
+    public void spawnQuickExplosion(Stage stage, final float x, final float y) {
+        Actor explosionActor = new Actor() {
+            private float stateTime = 0f;
 
+            @Override
+            public void act(float delta) {
+                super.act(delta);
+                stateTime += delta;
+
+                if (explosionAnimation.isAnimationFinished(stateTime)) {
+                    this.remove();
+                }
+            }
+
+            @Override
+            public void draw(Batch batch, float parentAlpha) {
+                TextureRegion frame = explosionAnimation.getKeyFrame(stateTime);
+                batch.draw(frame,
+                    x - (frame.getRegionWidth() / 2f),
+                    y - (frame.getRegionHeight() / 2f)
+                );
+            }
+        };
+
+        stage.addActor(explosionActor);
+    }
 }

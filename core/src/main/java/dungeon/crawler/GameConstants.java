@@ -44,6 +44,7 @@ public class GameConstants {
     public static final String CURRENT_SPRITE = "Sprites/real_sheet.png";
     // public static final String MENU_SKIN = "skins/plainjames_modded/plainjames.json";
     public static final String MENU_SKIN = "skins/defaultmodded/uiskinaltered.json";
+    public static final String EXPLOSION_SPRITES = "Sprites/Explosion/Explosion.png";
     public static final String SKIN_BACKGROUND_DEFAULT = "default-round";
     public static final Map<PlayerDirection, String> WALK_ANIMATIONS = Map.of(
         PlayerDirection.UP, "WalkUp",
