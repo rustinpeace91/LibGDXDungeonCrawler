@@ -32,7 +32,6 @@ public class EnemyRenderer {
     private EnemyAnimatedSpriteFactory enemySpriteFactory;
     private ExplosionAnimationFactory explosionAnimationFactory;
     private Animation<TextureRegion> explosionAnimation;
-
     public EnemyRenderer(
         GameState gameState,
         Stage enemyStage
@@ -60,9 +59,9 @@ public class EnemyRenderer {
             );
             // + last sprites width?
             // figure out how to center multiple sprites. math is hard
-            float xCoord = worldWidth * 0.45f;
+            float xCoord = worldWidth * 0.35f;
             if(enemyEntry.getKey() > 1){
-                xCoord = xCoord + 100f;
+                xCoord = xCoord + 200f;
             }
 
             newSprite.getSprite().setPosition(
@@ -74,7 +73,12 @@ public class EnemyRenderer {
 
     public void draw(SpriteBatch batch, float delta){
         // batch.draw(animation.getFrame, actor.getX(), actor.getY)
-        enemyStage.act();
+        enemyStage.act(delta);
+        // TODO: Make BOTH enemies nad Explosions actors and call enemyStage.draw(), remove batch from params
+        // run outside of batch in calling code
+        for (Actor actor : enemyStage.getActors()) {
+            actor.draw(batch, 1.0f); // Calls explosionActor.draw directly!
+        }
         for (Map.Entry<Integer, EnemyAnimatedSprite> enemyEntry: enemySpriteRoster.entrySet()){
             EnemyAnimatedSprite enemy = enemyEntry.getValue();
             enemy.update(delta);
@@ -136,8 +140,11 @@ public class EnemyRenderer {
                 TextureRegion frame = explosionAnimation.getKeyFrame(stateTime);
                 batch.draw(frame,
                     x - (frame.getRegionWidth() / 2f),
-                    y - (frame.getRegionHeight() / 2f)
+                    y - (frame.getRegionHeight() / 2f) + 40,
+                    150f,
+                    150f
                 );
+//                batch.draw(frame, 100, 100, 200f, 200f);
             }
         };
 
