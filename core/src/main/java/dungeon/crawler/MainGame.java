@@ -65,7 +65,7 @@ public class MainGame extends Game implements ScreenChangeObserver,
         }
         else if(screen == GameConstants.GAME_SCREEN.COMBAT){
             EnemyFactory factory = new EnemyFactory();
-            EnemyCombatant enemy = factory.generate();
+            EnemyCombatant enemy = factory.createEnemyFromID("spider");
 
             this.gameState.currentEnemyRoster.put(1, enemy);
             this.gameState.currentEnemyRoster.put(2, factory.generate());
@@ -106,7 +106,7 @@ public class MainGame extends Game implements ScreenChangeObserver,
     @Override
     public void onCombatLoss(){
         // TODO: set up actual losslogic
-        //TODO: BAD 
+        //TODO: BAD
         gameState.player.hp = 1;
         String mapFile = "Maps/testmap.tmx";
         gameState.updateWorldMap(mapFile);

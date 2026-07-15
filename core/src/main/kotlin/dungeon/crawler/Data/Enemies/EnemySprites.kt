@@ -25,6 +25,21 @@ class EnemySpriteRegistry{
             width = 100f,
             height = 100f
         )
+
+        enemySpriteMap["skeleton"]  = EnemySpriteParams(
+            id = "skeleton",
+            frame1 = "Sprites/Enemies/skellianim/skelli1.png",
+            frame2 = "Sprites/Enemies/skellianim/skelli2.png",
+            width = 300f,
+            height = 300f
+        )
+        enemySpriteMap["spider"]  = EnemySpriteParams(
+            id = "spider",
+            frame1 = "Sprites/Enemies/spooderanim/frame1.png",
+            frame2 = "Sprites/Enemies/spooderanim/frame2.png",
+            width = 200f,
+            height = 150f
+        )
     }
 
 }
