@@ -50,6 +50,10 @@ public class EnemyRenderer {
 
     public void intializeEnemySprites() {
         enemyStage.clear();
+        float centerScreen = worldWidth / 2.0f;
+        float spacer = 100f;
+        float totalWidth = 0f;
+        // spawn sprites, track width
         for (Map.Entry<Integer, EnemyCombatant> enemyEntry: gameState.currentEnemyRoster.entrySet()){
             EnemyCombatant enemy = enemyEntry.getValue();
             EnemyAnimatedSprite newSprite = enemySpriteFactory.create(
@@ -57,19 +61,37 @@ public class EnemyRenderer {
                 0f,
                 0f
             );
-            // + last sprites width?
-            // figure out how to center multiple sprites. math is hard
-            float xCoord = worldWidth * 0.35f;
-            if(enemyEntry.getKey() > 1){
-                xCoord = xCoord + 200f;
+            // if not first sprite, add spacer
+            if(gameState.currentEnemyRoster.containsKey(enemyEntry.getKey() - 1)){
+                totalWidth = totalWidth + spacer;
             }
-
-            newSprite.getSprite().setPosition(
-                xCoord, worldHeight * 0.15f
-            );
+            totalWidth = totalWidth + newSprite.getSprite().getWidth();
             enemySpriteRoster.put(enemyEntry.getKey(), newSprite);
         }
+
+        // reposition sprites so they appear centered equal width apart
+        for (Map.Entry<Integer, EnemyAnimatedSprite> enemySprite: enemySpriteRoster.entrySet()){
+            float xCoord = 0f;
+            float yCoord = 0f;
+            // not first sprite
+            if(enemySpriteRoster.containsKey(enemySprite.getKey() - 1)){
+                EnemyAnimatedSprite lastEnemy = enemySpriteRoster.get(enemySprite.getKey() - 1);
+                // each subsequent enemy is one spacer away from last enemy
+                xCoord = lastEnemy.getSprite().getX() + lastEnemy.getSprite().getWidth() + spacer;
+                yCoord = worldHeight * 0.35f;
+            } else{
+                //first sprite
+                // center the set of enemies by subtracting half of total width from the center of the screen
+                // that's the X coord of the first sprite
+                xCoord = centerScreen - (totalWidth / 2);
+                yCoord = worldHeight * 0.35f;
+            }
+            enemySprite.getValue().getSprite().setPosition(xCoord, yCoord);
+        }
+
+
     }
+
 
     public void draw(SpriteBatch batch, float delta){
         // batch.draw(animation.getFrame, actor.getX(), actor.getY)
