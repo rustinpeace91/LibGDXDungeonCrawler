@@ -23,6 +23,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.vabrant.console.ConsoleCache;
 import com.vabrant.console.gui.GUIConsole;
 
+import dungeon.crawler.GameSystem.Enemies.EnemySpawner;
 import dungeon.crawler.Menu.InputHandlers.MenuInputHandler;
 import dungeon.crawler.Menu.Overworld.OverworldMenu;
 import dungeon.crawler.Menu.Overworld.PartyCharacterStatusMenu;
@@ -280,9 +281,9 @@ PlayerPositionObserver {
         this.game.gameState.updateWorldCoordinates(newCoords);
         // this.game.gameState.screenID = this.screenID;
         if(overWorld){
-            Gdx.app.log("Tile", "Entered New Tile");
             float roll = MathUtils.random();
             if ( roll < 0.16f) {
+                this.game.gameState.currentEnemyRoster = EnemySpawner.spawnEnemies(this.game.gameState, tileCell);
                 notifyScreenChange(GameConstants.GAME_SCREEN.COMBAT);
             }
         }

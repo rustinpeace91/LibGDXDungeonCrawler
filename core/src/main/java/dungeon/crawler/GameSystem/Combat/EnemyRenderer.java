@@ -51,7 +51,7 @@ public class EnemyRenderer {
     public void intializeEnemySprites() {
         enemyStage.clear();
         float centerScreen = worldWidth / 2.0f;
-        float spacer = 100f;
+        float spacer = 80f;
         float totalWidth = 0f;
         // spawn sprites, track width
         for (Map.Entry<Integer, EnemyCombatant> enemyEntry: gameState.currentEnemyRoster.entrySet()){

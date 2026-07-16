@@ -159,9 +159,7 @@ public class CombatScreen extends ScreenAdapter
 
 
         // phase = CombatPhase.INTRO;
-        String enemyName = game.gameState.currentEnemyRoster.get(1).name;
         String[] introText = new String[] {
-            StringUtils.format("A pack of %ss pops up!", enemyName),
             "prepare to fight"
         };
         eventScreen.addMessages(introText);

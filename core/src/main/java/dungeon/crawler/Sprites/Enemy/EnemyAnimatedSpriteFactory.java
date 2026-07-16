@@ -60,8 +60,8 @@ public class EnemyAnimatedSpriteFactory
         );
     }
 
-    public void dispose(){
-        assetManager.dispose();
-    }
+public void dispose(){
+    assetManager.dispose();
+}
 
 }
