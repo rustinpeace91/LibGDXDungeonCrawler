@@ -10,7 +10,7 @@ import java.util.*;
 
 public class EnemySpawner {
     public static Map<Integer, EnemyCombatant> spawnEnemies(GameState gameState, TiledMapTileLayer.Cell tileCell) {
-//        MapProperties props = tileCell.getTile().getProperties();
+        MapProperties props = tileCell.getTile().getProperties();
         Map<Integer, EnemyCombatant> enemies = new HashMap<>();
         Random diceRoller = new Random();
         EnemyFactory factory = new EnemyFactory();
@@ -29,7 +29,9 @@ public class EnemySpawner {
     private static ArrayList<String> difficultyCurve(int value){
         switch(value){
             default:
-                return new ArrayList<String>(Arrays.asList("rat", "rat", "rat", "spider", "skeleton"));
+//                return new ArrayList<String>(Arrays.asList("rat", "rat", "rat", "rat", "spider"));
+                return new ArrayList<String>(Arrays.asList("skeleton", "skeleton"));
+
         }
     }
 }

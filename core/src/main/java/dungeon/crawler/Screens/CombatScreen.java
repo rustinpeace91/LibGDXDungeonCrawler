@@ -18,6 +18,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import dungeon.crawler.GameConstants;
 import dungeon.crawler.GameSystem.Combat.CombatLogic;
 import dungeon.crawler.GameSystem.Combat.EnemyRenderer;
+import dungeon.crawler.GameSystem.Combat.PartyActionTracker;
 import dungeon.crawler.GameSystem.GameState.CombatActionState;
 import dungeon.crawler.GameSystem.GameState.CombatPhase;
 import dungeon.crawler.MainGame;
@@ -48,6 +49,7 @@ public class CombatScreen extends ScreenAdapter
 
     private SpriteBatch batch;
     private CombatLogic logicHandler;
+    private PartyActionTracker turnTracker;
 
     private CombatEventScreen  eventScreen;
     private CombatMenu combatMenu;
@@ -66,6 +68,7 @@ public class CombatScreen extends ScreenAdapter
     ) {
         this.game = game;
         this.addListener(game);
+        this.turnTracker = new PartyActionTracker(this.game.gameState);
 
         // 1. Setup Stage and Table
         // this.uiStage = new Stage(new ScreenViewport());
@@ -164,7 +167,7 @@ public class CombatScreen extends ScreenAdapter
         };
         eventScreen.addMessages(introText);
         this.uiStage.setKeyboardFocus(eventScreen);
-        this.logicHandler = new CombatLogic(eventScreen, game);
+        this.logicHandler = new CombatLogic(eventScreen, game, turnTracker);
         this.logicHandler.addListener(this);
         this.enemyRenderer.intializeEnemySprites();
         this.logicHandler.advanceState(CombatPhase.INTRO);
@@ -174,8 +177,9 @@ public class CombatScreen extends ScreenAdapter
         // this.uiStage = new Stage(new ScreenViewport());
 
         combatMenu = new CombatMenu(
-            this.skin,
-            this.game.gameState
+            skin,
+            game.gameState,
+            turnTracker
         );
 
         combatMenu.addScreenChangeObserver(game);

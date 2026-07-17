@@ -17,7 +17,7 @@ import dungeon.crawler.Subject.GameSubject;
 public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
     public float x;
     public float y;
-    
+
     protected final Array<PlayerPositionObserver> observers = new Array<>();
     protected final Array<ScreenChangeObserver> screenObservers = new Array<>();
 
@@ -37,7 +37,7 @@ public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
     public PlayerDirection direction;
     public boolean isMoving;
     public boolean blocked;
-    
+
     private PlayerInputHandler playerInputHandler;
     private float movementDuration;
 
@@ -48,7 +48,7 @@ public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
     private TiledMapTileLayer collisionLayer;
     TiledMapTileLayer groundLayer;
     TiledMapTileLayer transitionLayer;
- 
+
     public PlayerPositionHandler(
         TiledMap worldMap,
         PlayerInputHandler input,
@@ -66,49 +66,49 @@ public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
         // the  coord of the tile the player is on
         this.tileX = initialX;
         this.tileY = initialY;
-        
+
         this.targetTileX = initialX;
         this.targetTileY = initialY;
-        
+
         this.movementProgress = 0f;
         this.movementDuration = movementDuration;
 
 
 
     // Get map dimensions in pixels
-        
+
         // move to util file
     int mapWidth = worldMap.getProperties().get("width", Integer.class);
     int mapHeight = worldMap.getProperties().get("height", Integer.class);
 
-    
+
     this.groundLayer = (TiledMapTileLayer) worldMap.getLayers().get("Ground");
     this.transitionLayer = (TiledMapTileLayer) worldMap.getLayers().get("Transition");
 
 
     this.mapWidth = mapWidth;
     this.mapHeight = mapHeight;
-    
+
     this.isMoving = false;
     this.direction = PlayerDirection.DOWN;
-    
-    
-    }
-    
-    @Override
-    public void addObserver(PlayerPositionObserver observer) { 
-        observers.add(observer); 
+
+
     }
 
-    public void addScreenChangeListener(ScreenChangeObserver observer) { 
-        screenObservers.add(observer); 
+    @Override
+    public void addObserver(PlayerPositionObserver observer) {
+        observers.add(observer);
+    }
+
+    public void addScreenChangeListener(ScreenChangeObserver observer) {
+        screenObservers.add(observer);
     }
 
     @Override
     public void removeObserver(PlayerPositionObserver observer) {
-    observers.removeValue(observer, true); 
+    observers.removeValue(observer, true);
     }
-    
+
 
 
     public void update(float delta){
@@ -131,15 +131,15 @@ public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
             x = tileX * GameConstants.TILE_WIDTH;
             y = tileY * GameConstants.TILE_HEIGHT;
             this.movementProgress = 0f;
-            Cell tileCell = returnTileCell(x, y);
+            Cell tileCell = returnTileCell(tileX, tileX);
             onEnteredNewTile(tileCell);
         } else {
             // Apply smoothing: Interpolation.linear or Interpolation.smooth
             float alpha = Interpolation.linear.apply(movementProgress);
             // Lerp from the starting pixel position to the target pixel position
             float targetPixelX = targetTileX * GameConstants.TILE_WIDTH;
-            float targetPixelY = targetTileY * GameConstants.TILE_HEIGHT;           
- 
+            float targetPixelY = targetTileY * GameConstants.TILE_HEIGHT;
+
             x = MathUtils.lerp(startVisualPos.x, targetPixelX, alpha);
             y = MathUtils.lerp(startVisualPos.y, targetPixelY, alpha);
         }
@@ -153,12 +153,12 @@ public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
             onDirectionChange(newDirection);
         }
     }
-    
+
     public void onDirectionChange(PlayerDirection newDirection) {
         for (PlayerPositionObserver obs : observers) {
 
             obs.onDirectionChange(newDirection);
-        }    
+        }
     }
 
     public void onEnteredNewTile(Cell tileCell){
@@ -170,12 +170,12 @@ public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
             // Iterator<String> keys = props.getKeys();
             if (props.containsKey("world_screen")) {
                 int screenId = props.get("world_screen", Integer.class);
-                
+
                 // 3. Notify your observers (MainGame, etc.)
                 for (PlayerPositionObserver obs : observers) {
                     obs.onTransition(screenId);
                 }
-            } 
+            }
             // if (props.containsKey("inn")) {
             //     System.out.println("MOOOOOOOOOOO");
             // }
@@ -200,11 +200,11 @@ public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
             }
         }
     }
-    
+
     public void updateInput(float delta){
 
         float tempTileX = tileX;
-        float tempTileY = tileY; 
+        float tempTileY = tileY;
 
         if(isMoving){
             return;
@@ -236,7 +236,7 @@ public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
             tempTileY = tileY -1;
             handleDirectionChange(PlayerDirection.DOWN);
         }
-        
+
         if(!isTileBlocked(tempTileX, tempTileY)){
             targetTileX = tempTileX;
             targetTileY = tempTileY;
@@ -254,7 +254,7 @@ public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
             return true; // Treat "off-map" as blocked
         }
         TiledMapTileLayer.Cell cell = groundLayer.getCell((int) tileX, (int) tileY);
-        
+
         // Check if cell exists and has the "blocked" property
         return cell != null && cell.getTile().getProperties().containsKey("blocked");
     }
