@@ -5,23 +5,39 @@ import java.util.ArrayList;
 import dungeon.crawler.GameSystem.Character.Condition;
 import dungeon.crawler.GameSystem.Character.EnemyCombatant;
 import dungeon.crawler.GameSystem.Character.Stance;
-import dungeon.crawler.TestData;
+import dungeon.crawler.Data.Enemies.DataInitializer;
+import dungeon.crawler.Data.Enemies.EnemyRegistry;
+import dungeon.crawler.Data.Enemies.EnemyParams;
 
 public class EnemyFactory {
+    // TODO: this cannot be static anymore. Make this an object and
+    // put the EnemyRegistry as a property
+    private EnemyRegistry registry;
 
-    public static EnemyCombatant generate() {
-        // Added 'new' keyword and proper ArrayList initialization
-        TestData data = new TestData(1, "cool");
+    public EnemyFactory(){
+        this.registry = DataInitializer.initializeEnemyData();
+    }
+    public EnemyCombatant generate() {
+        return createEnemyFromID("rat");
+    }
+
+    public EnemyCombatant createEnemyFromID(String id){
+        // TODO: handle null case
+        EnemyParams params = registry.getEnemyById(id);
         return new EnemyCombatant(
-            "rat",
-            2,
-            50,
-            1,
-            16,
-            0,
-            6,
-            0,
-            3,
+            params.getName(),
+            params.getId(),
+            params.getToHit(),
+            params.getEarnedXP(),
+            params.getInitiative(),
+            params.getMaxHp(),
+            params.getMaxMP(),
+            params.getHp(),
+            params.getMp(),
+            params.getDefense(),
+            params.getAttackDamage().component1(),
+            params.getAttackDamage().component2(),
+            params.getAttackText(),
             Stance.STANDING,
             new ArrayList<Condition>(), 
             false
@@ -29,4 +45,3 @@ public class EnemyFactory {
     }
     
 }
-//     public EnemyCombatant(String name, int toHit, int earnedXP, int initiative, int maxHp, int maxMP, int hp, int mp, int defense, Stance stance, ArrayList<Condition> conditions, boolean isDead) {

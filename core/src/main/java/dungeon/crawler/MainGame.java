@@ -64,10 +64,6 @@ public class MainGame extends Game implements ScreenChangeObserver,
             backToOverworld();
         }
         else if(screen == GameConstants.GAME_SCREEN.COMBAT){
-            EnemyCombatant enemy = EnemyFactory.generate();
-
-            this.gameState.currentEnemyRoster.put(1, enemy);
-            this.gameState.currentEnemyRoster.put(2, EnemyFactory.generate());
             CombatScreen combatScreen = new CombatScreen(this);
             setScreen(combatScreen);
         } else if(screen == GameConstants.GAME_SCREEN.TEST_SCREEN){
@@ -105,7 +101,7 @@ public class MainGame extends Game implements ScreenChangeObserver,
     @Override
     public void onCombatLoss(){
         // TODO: set up actual losslogic
-        //TODO: BAD 
+        //TODO: BAD
         gameState.player.hp = 1;
         String mapFile = "Maps/testmap.tmx";
         gameState.updateWorldMap(mapFile);
