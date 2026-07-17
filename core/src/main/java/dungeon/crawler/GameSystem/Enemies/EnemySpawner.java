@@ -29,8 +29,8 @@ public class EnemySpawner {
     private static ArrayList<String> difficultyCurve(int value){
         switch(value){
             default:
-//                return new ArrayList<String>(Arrays.asList("rat", "rat", "rat", "rat", "spider"));
-                return new ArrayList<String>(Arrays.asList("skeleton", "skeleton"));
+                return new ArrayList<String>(Arrays.asList("rat", "rat", "rat", "rat", "spider"));
+//                return new ArrayList<String>(Arrays.asList("skeleton", "skeleton"));
 
         }
     }
