@@ -138,9 +138,18 @@ public class CombatLogic {
                 boolean targetDead = false;
                 if(currentAction.target.checkDeath()){
                     // TODO: implement target switching logic;
-                    Map.Entry<Integer, Combatant> availableCombatant = CombatUtils.returnAliveCombatants(
-                        game.gameState.currentEnemyRoster
-                    ).entrySet().stream().findAny().orElse(null);
+                    // implement Combatant interface that returns player or enemy side
+                    // if statement here
+                    Map.Entry<Integer, Combatant> availableCombatant;
+                    if (currentAction.combatant.playerAligned()) {
+                        availableCombatant = CombatUtils.returnAliveCombatants(
+                            game.gameState.currentEnemyRoster
+                        ).entrySet().stream().findAny().orElse(null);
+                    } else {
+                        availableCombatant = CombatUtils.returnAliveCombatants(
+                            game.gameState.party
+                        ).entrySet().stream().findAny().orElse(null);
+                    }
                     if(availableCombatant.getValue() != null){
                         currentAction.target = availableCombatant.getValue();
                         handleAction(currentAction);

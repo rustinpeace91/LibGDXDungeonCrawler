@@ -14,4 +14,5 @@ public interface Combatant {
     boolean canAttack();
     String getName();
     int getDefense();
+    boolean playerAligned();
 }
