@@ -45,7 +45,7 @@ public class PlayerFactory{
             hc.getBaseHP(),
             hc.getBaseMP(),
             hc.getBaseHP(),
-            hc.getBaseHP(),
+            hc.getBaseMP(),
             0,
             Stance.STANDING,
             new ArrayList<Condition>(),

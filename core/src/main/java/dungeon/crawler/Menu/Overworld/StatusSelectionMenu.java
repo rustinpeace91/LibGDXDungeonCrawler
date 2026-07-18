@@ -46,20 +46,25 @@ public class StatusSelectionMenu extends BaseLinearMenu {
             this.setPosition(this.parentMenu.getOriginX() + 200, Gdx.graphics.getHeight() - this.getHeight());
         }
 
-        
+
         float x = this.parentMenu.getWidth() + this.getWidth() + 40;
         float y = Gdx.graphics.getHeight() - getHeight() - 150;
         subStatusMenu.setPosition(
             x, y
-        ); 
+        );
         stage.addActor(subStatusMenu);
-        refreshAndSetActive(); 
+        refreshAndSetActive();
         this.addFocusListeners();
         this.buttonList = populateButtonList();
         this.resetMenuSelection();
 
     }
 
+    @Override
+    public void closeMenuStack() {
+        this.subStatusMenu.remove();
+        super.closeMenuStack();
+    }
 
     private void addPartyButtons(){
         if(gameState.party != null){

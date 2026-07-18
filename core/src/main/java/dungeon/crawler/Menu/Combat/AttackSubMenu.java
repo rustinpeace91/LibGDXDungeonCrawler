@@ -14,7 +14,7 @@ import dungeon.crawler.GameSystem.GameState.GameState;
 import dungeon.crawler.Menu.BaseLinearMenu;
 
 public class AttackSubMenu extends BaseLinearMenu{
-    
+
     private GameState gameState;
     private CombatMenu combatMenu;
     public AttackSubMenu(
@@ -56,15 +56,16 @@ public class AttackSubMenu extends BaseLinearMenu{
 
         super.setStage(stage);
         if(parentMenu != null){
-            this.setPosition(Gdx.graphics.getWidth() - (this.parentMenu.getWidth() + 50), this.parentMenu.getOriginY());
+
+            this.setPosition(parentMenu.getStage().getWidth() - (this.parentMenu.getWidth() + 50), this.parentMenu.getOriginY());
             combatMenu = (CombatMenu)parentMenu;
-            this.defaults().pad(2); 
+            this.defaults().pad(2);
 
             this.pack();
         }
-        
+
         if (stage != null) {
-            refreshAndSetActive(); 
+            refreshAndSetActive();
         }
     }
 

@@ -4,8 +4,13 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Timer;
 
 import dungeon.crawler.GameConstants;
+import dungeon.crawler.GameSystem.Character.Combatant;
+import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.MainGame;
 import dungeon.crawler.Observers.ScreenChangeObserver;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class InnScreen extends SplashScreen{
     public InnScreen(
@@ -23,7 +28,12 @@ public class InnScreen extends SplashScreen{
             // TODO: bad, use setter
             this.game.gameState.gold = this.game.gameState.gold - 10;
 
-            this.game.gameState.player.hp = this.game.gameState.player.maxHp;
+            for (Map.Entry<Integer, PartyCharacter> combatant : this.game.gameState.party.entrySet()) {
+                if (!combatant.getValue().checkDeath()) {
+                    PartyCharacter character = combatant.getValue();
+                    character.heal(character.maxHp);
+                }
+            }
         } else {
             textDisplay = "You are too broke to sleep in the inn";
         }
@@ -37,7 +47,7 @@ public class InnScreen extends SplashScreen{
             public void run() {
                 if (listener != null) listener.onScreenChange(GameConstants.GAME_SCREEN.WALK_TOWN);
             }
-        }, timeAmount); 
+        }, timeAmount);
     }
-    
+
 }

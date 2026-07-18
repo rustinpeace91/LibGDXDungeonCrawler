@@ -220,6 +220,12 @@ public class PartyCharacter extends Character implements Combatant{
     }
 
     @Override
+    public boolean playerAligned() {
+        return true;
+    }
+
+
+    @Override
     public int heal(int amount){
         int boost;
         if(hp + amount > maxHp){

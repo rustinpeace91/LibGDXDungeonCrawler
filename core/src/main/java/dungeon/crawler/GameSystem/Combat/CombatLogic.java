@@ -24,6 +24,7 @@ public class CombatLogic {
     public LinkedList<CombatAction> actionQueue;
     public CombatEventScreen eventScreen;
     public ArrayList<CombatLogicObserver> combatLogicObservers;
+    private PartyActionTracker turnTracker;
     private int currentCombatantID;
     public int xpGained;
     private MainGame game;
@@ -31,7 +32,8 @@ public class CombatLogic {
 
     public CombatLogic(
         CombatEventScreen eventScreen,
-        MainGame game
+        MainGame game,
+        PartyActionTracker turnTracker
     ){
         this.eventScreen = eventScreen;
         this.combatLogicObservers = new ArrayList<CombatLogicObserver>();
@@ -40,6 +42,7 @@ public class CombatLogic {
         this.xpGained = 0;
         this.currentCombatantID = 0;
         this.returnFocus = false;
+        this.turnTracker = turnTracker;
     }
     public void advanceCombat(){
         /* this is run every frame and is for actions that require to wait until messages are done
@@ -53,7 +56,7 @@ public class CombatLogic {
                 notifyOnActionMenuReset();
                 advanceState(CombatPhase.ACTIONSELECT);
                 break;
-            
+
             case ACTIONSELECT:
                 break;
 
@@ -108,10 +111,11 @@ public class CombatLogic {
 
             case NEW_ROUND:
                 notifyOnActionMenuReset();
+                turnTracker.resetTracker();
                 advanceState(CombatPhase.ACTIONSELECT);
                 break;
-                
-                
+
+
         }
     }
 
@@ -134,9 +138,18 @@ public class CombatLogic {
                 boolean targetDead = false;
                 if(currentAction.target.checkDeath()){
                     // TODO: implement target switching logic;
-                    Map.Entry<Integer, Combatant> availableCombatant = CombatUtils.returnAliveCombatants(
-                        game.gameState.currentEnemyRoster
-                    ).entrySet().stream().findAny().orElse(null);
+                    // implement Combatant interface that returns player or enemy side
+                    // if statement here
+                    Map.Entry<Integer, Combatant> availableCombatant;
+                    if (currentAction.combatant.playerAligned()) {
+                        availableCombatant = CombatUtils.returnAliveCombatants(
+                            game.gameState.currentEnemyRoster
+                        ).entrySet().stream().findAny().orElse(null);
+                    } else {
+                        availableCombatant = CombatUtils.returnAliveCombatants(
+                            game.gameState.party
+                        ).entrySet().stream().findAny().orElse(null);
+                    }
                     if(availableCombatant.getValue() != null){
                         currentAction.target = availableCombatant.getValue();
                         handleAction(currentAction);
@@ -166,7 +179,7 @@ public class CombatLogic {
                         eventScreen.addMessages(new String[] {StringUtils.format("%s has died", currentAction.target.getName())});
                     }
                 }
-  
+
                 advanceState(CombatPhase.ACTION_COMPLETE);
 
                 break;
@@ -211,14 +224,11 @@ public class CombatLogic {
     }
 
     public void checkForActionSelectCompletion(){
-        if((
-            currentCombatantID < game.gameState.party.size()
-        )){
+        if(turnTracker.nextEligibleCombatant()){
             advanceState(CombatPhase.ACTIONSELECT);
             // send signal to send focus back to action menu without resetting currentCombatantID
             notifyOnCombatMenuFocus();
         } else {
-            currentCombatantID = 0;
             playerActionSelectComplete();
         }
     }
@@ -259,7 +269,7 @@ public class CombatLogic {
             advanceState(CombatPhase.VICTORY);
             return;
         }
-        //else 
+        //else
         if (actionQueue.isEmpty()) {
             advanceState(CombatPhase.NEW_ROUND);
         } else {
@@ -366,5 +376,5 @@ public class CombatLogic {
         actionQueue.sort((a, b) -> Integer.compare(b.iniative, a.iniative));
     }
 
-    
+
 }

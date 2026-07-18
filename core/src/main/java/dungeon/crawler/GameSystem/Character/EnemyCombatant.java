@@ -104,6 +104,11 @@ public class EnemyCombatant extends Enemy implements Combatant {
     }
 
     @Override
+    public boolean playerAligned() {
+        return false;
+    }
+
+    @Override
     public int heal(int amount){
         int boost;
         if(hp + amount > maxHp){

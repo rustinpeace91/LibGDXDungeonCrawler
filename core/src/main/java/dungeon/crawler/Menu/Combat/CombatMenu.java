@@ -8,6 +8,10 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
+import dungeon.crawler.GameSystem.Character.Combatant;
+import dungeon.crawler.GameSystem.Combat.CombatAction;
+import dungeon.crawler.GameSystem.Combat.CombatUtils;
+import dungeon.crawler.GameSystem.Combat.PartyActionTracker;
 import dungeon.crawler.GameSystem.GameState.CombatActionState;
 import dungeon.crawler.GameSystem.GameState.GameState;
 import dungeon.crawler.Menu.BaseLinearMenu;
@@ -16,22 +20,23 @@ import dungeon.crawler.Observers.ActionSelectObserver;
 public class CombatMenu extends BaseLinearMenu {
     private final List<ActionSelectObserver> actionSelectObservers = new ArrayList<>();
     private GameState gameState;
-    private List<Integer> partyIDs;
-    private int currentCombatantID;
+    private PartyActionTracker turnTracker;
     private boolean readingMessages;
 
     private Actor currentActor;
 
     public CombatMenu (
         Skin skin,
-        GameState gameState
+        GameState gameState,
+        PartyActionTracker turnTracker
     ) {
         super(skin);
         this.gameState = gameState;
+        this.turnTracker = turnTracker;
         setToggleable(false);
         this.initializeVisualMenu();
-        this.partyIDs = new ArrayList<>(gameState.party.keySet());
-        Collections.sort(this.partyIDs);
+        // list of map IDS of all alive combatants
+
     }
 
     private void initializeVisualMenu(){
@@ -86,17 +91,19 @@ public class CombatMenu extends BaseLinearMenu {
         this.addFocusListeners();
     }
     private void handleAction(CombatActionState state, int targetId){
-        if (currentCombatantID > 0){
-            Gdx.app.log("Combat", "yeah");
-        }
-
-        if (currentCombatantID < partyIDs.size()) {
-            int currentId = partyIDs.get(currentCombatantID);
-            notifyActionSelect(currentId, state, targetId);
-            currentCombatantID++;
-        } else {
-            Gdx.app.log("Combat", "Combatant ID index exceeds party size!!!!");
-        }
+        int currentId = turnTracker.getCurrentCombatantID();
+        notifyActionSelect(currentId, state, targetId);
+//        if (currentCombatantID > 0){
+//            Gdx.app.log("Combat", "yeah");
+//        }
+//        // TODO: maybe just check if there is a next int?
+//        if (currentCombatantID < partyIDs.size()) {
+//            int currentId = partyIDs.get(currentCombatantID);
+//            notifyActionSelect(currentId, state, targetId);
+//            currentCombatantID++;
+//        } else {
+//            Gdx.app.log("Combat", "Combatant ID index exceeds party size!!!!");
+//        }
 
     }
 
@@ -131,7 +138,6 @@ public class CombatMenu extends BaseLinearMenu {
     public void initializeMenu(){
         this.buttonList = populateButtonList();
         resetMenuSelection();
-        currentCombatantID = 0;
     }
 
     public void setActive(boolean value){
