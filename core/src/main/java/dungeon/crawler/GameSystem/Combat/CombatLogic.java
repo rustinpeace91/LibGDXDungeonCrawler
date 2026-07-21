@@ -29,6 +29,7 @@ public class CombatLogic {
     public int xpGained;
     private MainGame game;
     private boolean returnFocus;
+    private CombatActionHandler actionHandler;
 
     public CombatLogic(
         CombatEventScreen eventScreen,
@@ -43,6 +44,7 @@ public class CombatLogic {
         this.currentCombatantID = 0;
         this.returnFocus = false;
         this.turnTracker = turnTracker;
+        this.actionHandler = new CombatActionHandler(game.gameState.party, game.gameState.currentEnemyRoster);
     }
     public void advanceCombat(){
         /* this is run every frame and is for actions that require to wait until messages are done
@@ -133,53 +135,9 @@ public class CombatLogic {
             // TODO: break ATTACK up into a sub state machine so messages can be displayed
             // and statuses can be updated between the message breaks
             case ATTACK:
-                String damageText = "";
-                // fuck this
-                boolean targetDead = false;
-                if(currentAction.target.checkDeath()){
-                    // TODO: implement target switching logic;
-                    // implement Combatant interface that returns player or enemy side
-                    // if statement here
-                    Map.Entry<Integer, Combatant> availableCombatant;
-                    if (currentAction.combatant.playerAligned()) {
-                        availableCombatant = CombatUtils.returnAliveCombatants(
-                            game.gameState.currentEnemyRoster
-                        ).entrySet().stream().findAny().orElse(null);
-                    } else {
-                        availableCombatant = CombatUtils.returnAliveCombatants(
-                            game.gameState.party
-                        ).entrySet().stream().findAny().orElse(null);
-                    }
-                    if(availableCombatant.getValue() != null){
-                        currentAction.target = availableCombatant.getValue();
-                        handleAction(currentAction);
-                    } else {
-                        eventScreen.addMessages(new String[] {StringUtils.format("%s swings at nothing as all enemies are dead", currentAction.combatant.getName())});
-                    }
-                } else {
-                    Gdx.app.log("Combat", "Attack Made");
-                    AttackDamage damage = currentAction.combatant.attack();
-                    int defense = currentAction.target.defend(damage);
-                    Gdx.app.log("Combat", StringUtils.format(
-                        "Roll: %s", String.valueOf(damage.toHit)
-                    ));
-
-                    if(damage.toHit > defense){
-                        int damageDealt = currentAction.target.takeHit(damage);
-                        damageText = StringUtils.format("%s hit for %s damage",currentAction.target.getName(), String.valueOf(damageDealt));
-                        targetDead = currentAction.target.checkDeath();
-
-                    } else {
-                        damageText = "The attack missed!";
-                        targetDead = false;
-                    }
-
-                    eventScreen.addMessages(new String[] {damage.flavorText, damageText});
-                    if(targetDead){
-                        eventScreen.addMessages(new String[] {StringUtils.format("%s has died", currentAction.target.getName())});
-                    }
-                }
-
+                ArrayList<String> messages = actionHandler.handleAttack(currentAction);
+                String[] messageArray = messages.toArray(new String[0]);
+                eventScreen.addMessages(messageArray);
                 advanceState(CombatPhase.ACTION_COMPLETE);
 
                 break;
