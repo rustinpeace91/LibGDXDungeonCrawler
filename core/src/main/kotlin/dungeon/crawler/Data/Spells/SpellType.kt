@@ -1,6 +1,6 @@
-package dungeon.crawler.GameSystem.Magic;
+package dungeon.crawler.Data.Spells
 
-public enum SpellType{
+enum class SpellType {
     SINGLE_OFFENSE,
     AOE_OFFENSE,
     SINGLE_DEFENSE,

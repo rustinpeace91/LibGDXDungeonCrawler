@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import dungeon.crawler.Data.Spells.Spell;
+import dungeon.crawler.Data.Spells.SpellNames;
 import dungeon.crawler.GameConstants;
 import static dungeon.crawler.GameConstants.PLAYER_STATS.AGILITY;
 import static dungeon.crawler.GameConstants.PLAYER_STATS.INTELLIGENCE;
@@ -18,8 +20,6 @@ import static dungeon.crawler.GameSystem.Inventory.ItemTypes.ArmorTypes.*;
 import static dungeon.crawler.GameSystem.Inventory.ItemTypes.WeaponTypes.*;
 
 import dungeon.crawler.GameSystem.Magic.MagicSystem;
-import dungeon.crawler.GameSystem.Magic.Spell;
-import dungeon.crawler.GameSystem.Magic.Spells.CureMinor;
 
 public class WizardClass implements ClassLogic{
 
@@ -31,9 +31,9 @@ public class WizardClass implements ClassLogic{
         this.magicSystem = new MagicSystem();
     }
 
-    public Map<Integer, ArrayList<Spell>> getWizardSpellLevels(){
-        Map<Integer, ArrayList<Spell>> map = new HashMap<>();
-        map.put(1, new ArrayList<>(Arrays.asList(new CureMinor())));
+    public Map<Integer, ArrayList<SpellNames>> getWizardSpellLevels(){
+        Map<Integer, ArrayList<SpellNames>> map = new HashMap<>();
+        map.put(1, new ArrayList<>(Arrays.asList(SpellNames.FIREBOLT, SpellNames.HEALMINOR)));
         return map;
     }
 
@@ -49,8 +49,8 @@ public class WizardClass implements ClassLogic{
 
     @Override
     public void fillSpells(int level){
-        ArrayList<Spell> spells = new ArrayList();
-        Map<Integer, ArrayList<Spell>> spellMap = getWizardSpellLevels();
+        ArrayList<SpellNames> spells = new ArrayList();
+        Map<Integer, ArrayList<SpellNames>> spellMap = getWizardSpellLevels();
         for(int i = 1; i <= level; i++){
             if(spellMap.containsKey(i)){
                 spells.addAll(spellMap.get(i));
