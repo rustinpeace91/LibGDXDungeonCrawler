@@ -81,7 +81,6 @@ public class CombatActionHandler {
         currentAction.target = nextAvailableEnemy(currentAction);
 
         if(currentAction.target != null) {
-            AttackDamage damage = currentAction.combatant.attack();
             Spell spell = SpellRegistry.INSTANCE.get(currentAction.spell);
             currentAction.combatant.spendMp(spell.getCost());
             ArrayList<Combatant> targets = new ArrayList();
@@ -89,7 +88,6 @@ public class CombatActionHandler {
             flavorText = spell.cast(
                 currentAction.combatant, targets
             );
-            flavorText.add(damage.flavorText);
             flavorText.add(damageText);
             if(currentAction.target != null && currentAction.target.checkDeath()){
                 flavorText.add(StringUtils.format("%s has died", currentAction.target.getName()));

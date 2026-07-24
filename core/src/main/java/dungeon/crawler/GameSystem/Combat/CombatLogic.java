@@ -135,15 +135,16 @@ public class CombatLogic {
 
     public void handleAction(CombatAction currentAction){
         CombatActionState aState = currentAction.action;
+        ArrayList<String> messages;
+        String[] messageArray;
         switch(aState){
             // TODO: break ATTACK up into a sub state machine so messages can be displayed
             // and statuses can be updated between the message breaks
             case ATTACK:
-                ArrayList<String> messages = actionHandler.handleAttack(currentAction);
-                String[] messageArray = messages.toArray(new String[0]);
+                messages = actionHandler.handleAttack(currentAction);
+                messageArray = messages.toArray(new String[0]);
                 eventScreen.addMessages(messageArray);
                 advanceState(CombatPhase.ACTION_COMPLETE);
-
                 break;
             case DEFEND:
                 Gdx.app.log("Combat", "Defense Made");
@@ -153,7 +154,16 @@ public class CombatLogic {
             case HEAL:
                 Gdx.app.log("Combat", "heal Made");
                 break;
-        }
+
+            case CAST:
+                messages = actionHandler.handleOffensiveSpell(currentAction);
+                messageArray = messages.toArray(new String[0]);
+                eventScreen.addMessages(messageArray);
+                advanceState(CombatPhase.ACTION_COMPLETE);
+                break;
+            default:
+                Gdx.app.log("Combat", "ERROR: an action that does not exist");
+        }       advanceState(CombatPhase.ACTION_COMPLETE);
     }
 
     public void addAction(

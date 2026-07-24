@@ -8,7 +8,9 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
+import dungeon.crawler.Data.Spells.SpellNames;
 import dungeon.crawler.GameSystem.Character.Combatant;
+import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.GameSystem.Combat.CombatAction;
 import dungeon.crawler.GameSystem.Combat.CombatUtils;
 import dungeon.crawler.GameSystem.Combat.PartyActionTracker;
@@ -67,8 +69,12 @@ public class CombatMenu extends BaseLinearMenu {
         this.addButton("Magic", new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor){
-
-
+                int currentId = turnTracker.getCurrentCombatantID();
+                PartyCharacter currentCombatant = gameState.party.get(currentId);
+                if (currentCombatant.charClass.isMagicUser()){
+                    int targetid = CombatUtils.returnAliveCombatants(gameState.currentEnemyRoster).entrySet().stream().findAny().get().getKey();
+                    handleCastAction(CombatActionState.CAST, targetid, SpellNames.FIREBOLT);
+                }
             }
         });
 
@@ -108,10 +114,21 @@ public class CombatMenu extends BaseLinearMenu {
 
     }
 
+    private void handleCastAction(CombatActionState state, int targetId, SpellNames spellName){
+        int currentId = turnTracker.getCurrentCombatantID();
+        notifyActionSelect(currentId, state, targetId, spellName);
+    }
+
 
     public void notifyActionSelect(int combatantId, CombatActionState actionState, int targetId){
         for (ActionSelectObserver observer : actionSelectObservers) {
             observer.onActionSelect(combatantId, actionState, targetId);
+        }
+    }
+
+    public void notifyActionSelect(int combatantId, CombatActionState actionState, int targetId, SpellNames spellName){
+        for (ActionSelectObserver observer : actionSelectObservers) {
+            observer.onActionSelect(combatantId, actionState, targetId, spellName);
         }
     }
 

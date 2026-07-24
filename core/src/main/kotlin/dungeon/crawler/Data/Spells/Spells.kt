@@ -35,8 +35,10 @@ object SpellRegistry {
                 val flavorText = ArrayList<String>()
                 val target = targets.first();
                 // TODO: make this variable,
-                val toHit = 2;
+                var toHit = 2;
+                val attackRoll = Random.nextInt(1,20)
                 val damageRoll = Random.nextInt(1,10)
+                toHit = toHit + attackRoll;
                 val damage = AttackDamage(
                     toHit,
                     damageRoll,
