@@ -8,6 +8,10 @@ import java.util.Random;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.JsonValue.ValueType;
 
+import dungeon.crawler.Data.Spells.Spell;
+import dungeon.crawler.Data.Spells.SpellNames;
+import dungeon.crawler.Data.Spells.SpellRegistry;
+import dungeon.crawler.Data.Spells.SpellType;
 import dungeon.crawler.GameSystem.Character.Combatant;
 import dungeon.crawler.GameSystem.Character.Enemy;
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
@@ -180,6 +184,57 @@ public class CombatLogic {
         notifyOnEventScreenFocus();
         advanceState(CombatPhase.ACTIONSELECT_COMPLETE);
     }
+
+    public void addCastAction(
+        int id,
+        CombatActionState actionState,
+        int targetId,
+        SpellNames spellName
+    ) {
+        Combatant currentCombatant = game.gameState.party.get(id);
+        PartyCharacter currentParyCharacter = ((PartyCharacter)currentCombatant);
+        String actorName = currentParyCharacter.name;
+
+        Spell spell = SpellRegistry.INSTANCE.get(spellName);
+        // WILL NEED A SWITCH STATEMENT HERE
+        if(spell.getCost() > currentParyCharacter.getMp()){
+            String[] flavorText = new String[] {
+                StringUtils.format("%s does not have enough spell points", actorName)
+            };
+            notifyOnEventScreenFocus();
+            // DO NOT Advance to next character
+            return;
+        }
+        Combatant target;
+        if(
+            spell.getType() == SpellType.SINGLE_OFFENSE
+        ) {
+            target = game.gameState.currentEnemyRoster.get(targetId);
+        } else {
+            target = game.gameState.party.get(targetId);
+        }
+
+        int initiative = currentCombatant.rollInitiative();
+
+        CombatAction newAction = new CombatAction(
+            id,
+            initiative,
+            currentCombatant,
+            actionState,
+            target,
+            spellName
+        );
+        this.actionQueue.add(newAction);
+        String[] flavorText = new String[] {
+            StringUtils.format("%s has chosen to %s %s", actorName, actionState, spell.getName())
+        };
+        currentCombatantID++;
+        returnFocus = true;
+        eventScreen.addMessages(flavorText);
+        notifyOnEventScreenFocus();
+        advanceState(CombatPhase.ACTIONSELECT_COMPLETE);
+    }
+
 
     public void checkForActionSelectCompletion(){
         if(turnTracker.nextEligibleCombatant()){

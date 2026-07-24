@@ -15,6 +15,8 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import dungeon.crawler.Data.Spells.SpellNames;
+import dungeon.crawler.Data.Spells.SpellRegistry;
 import dungeon.crawler.GameConstants;
 import dungeon.crawler.GameSystem.Combat.CombatLogic;
 import dungeon.crawler.GameSystem.Combat.EnemyRenderer;
@@ -50,6 +52,7 @@ public class CombatScreen extends ScreenAdapter
     private SpriteBatch batch;
     private CombatLogic logicHandler;
     private PartyActionTracker turnTracker;
+    private SpellRegistry spellRegistry;
 
     private CombatEventScreen  eventScreen;
     private CombatMenu combatMenu;
@@ -302,6 +305,17 @@ public class CombatScreen extends ScreenAdapter
     public void onActionSelect(int CombatantID, CombatActionState actionState, int targetId){
         logicHandler.addAction(CombatantID, actionState, targetId);
     }
+
+    @Override
+    public void onActionSelect(
+        int CombatantID,
+        CombatActionState actionState,
+        int targetId,
+        SpellNames spellName
+    ){
+        logicHandler.addCastAction(CombatantID, actionState, targetId, spellName);
+    }
+
 
     @Override
     public void onPlayerActionSelectComplete(){

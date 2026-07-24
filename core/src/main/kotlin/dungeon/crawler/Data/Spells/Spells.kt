@@ -12,7 +12,14 @@ class Spell (
     val cost: Int,
     val type: SpellType,
     private val castLogic: (caster: Combatant, targets: ArrayList<Combatant>) -> ArrayList<String>
-)
+
+
+){
+    // Add this inside your Kotlin Spell class
+    fun cast(caster: Combatant, targets: ArrayList<Combatant>): ArrayList<String> {
+        return castLogic(caster, targets)
+    }
+}
 
 object SpellRegistry {
     private val registry = HashMap<SpellNames, Spell>();

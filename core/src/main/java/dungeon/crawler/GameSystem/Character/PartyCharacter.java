@@ -20,6 +20,7 @@ import dungeon.crawler.GameSystem.Inventory.ItemTypes.WeaponTypes;
 import dungeon.crawler.Utils.StringUtils;
 
 public class PartyCharacter extends Character implements Combatant{
+    // TODO: make these private!
     public int level;
     public int xp;
     public int strength;

@@ -67,7 +67,8 @@ public class CombatMenu extends BaseLinearMenu {
         this.addButton("Magic", new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor){
-                Gdx.app.log("Fight", "fuuuck u");
+
+
             }
         });
 
