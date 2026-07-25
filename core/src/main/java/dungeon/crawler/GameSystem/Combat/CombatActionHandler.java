@@ -2,6 +2,7 @@ package dungeon.crawler.GameSystem.Combat;
 
 import dungeon.crawler.Data.Spells.Spell;
 import dungeon.crawler.Data.Spells.SpellRegistry;
+import dungeon.crawler.Data.Spells.SpellType;
 import dungeon.crawler.GameSystem.Character.Combatant;
 import dungeon.crawler.Utils.StringUtils;
 
@@ -73,27 +74,37 @@ public class CombatActionHandler {
         return flavorText;
     }
 
-    public ArrayList<String> handleOffensiveSpell(CombatAction currentAction){
-        String damageText = "";
+    public ArrayList<String> handleSingleSpell(CombatAction currentAction){
         ArrayList<String> flavorText = new ArrayList<>();
         // fuck this
         boolean targetDead = false;
-        currentAction.target = nextAvailableEnemy(currentAction);
+        Spell spell = SpellRegistry.INSTANCE.get(currentAction.spell);
+
+        if(spell.getType() == SpellType.SINGLE_OFFENSE){
+            currentAction.target = nextAvailableEnemy(currentAction);
+            if(currentAction.target == null){
+                flavorText.add(StringUtils.format("%s cannot cast as all enemies have been defeated", currentAction.combatant.getName()));
+                return flavorText;
+            }
+        }
+        if(spell.getType() == SpellType.SINGLE_DEFENSE){
+            if(currentAction.target != null && currentAction.target.checkDeath()){
+                flavorText.add(StringUtils.format("%s is dead and cannot be healed", currentAction.target.getName()));
+                return flavorText;
+            }
+        }
 
         if(currentAction.target != null) {
-            Spell spell = SpellRegistry.INSTANCE.get(currentAction.spell);
+
             currentAction.combatant.spendMp(spell.getCost());
             ArrayList<Combatant> targets = new ArrayList();
             targets.add(currentAction.target);
             flavorText = spell.cast(
                 currentAction.combatant, targets
             );
-            flavorText.add(damageText);
             if(currentAction.target != null && currentAction.target.checkDeath()){
                 flavorText.add(StringUtils.format("%s has died", currentAction.target.getName()));
             }
-        } else {
-            flavorText.add(StringUtils.format("%s cannot cast as all enemies have been defeated", currentAction.combatant.getName()));
         }
         return flavorText;
     }

@@ -72,8 +72,9 @@ public class CombatMenu extends BaseLinearMenu {
                 int currentId = turnTracker.getCurrentCombatantID();
                 PartyCharacter currentCombatant = gameState.party.get(currentId);
                 if (currentCombatant.charClass.isMagicUser()){
-                    int targetid = CombatUtils.returnAliveCombatants(gameState.currentEnemyRoster).entrySet().stream().findAny().get().getKey();
-                    handleCastAction(CombatActionState.CAST, targetid, SpellNames.FIREBOLT);
+//                    int targetid = CombatUtils.returnAliveCombatants(gameState.currentEnemyRoster).entrySet().stream().findAny().get().getKey();
+                    int targetid = currentId;
+                    handleCastAction(CombatActionState.CAST, 1, SpellNames.RESURRECTION);
                 }
             }
         });

@@ -74,9 +74,24 @@ object SpellRegistry {
                 val healRoll = Random.nextInt(1,10)
                 val target = targets.first()
                 // TODO: make this variable,
-                flavorText.add("${caster.name} casts firebolt")
+                flavorText.add("${caster.name} casts Cure minor wounds")
                 val healed = target.heal(healRoll);
-                flavorText.add("{target.name} healed for ${healed} points")
+                flavorText.add("${target.name} healed for ${healed} points")
+                flavorText
+            }
+        )
+        register(
+            Spell(
+                id = SpellNames.RESURRECTION,
+                name = "Resurrection",
+                cost = 4,
+                type = SpellType.RESURRECTION,
+            ){ caster, targets ->
+                val flavorText = ArrayList<String>()
+                flavorText.add("${caster.name} casts Resurrect")
+                val target = targets.first();
+                target.resurrect();
+                flavorText.add("${target.name} has mrisen from the dead")
                 flavorText
             }
         )

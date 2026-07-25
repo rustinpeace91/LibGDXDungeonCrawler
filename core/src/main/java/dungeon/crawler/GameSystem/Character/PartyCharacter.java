@@ -225,6 +225,20 @@ public class PartyCharacter extends Character implements Combatant{
         return true;
     }
 
+    @Override
+    public void resurrect() {
+        hp = 5;
+        isDead = false;
+    }
+
+    @Override
+    public void longRest() {
+        if(!isDead){
+            this.hp = maxHp;
+            this.mp = maxMP;
+        }
+    }
+
 
     @Override
     public int heal(int amount){

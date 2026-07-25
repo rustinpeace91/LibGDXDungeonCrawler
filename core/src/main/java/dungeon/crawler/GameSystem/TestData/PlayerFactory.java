@@ -71,7 +71,7 @@ public class PlayerFactory{
             "Fightman",
             45,
             0,
-            45,
+            5,
             10,
             0,
             Stance.STANDING,

@@ -156,7 +156,7 @@ public class CombatLogic {
                 break;
 
             case CAST:
-                messages = actionHandler.handleOffensiveSpell(currentAction);
+                messages = actionHandler.handleSingleSpell(currentAction);
                 messageArray = messages.toArray(new String[0]);
                 eventScreen.addMessages(messageArray);
                 advanceState(CombatPhase.ACTION_COMPLETE);
