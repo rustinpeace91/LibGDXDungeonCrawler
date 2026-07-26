@@ -91,7 +91,49 @@ object SpellRegistry {
                 flavorText.add("${caster.name} casts Resurrect")
                 val target = targets.first();
                 target.resurrect();
-                flavorText.add("${target.name} has mrisen from the dead")
+                flavorText.add("${target.name} has risen from the dead")
+                flavorText
+            }
+        )
+        register(
+            Spell(
+                SpellNames.FIREBALL,
+                "FireBall",
+                3,
+                SpellType.AOE_OFFENSE,
+            ) { caster, targets ->
+                val flavorText = ArrayList<String>()
+                // TODO: make this variable,
+                flavorText.add("${caster.name} casts Fireball on all enemies!")
+                for(i in targets.indices) {
+                    var target = targets[i]
+                    var toHit = 2;
+                    val attackRoll = Random.nextInt(1,20)
+                    val damageRoll = Random.nextInt(1,10)
+                    toHit = toHit + attackRoll;
+                    val damage = AttackDamage(
+                        toHit,
+                        damageRoll,
+                        "Casts Firebolt",
+                        true,
+                        Condition.NOEFFECT,
+                        Elemental.FIRE
+                    )
+
+                    val damageAmount = Attack.handleDamage(
+                        caster,
+                        target,
+                        damage,
+                    );
+                    if(
+                        damageAmount > 0
+                    ) {
+                        flavorText.add("${caster.name} scorched ${target.name} for ${damageAmount} fire damage!")
+                    } else {
+                        flavorText.add("the attack missed!")
+                    }
+                }
+
                 flavorText
             }
         )

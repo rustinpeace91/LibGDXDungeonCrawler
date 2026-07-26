@@ -74,6 +74,16 @@ public class CombatActionHandler {
         return flavorText;
     }
 
+    public ArrayList<String> handleSpell(CombatAction currentAction){
+        // TODO: Null check and error logging
+        Spell spell = SpellRegistry.INSTANCE.get(currentAction.spell);
+        if(spell.getType() == SpellType.AOE_DEFENSE || spell.getType() == SpellType.AOE_OFFENSE){
+            return handleMultiSpell(currentAction);
+        } else {
+            return handleSingleSpell(currentAction);
+        }
+    }
+
     public ArrayList<String> handleSingleSpell(CombatAction currentAction){
         ArrayList<String> flavorText = new ArrayList<>();
         // fuck this
@@ -108,6 +118,28 @@ public class CombatActionHandler {
         }
         return flavorText;
     }
+
+    public ArrayList<String> handleMultiSpell(CombatAction currentAction){
+        ArrayList<String> flavorText = new ArrayList<>();
+        boolean targetDead = false;
+        Spell spell = SpellRegistry.INSTANCE.get(currentAction.spell);
+        ArrayList<Combatant> targets;
+        if(spell.getType() == SpellType.AOE_OFFENSE){
+            targets = new ArrayList(CombatUtils.returnAliveCombatants(enemyRoster).values());
+        } else {
+            targets = new ArrayList(CombatUtils.returnAliveCombatants(playerRoster).values());
+        }
+
+        flavorText = spell.cast(
+            currentAction.combatant, targets
+        );
+//        if(currentAction.target != null && currentAction.target.checkDeath()){
+//            flavorText.add(StringUtils.format("%s has died", currentAction.target.getName()));
+//        }
+
+        return flavorText;
+    }
+
 
     public Combatant nextAvailableEnemy(CombatAction currentAction){
         Combatant target = currentAction.target;

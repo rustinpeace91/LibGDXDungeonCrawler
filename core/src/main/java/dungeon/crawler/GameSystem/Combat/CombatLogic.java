@@ -156,7 +156,7 @@ public class CombatLogic {
                 break;
 
             case CAST:
-                messages = actionHandler.handleSingleSpell(currentAction);
+                messages = actionHandler.handleSpell(currentAction);
                 messageArray = messages.toArray(new String[0]);
                 eventScreen.addMessages(messageArray);
                 advanceState(CombatPhase.ACTION_COMPLETE);
@@ -201,6 +201,7 @@ public class CombatLogic {
         int targetId,
         SpellNames spellName
     ) {
+        // determine the spells intent and initiative and add it to the action queue
         Combatant currentCombatant = game.gameState.party.get(id);
         PartyCharacter currentParyCharacter = ((PartyCharacter)currentCombatant);
         String actorName = currentParyCharacter.name;
@@ -216,24 +217,43 @@ public class CombatLogic {
             return;
         }
         Combatant target;
-        if(
+        int initiative = currentCombatant.rollInitiative();
+        CombatAction newAction;
+
+        if(spell.getType() == SpellType.AOE_DEFENSE || spell.getType() == SpellType.AOE_OFFENSE){
+            newAction = new CombatAction(
+                id,
+                initiative,
+                currentCombatant,
+                actionState,
+                spellName
+            );
+        } else if(
             spell.getType() == SpellType.SINGLE_OFFENSE
         ) {
             target = game.gameState.currentEnemyRoster.get(targetId);
+            newAction = new CombatAction(
+                id,
+                initiative,
+                currentCombatant,
+                actionState,
+                target,
+                spellName
+            );
         } else {
             target = game.gameState.party.get(targetId);
+            newAction = new CombatAction(
+                id,
+                initiative,
+                currentCombatant,
+                actionState,
+                target,
+                spellName
+            );
         }
 
-        int initiative = currentCombatant.rollInitiative();
 
-        CombatAction newAction = new CombatAction(
-            id,
-            initiative,
-            currentCombatant,
-            actionState,
-            target,
-            spellName
-        );
+
         this.actionQueue.add(newAction);
         String[] flavorText = new String[] {
             StringUtils.format("%s has chosen to %s %s", actorName, actionState, spell.getName())

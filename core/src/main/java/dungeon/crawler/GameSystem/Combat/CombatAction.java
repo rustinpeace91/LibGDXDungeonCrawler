@@ -48,4 +48,17 @@ public class CombatAction {
         this.iniative = initiative;
         this.spell = spell;
     }
+
+    public CombatAction(
+        int id,
+        int initiative,
+        Combatant combatant,
+        CombatActionState action,
+        SpellNames spell
+    ){
+        this.combatant = combatant;
+        this.action = action;
+        this.iniative = initiative;
+        this.spell = spell;
+    }
 }

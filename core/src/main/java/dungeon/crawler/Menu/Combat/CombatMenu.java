@@ -74,7 +74,7 @@ public class CombatMenu extends BaseLinearMenu {
                 if (currentCombatant.charClass.isMagicUser()){
 //                    int targetid = CombatUtils.returnAliveCombatants(gameState.currentEnemyRoster).entrySet().stream().findAny().get().getKey();
                     int targetid = currentId;
-                    handleCastAction(CombatActionState.CAST, 1, SpellNames.RESURRECTION);
+                    handleCastAction(CombatActionState.CAST, 1, SpellNames.FIREBALL);
                 }
             }
         });
