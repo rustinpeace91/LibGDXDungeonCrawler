@@ -60,6 +60,11 @@ public class WizardClass implements ClassLogic{
     }
 
     @Override
+    public ArrayList<SpellNames> getSpellNames() {
+        return this.magicSystem.availableSpells;
+    }
+
+    @Override
     public Map<GameConstants.PLAYER_STATS, Integer> returnLevelUpStats() {
         Map<GameConstants.PLAYER_STATS, Integer> statMap = new HashMap<>();
 

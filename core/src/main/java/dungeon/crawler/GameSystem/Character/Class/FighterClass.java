@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import dungeon.crawler.Data.Spells.SpellNames;
 import dungeon.crawler.GameConstants;
 import static dungeon.crawler.GameConstants.PLAYER_STATS.AGILITY;
 import static dungeon.crawler.GameConstants.PLAYER_STATS.INTELLIGENCE;
@@ -100,6 +101,11 @@ public class FighterClass implements ClassLogic{
     public void fillSpells(int level) {
         // TODO Auto-generated method stub
 
+    }
+
+    @Override
+    public ArrayList<SpellNames> getSpellNames() {
+        return null;
     }
 
     @Override
