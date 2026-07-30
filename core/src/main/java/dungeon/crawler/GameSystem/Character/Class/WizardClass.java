@@ -31,7 +31,7 @@ public class WizardClass implements ClassLogic{
         this.magicSystem = new MagicSystem();
     }
 
-    public Map<Integer, ArrayList<SpellNames>> getWizardSpellLevels(){
+    private Map<Integer, ArrayList<SpellNames>> getWizardSpellLevels(){
         Map<Integer, ArrayList<SpellNames>> map = new HashMap<>();
         map.put(1, new ArrayList<>(Arrays.asList(SpellNames.FIREBOLT, SpellNames.HEALMINOR)));
         return map;

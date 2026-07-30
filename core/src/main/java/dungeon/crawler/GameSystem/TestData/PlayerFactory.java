@@ -59,6 +59,7 @@ public class PlayerFactory{
             true
         );
         pc.equip(WeaponFactory.getIronSword());
+        pc.charClass.fillSpells(1);
         return pc;
     }
 

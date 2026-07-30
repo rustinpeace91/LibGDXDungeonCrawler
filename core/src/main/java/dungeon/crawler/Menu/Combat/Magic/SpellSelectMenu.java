@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
+import com.badlogic.gdx.utils.Align;
 import dungeon.crawler.Data.Spells.Spell;
 import dungeon.crawler.Data.Spells.SpellNames;
 import dungeon.crawler.Data.Spells.SpellRegistry;
@@ -43,23 +44,19 @@ public class SpellSelectMenu extends BaseLinearMenu{
 
     protected void attackButtons(){
 
-        // redundant for loops here are fine. There won't be more than 5 enemies max
         Map<Integer, Combatant> availableCombatants = CombatUtils.returnAliveCombatants(
             this.gameState.currentEnemyRoster
         );
         SpellRegistry spellRegistry = SpellRegistry.INSTANCE;
         for (SpellNames spellID : spellList) {
-//            Integer id = entry.getKey();
-//            Combatant c = entry.getValue();
+
             Spell spell = spellRegistry.get(spellID);
             String buttonName = spell.getName() + "/" + String.valueOf(spell.getCost()) + " MP";
             this.addButton(buttonName,
                 new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
-//                        returnToParentMenu();
-//                        combatMenu.handleAttackSelection(id);
-                        // IF Spell AOE, cast, else show target select menu
+
                         if(spell.getType() == SpellType.AOE_DEFENSE || spell.getType() == SpellType.AOE_OFFENSE){
                             returnToParentMenu();
                             combatMenu.handleCastAction(spellID, -1);
@@ -88,10 +85,16 @@ public class SpellSelectMenu extends BaseLinearMenu{
             float wif = this.getWidth();
 
             combatMenu = (CombatMenu)parentMenu;
+            this.defaults().size(110f, 30f).pad(5f);
+
             this.defaults().pad(2);
 
             this.pack();
-            this.setPosition(parentMenu.getStage().getWidth() - this.getWidth(), this.parentMenu.getOriginY());
+            this.setOrigin(Align.topRight);
+
+            float targetX = parentMenu.getStage().getWidth(); // Right edge of screen
+            float targetY = parentMenu.getTop();
+            this.setPosition(targetX, targetY, Align.topRight);
         }
 
         if (stage != null) {
@@ -104,10 +107,6 @@ public class SpellSelectMenu extends BaseLinearMenu{
         combatMenu.handleCastAction(spellId, targetId);
     }
 
-    // spawn menu
-    // take in GameState as parametera
-    // spin up button for each enemy able to attack (make extra function for that?)
-    // CombatUtils.returnCombatElegableCombatants(this.gameState.enemyRoster);
-    // on button Press, notify CombatMenu of attack selection
+
 
 }

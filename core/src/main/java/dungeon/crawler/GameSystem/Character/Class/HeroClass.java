@@ -21,8 +21,11 @@ import dungeon.crawler.GameSystem.Magic.MagicSystem;
 
 public class HeroClass implements ClassLogic{
     private String name;
+    private MagicSystem magicSystem;
     public HeroClass(){
+
         this.name = "hero";
+        this.magicSystem = new MagicSystem();
     }
 
     @Override
@@ -54,6 +57,12 @@ public class HeroClass implements ClassLogic{
         statMap.put(otherStats[index], 1);
         return statMap;
 
+    }
+
+    private Map<Integer, ArrayList<SpellNames>> getHeroSpellLevels(){
+        Map<Integer, ArrayList<SpellNames>> map = new HashMap<>();
+        map.put(1, new ArrayList<>(Arrays.asList(SpellNames.HEALMINOR, SpellNames.FIREBOLT)));
+        return map;
     }
 
     @Override
@@ -88,19 +97,25 @@ public class HeroClass implements ClassLogic{
     @Override
     public MagicSystem getMagicSystem() {
         // TODO Auto-generated method stub
-        return null;
+        return magicSystem;
     }
 
     @Override
     public boolean isMagicUser() {
         // TODO Auto-generated method stub
-        return false;
+        return true;
     }
 
     @Override
-    public void fillSpells(int level) {
-        // TODO Auto-generated method stub
-
+    public void fillSpells(int level){
+        ArrayList<SpellNames> spells = new ArrayList();
+        Map<Integer, ArrayList<SpellNames>> spellMap = getHeroSpellLevels();
+        for(int i = 1; i <= level; i++){
+            if(spellMap.containsKey(i)){
+                spells.addAll(spellMap.get(i));
+            }
+        }
+        magicSystem.setSpells(spells);
     }
 
     @Override
