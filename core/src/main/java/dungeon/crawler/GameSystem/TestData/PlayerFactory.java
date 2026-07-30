@@ -59,6 +59,7 @@ public class PlayerFactory{
             true
         );
         pc.equip(WeaponFactory.getIronSword());
+        pc.charClass.fillSpells(1);
         return pc;
     }
 
@@ -71,7 +72,7 @@ public class PlayerFactory{
             "Fightman",
             45,
             0,
-            45,
+            5,
             10,
             0,
             Stance.STANDING,

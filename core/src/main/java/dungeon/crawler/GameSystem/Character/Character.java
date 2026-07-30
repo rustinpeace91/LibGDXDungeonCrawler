@@ -3,6 +3,8 @@ package dungeon.crawler.GameSystem.Character;
 import java.util.ArrayList;
 
 public class Character {
+    // TODO: make these private!
+    // TODO: is this inhertience even necessary? if not just make Character and PartyCharacter one class
     public String name;
     public int maxHp;
     public int maxMP;
@@ -34,4 +36,7 @@ public class Character {
         this.isDead = isDead;
     }
 
+    public int getMp() {
+        return mp;
+    }
 }

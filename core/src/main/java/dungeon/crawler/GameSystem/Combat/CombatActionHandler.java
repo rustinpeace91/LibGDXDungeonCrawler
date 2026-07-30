@@ -1,8 +1,12 @@
 package dungeon.crawler.GameSystem.Combat;
 
+import dungeon.crawler.Data.Spells.Spell;
+import dungeon.crawler.Data.Spells.SpellRegistry;
+import dungeon.crawler.Data.Spells.SpellType;
 import dungeon.crawler.GameSystem.Character.Combatant;
 import dungeon.crawler.Utils.StringUtils;
 
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -17,20 +21,12 @@ public class CombatActionHandler {
         this.playerRoster = playerRoster;
         this.enemyRoster = enemyRoster;
     }
-    // all methods will take in a CombatAction,
-    // handle it and return messages
-    // should all switching logic be moved here?
-    // maybe have a Notifier to add messages to event screen
-    // how to handle inventory stuff?
     public ArrayList<String> handleAttack(CombatAction currentAction){
         String damageText = "";
         ArrayList<String> flavorText = new ArrayList<>();
-        // fuck this
         boolean targetDead = false;
         if(currentAction.target.checkDeath()){
-            // TODO: implement target switching logic;
-            // implement Combatant interface that returns player or enemy side
-            // if statement here
+
             Map.Entry<Integer, Combatant> availableCombatant;
             if (currentAction.combatant.playerAligned()) {
                 availableCombatant = CombatUtils.returnAliveCombatants(
@@ -68,5 +64,95 @@ public class CombatActionHandler {
             }
         }
         return flavorText;
+    }
+
+    public ArrayList<String> handleSpell(CombatAction currentAction){
+        Spell spell = SpellRegistry.INSTANCE.get(currentAction.spell);
+        if(spell.getType() == SpellType.AOE_DEFENSE || spell.getType() == SpellType.AOE_OFFENSE){
+            return handleMultiSpell(currentAction);
+        } else {
+            return handleSingleSpell(currentAction);
+        }
+    }
+
+    public ArrayList<String> handleSingleSpell(CombatAction currentAction){
+        ArrayList<String> flavorText = new ArrayList<>();
+        boolean targetDead = false;
+        Spell spell = SpellRegistry.INSTANCE.get(currentAction.spell);
+
+        if(spell.getType() == SpellType.SINGLE_OFFENSE){
+            currentAction.target = nextAvailableEnemy(currentAction);
+            if(currentAction.target == null){
+                flavorText.add(StringUtils.format("%s cannot cast as all enemies have been defeated", currentAction.combatant.getName()));
+                return flavorText;
+            }
+        }
+        if(spell.getType() == SpellType.SINGLE_DEFENSE){
+            if(currentAction.target != null && currentAction.target.checkDeath()){
+                flavorText.add(StringUtils.format("%s is dead and cannot be healed", currentAction.target.getName()));
+                return flavorText;
+            }
+        }
+
+        if(spell.getType() == SpellType.RESURRECTION){
+            if(currentAction.target != null && !currentAction.target.checkDeath()){
+                flavorText.add(StringUtils.format("%s is alive and cannot be resurrected", currentAction.target.getName()));
+                return flavorText;
+            }
+        }
+
+        if(currentAction.target != null) {
+            currentAction.combatant.spendMp(spell.getCost());
+            ArrayList<Combatant> targets = new ArrayList();
+            targets.add(currentAction.target);
+            flavorText = spell.cast(
+                currentAction.combatant, targets
+            );
+            if(currentAction.target != null && currentAction.target.checkDeath()){
+                flavorText.add(StringUtils.format("%s has died", currentAction.target.getName()));
+            }
+        }
+        return flavorText;
+    }
+
+    public ArrayList<String> handleMultiSpell(CombatAction currentAction){
+        ArrayList<String> flavorText = new ArrayList<>();
+        boolean targetDead = false;
+        Spell spell = SpellRegistry.INSTANCE.get(currentAction.spell);
+        ArrayList<Combatant> targets;
+        if(spell.getType() == SpellType.AOE_OFFENSE){
+            targets = new ArrayList(CombatUtils.returnAliveCombatants(enemyRoster).values());
+        } else {
+            targets = new ArrayList(CombatUtils.returnAliveCombatants(playerRoster).values());
+        }
+        flavorText = spell.cast(
+            currentAction.combatant, targets
+        );
+
+        return flavorText;
+    }
+
+
+    public Combatant nextAvailableEnemy(CombatAction currentAction){
+        Combatant target = currentAction.target;
+        if(target.checkDeath()){
+            Map.Entry<Integer, Combatant> availableCombatant;
+            if (currentAction.combatant.playerAligned()) {
+                availableCombatant = CombatUtils.returnAliveCombatants(
+                    enemyRoster
+                ).entrySet().stream().findAny().orElse(null);
+            } else {
+                availableCombatant = CombatUtils.returnAliveCombatants(
+                    playerRoster
+                ).entrySet().stream().findAny().orElse(null);
+            }
+            if(availableCombatant.getValue() != null){
+                return availableCombatant.getValue();
+            } else {
+                return null;
+            }
+        } else {
+            return target;
+        }
     }
 }

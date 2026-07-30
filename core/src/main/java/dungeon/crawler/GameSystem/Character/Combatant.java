@@ -15,4 +15,6 @@ public interface Combatant {
     String getName();
     int getDefense();
     boolean playerAligned();
+    void resurrect();
+    void longRest();
 }

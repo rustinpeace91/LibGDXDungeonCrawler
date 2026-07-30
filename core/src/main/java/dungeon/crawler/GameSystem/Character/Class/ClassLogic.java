@@ -3,6 +3,7 @@ package dungeon.crawler.GameSystem.Character.Class;
 import java.util.ArrayList;
 import java.util.Map;
 
+import dungeon.crawler.Data.Spells.SpellNames;
 import dungeon.crawler.GameConstants;
 import dungeon.crawler.GameSystem.Inventory.ItemTypes.ArmorTypes;
 import dungeon.crawler.GameSystem.Inventory.ItemTypes.WeaponTypes;
@@ -13,6 +14,7 @@ public interface ClassLogic{
     public Map<GameConstants.PLAYER_STATS, Integer> returnLevelUpStats();
     public String getName();
     public void fillSpells(int level);
+    public ArrayList<SpellNames> getSpellNames();
     public MagicSystem getMagicSystem();
     public boolean isMagicUser();
     public int getBaseHP();

@@ -20,6 +20,7 @@ import dungeon.crawler.GameSystem.Inventory.ItemTypes.WeaponTypes;
 import dungeon.crawler.Utils.StringUtils;
 
 public class PartyCharacter extends Character implements Combatant{
+    // TODO: make these private!
     public int level;
     public int xp;
     public int strength;
@@ -222,6 +223,20 @@ public class PartyCharacter extends Character implements Combatant{
     @Override
     public boolean playerAligned() {
         return true;
+    }
+
+    @Override
+    public void resurrect() {
+        hp = 5;
+        isDead = false;
+    }
+
+    @Override
+    public void longRest() {
+        if(!isDead){
+            this.hp = maxHp;
+            this.mp = maxMP;
+        }
     }
 
 

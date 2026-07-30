@@ -8,6 +8,10 @@ import java.util.Random;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.JsonValue.ValueType;
 
+import dungeon.crawler.Data.Spells.Spell;
+import dungeon.crawler.Data.Spells.SpellNames;
+import dungeon.crawler.Data.Spells.SpellRegistry;
+import dungeon.crawler.Data.Spells.SpellType;
 import dungeon.crawler.GameSystem.Character.Combatant;
 import dungeon.crawler.GameSystem.Character.Enemy;
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
@@ -131,15 +135,16 @@ public class CombatLogic {
 
     public void handleAction(CombatAction currentAction){
         CombatActionState aState = currentAction.action;
+        ArrayList<String> messages;
+        String[] messageArray;
         switch(aState){
             // TODO: break ATTACK up into a sub state machine so messages can be displayed
             // and statuses can be updated between the message breaks
             case ATTACK:
-                ArrayList<String> messages = actionHandler.handleAttack(currentAction);
-                String[] messageArray = messages.toArray(new String[0]);
+                messages = actionHandler.handleAttack(currentAction);
+                messageArray = messages.toArray(new String[0]);
                 eventScreen.addMessages(messageArray);
                 advanceState(CombatPhase.ACTION_COMPLETE);
-
                 break;
             case DEFEND:
                 Gdx.app.log("Combat", "Defense Made");
@@ -149,7 +154,16 @@ public class CombatLogic {
             case HEAL:
                 Gdx.app.log("Combat", "heal Made");
                 break;
-        }
+
+            case CAST:
+                messages = actionHandler.handleSpell(currentAction);
+                messageArray = messages.toArray(new String[0]);
+                eventScreen.addMessages(messageArray);
+                advanceState(CombatPhase.ACTION_COMPLETE);
+                break;
+            default:
+                Gdx.app.log("Combat", "ERROR: an action that does not exist");
+        }       advanceState(CombatPhase.ACTION_COMPLETE);
     }
 
     public void addAction(
@@ -158,7 +172,7 @@ public class CombatLogic {
         int targetId
     ) {
         Combatant currentCombatant = game.gameState.party.get(id);
-        Combatant target = game.gameState.currentEnemyRoster.get(targetId);
+        Combatant target = game.gameState.currentEnemyRoster.getOrDefault(targetId, null);
 
         int initiative = currentCombatant.rollInitiative();
 
@@ -180,6 +194,83 @@ public class CombatLogic {
         notifyOnEventScreenFocus();
         advanceState(CombatPhase.ACTIONSELECT_COMPLETE);
     }
+
+    public void addCastAction(
+        int id,
+        CombatActionState actionState,
+        int targetId,
+        SpellNames spellName
+    ) {
+        // determine the spells intent and initiative and add it to the action queue
+        Combatant currentCombatant = game.gameState.party.get(id);
+        PartyCharacter currentParyCharacter = ((PartyCharacter)currentCombatant);
+        String actorName = currentParyCharacter.name;
+
+        Spell spell = SpellRegistry.INSTANCE.get(spellName);
+        // WILL NEED A SWITCH STATEMENT HERE
+        if(spell.getCost() > currentParyCharacter.getMp()){
+            String[] flavorText = new String[] {
+                StringUtils.format("%s does not have enough spell points", actorName)
+            };
+            notifyOnEventScreenFocus();
+            // DO NOT Advance to next character
+            return;
+        }
+        Combatant target;
+        int initiative = currentCombatant.rollInitiative();
+        CombatAction newAction;
+
+        if(spell.getType() == SpellType.AOE_DEFENSE || spell.getType() == SpellType.AOE_OFFENSE){
+            newAction = new CombatAction(
+                id,
+                initiative,
+                currentCombatant,
+                actionState,
+                spellName
+            );
+        } else if(
+            spell.getType() == SpellType.SINGLE_OFFENSE
+        ) {
+            target = game.gameState.currentEnemyRoster.getOrDefault(targetId, null);
+            if(target == null){
+                throw new IllegalArgumentException(StringUtils.format("%s is not a valid enemy key", String.valueOf(targetId)));
+            }
+            newAction = new CombatAction(
+                id,
+                initiative,
+                currentCombatant,
+                actionState,
+                target,
+                spellName
+            );
+        } else {
+            target = game.gameState.party.getOrDefault(targetId, null);
+            if(target == null){
+                throw new IllegalArgumentException(StringUtils.format("%s is not a valid party key", String.valueOf(targetId)));
+            }
+            newAction = new CombatAction(
+                id,
+                initiative,
+                currentCombatant,
+                actionState,
+                target,
+                spellName
+            );
+        }
+
+
+
+        this.actionQueue.add(newAction);
+        String[] flavorText = new String[] {
+            StringUtils.format("%s has chosen to %s %s", actorName, actionState, spell.getName())
+        };
+        currentCombatantID++;
+        returnFocus = true;
+        eventScreen.addMessages(flavorText);
+        notifyOnEventScreenFocus();
+        advanceState(CombatPhase.ACTIONSELECT_COMPLETE);
+    }
+
 
     public void checkForActionSelectCompletion(){
         if(turnTracker.nextEligibleCombatant()){
