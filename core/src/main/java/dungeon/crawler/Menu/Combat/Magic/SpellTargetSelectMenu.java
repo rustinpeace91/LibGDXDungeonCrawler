@@ -39,13 +39,18 @@ public class SpellTargetSelectMenu extends BaseLinearMenu{
 
     protected void attackButtons(){
 
-        // redundant for loops here are fine. There won't be more than 5 enemies max
         Map<Integer, Combatant> availableCombatants;
         if(
             selectedSpell.getType() == SpellType.SINGLE_OFFENSE
         ){
             availableCombatants = CombatUtils.returnAliveCombatants(
                 this.gameState.currentEnemyRoster
+            );
+        } else if(
+            selectedSpell.getType() == SpellType.RESURRECTION
+        ){
+            availableCombatants = CombatUtils.returnDeadCombatants(
+                this.gameState.party
             );
         } else {
             availableCombatants = CombatUtils.returnAliveCombatants(
@@ -89,10 +94,5 @@ public class SpellTargetSelectMenu extends BaseLinearMenu{
         }
     }
 
-    // spawn menu
-    // take in GameState as parametera
-    // spin up button for each enemy able to attack (make extra function for that?)
-    // CombatUtils.returnCombatElegableCombatants(this.gameState.enemyRoster);
-    // on button Press, notify CombatMenu of attack selection
 
 }

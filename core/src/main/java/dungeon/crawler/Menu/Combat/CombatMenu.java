@@ -149,12 +149,7 @@ public class CombatMenu extends BaseLinearMenu {
             observer.onActionSelect(combatantId, actionState, targetId, spellName);
         }
     }
-
-    // public void notifyPlayerActionSelectComplete(){
-    //     for (ActionSelectObserver observer : actionSelectObservers) {
-    //         observer.onPlayerActionSelectComplete();
-    //     }
-    // }
+    
 
     public void addActionSelectObserver(ActionSelectObserver observer) {
         actionSelectObservers.add(observer);

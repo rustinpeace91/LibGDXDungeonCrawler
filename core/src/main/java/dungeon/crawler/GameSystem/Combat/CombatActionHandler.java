@@ -21,20 +21,12 @@ public class CombatActionHandler {
         this.playerRoster = playerRoster;
         this.enemyRoster = enemyRoster;
     }
-    // all methods will take in a CombatAction,
-    // handle it and return messages
-    // should all switching logic be moved here?
-    // maybe have a Notifier to add messages to event screen
-    // how to handle inventory stuff?
     public ArrayList<String> handleAttack(CombatAction currentAction){
         String damageText = "";
         ArrayList<String> flavorText = new ArrayList<>();
-        // fuck this
         boolean targetDead = false;
         if(currentAction.target.checkDeath()){
-            // TODO: implement target switching logic;
-            // implement Combatant interface that returns player or enemy side
-            // if statement here
+
             Map.Entry<Integer, Combatant> availableCombatant;
             if (currentAction.combatant.playerAligned()) {
                 availableCombatant = CombatUtils.returnAliveCombatants(
@@ -75,7 +67,6 @@ public class CombatActionHandler {
     }
 
     public ArrayList<String> handleSpell(CombatAction currentAction){
-        // TODO: Null check and error logging
         Spell spell = SpellRegistry.INSTANCE.get(currentAction.spell);
         if(spell.getType() == SpellType.AOE_DEFENSE || spell.getType() == SpellType.AOE_OFFENSE){
             return handleMultiSpell(currentAction);
@@ -86,7 +77,6 @@ public class CombatActionHandler {
 
     public ArrayList<String> handleSingleSpell(CombatAction currentAction){
         ArrayList<String> flavorText = new ArrayList<>();
-        // fuck this
         boolean targetDead = false;
         Spell spell = SpellRegistry.INSTANCE.get(currentAction.spell);
 
@@ -104,8 +94,14 @@ public class CombatActionHandler {
             }
         }
 
-        if(currentAction.target != null) {
+        if(spell.getType() == SpellType.RESURRECTION){
+            if(currentAction.target != null && !currentAction.target.checkDeath()){
+                flavorText.add(StringUtils.format("%s is alive and cannot be resurrected", currentAction.target.getName()));
+                return flavorText;
+            }
+        }
 
+        if(currentAction.target != null) {
             currentAction.combatant.spendMp(spell.getCost());
             ArrayList<Combatant> targets = new ArrayList();
             targets.add(currentAction.target);
@@ -129,13 +125,9 @@ public class CombatActionHandler {
         } else {
             targets = new ArrayList(CombatUtils.returnAliveCombatants(playerRoster).values());
         }
-
         flavorText = spell.cast(
             currentAction.combatant, targets
         );
-//        if(currentAction.target != null && currentAction.target.checkDeath()){
-//            flavorText.add(StringUtils.format("%s has died", currentAction.target.getName()));
-//        }
 
         return flavorText;
     }
@@ -144,9 +136,6 @@ public class CombatActionHandler {
     public Combatant nextAvailableEnemy(CombatAction currentAction){
         Combatant target = currentAction.target;
         if(target.checkDeath()){
-            // TODO: implement target switching logic;
-            // implement Combatant interface that returns player or enemy side
-            // if statement here
             Map.Entry<Integer, Combatant> availableCombatant;
             if (currentAction.combatant.playerAligned()) {
                 availableCombatant = CombatUtils.returnAliveCombatants(

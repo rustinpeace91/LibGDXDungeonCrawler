@@ -40,4 +40,16 @@ public class CombatUtils {
         }
         return filteredCombatants;
     }
+
+    public static Map<Integer, Combatant> returnDeadCombatants(
+        Map<Integer, ? extends Combatant> combatantMap
+    ) {
+        Map<Integer, Combatant> filteredCombatants = new HashMap<>();
+        for (Map.Entry<Integer, ? extends Combatant> combatant : combatantMap.entrySet()) {
+            if (combatant.getValue().checkDeath()) {
+                filteredCombatants.put(combatant.getKey(), combatant.getValue());
+            }
+        }
+        return filteredCombatants;
+    }
 }

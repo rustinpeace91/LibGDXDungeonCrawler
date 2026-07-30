@@ -172,7 +172,7 @@ public class CombatLogic {
         int targetId
     ) {
         Combatant currentCombatant = game.gameState.party.get(id);
-        Combatant target = game.gameState.currentEnemyRoster.get(targetId);
+        Combatant target = game.gameState.currentEnemyRoster.getOrDefault(targetId, null);
 
         int initiative = currentCombatant.rollInitiative();
 
@@ -231,7 +231,10 @@ public class CombatLogic {
         } else if(
             spell.getType() == SpellType.SINGLE_OFFENSE
         ) {
-            target = game.gameState.currentEnemyRoster.get(targetId);
+            target = game.gameState.currentEnemyRoster.getOrDefault(targetId, null);
+            if(target == null){
+                throw new IllegalArgumentException(StringUtils.format("%s is not a valid enemy key", String.valueOf(targetId)));
+            }
             newAction = new CombatAction(
                 id,
                 initiative,
@@ -241,7 +244,10 @@ public class CombatLogic {
                 spellName
             );
         } else {
-            target = game.gameState.party.get(targetId);
+            target = game.gameState.party.getOrDefault(targetId, null);
+            if(target == null){
+                throw new IllegalArgumentException(StringUtils.format("%s is not a valid party key", String.valueOf(targetId)));
+            }
             newAction = new CombatAction(
                 id,
                 initiative,
