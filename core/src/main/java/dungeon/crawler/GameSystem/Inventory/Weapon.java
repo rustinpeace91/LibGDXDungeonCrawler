@@ -8,6 +8,8 @@ import dungeon.crawler.GameSystem.Inventory.ItemTypes.Handed;
 import dungeon.crawler.GameSystem.Inventory.ItemTypes.ItemType;
 import dungeon.crawler.GameSystem.Inventory.ItemTypes.WeaponTypes;
 
+import java.util.ArrayList;
+
 
 public class Weapon extends Item{
     public int toHit;
@@ -59,6 +61,13 @@ public class Weapon extends Item{
     @Override
     public ItemType returnItemType() {
         return ItemType.WEAPON;
+    }
+
+    @Override
+    public ArrayList<String> use(){
+        ArrayList<String> value = new ArrayList();
+        value.add("Weapon cannot be used");
+        return value;
     }
 
 }

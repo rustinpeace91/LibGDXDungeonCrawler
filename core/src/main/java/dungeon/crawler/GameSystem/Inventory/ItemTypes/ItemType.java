@@ -3,6 +3,6 @@ package dungeon.crawler.GameSystem.Inventory.ItemTypes;
 public enum ItemType {
     WEAPON,
     ARMOR,
-    POTION,
+    HEALTH_POTION,
     QUEST_ITEM
 }
