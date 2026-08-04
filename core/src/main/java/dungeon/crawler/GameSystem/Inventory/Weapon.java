@@ -23,6 +23,7 @@ public class Weapon extends Item{
     public Handed handed;
     public Weapon(
         String name,
+        String id,
         PartyCharacter owner,
         int toHit,
         int damageLow,

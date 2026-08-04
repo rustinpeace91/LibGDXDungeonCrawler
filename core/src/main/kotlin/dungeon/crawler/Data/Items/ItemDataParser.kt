@@ -6,6 +6,7 @@ import dungeon.crawler.GameSystem.Combat.Elemental
 import dungeon.crawler.GameSystem.Inventory.ItemTypes.Handed
 import dungeon.crawler.GameSystem.Inventory.ItemTypes.ItemType
 import dungeon.crawler.GameSystem.Inventory.ItemTypes.WeaponTypes
+import dungeon.crawler.GameSystem.Inventory.Weapon
 
 /* using the same pattern as the enemy registry. This is a lot of boiler plate necessary to
 avoid reflection which breaks the browser build. I originally wanted to use
@@ -40,37 +41,24 @@ data class PotionParams(
     val cureStatus: Condition
 )
 
-class WeaponRegistry {
-    private val weaponData = mutableMapOf<String, WeaponParams>();
+class Registry<T> {
+    private val data = mutableMapOf<String, T>()
 
-    fun registerWeapon(id: String, params: WeaponParams) {
-        weaponData[id] = params
+    fun register(id: String, params: T) {
+        data[id] = params
     }
 
-    fun getEnemyById(id: String): WeaponParams? {
-        return weaponData.get(id);
+    fun getById(id: String): T? {
+        return data[id]
     }
-
 }
 
-class PotionRegistry {
-    private val potionData = mutableMapOf<String, PotionParams>();
 
-    fun registerpotion(id: String, params: PotionParams) {
-        potionData[id] = params
-    }
-
-    fun getEnemyById(id: String): PotionParams? {
-        return potionData.get(id);
-    }
-
-}
-
-object DataInitializer {
+object ItemDataInitializer {
     @JvmStatic
-    fun initializeWeaponData(): WeaponRegistry {
-        val registry = WeaponRegistry()
-        registry.registerWeapon(
+    fun initializeWeaponData(): Registry<WeaponParams> {
+        val registry = Registry<WeaponParams>()
+        registry.register(
             "iron_sword",
             WeaponParams(
                 "iron sword",
@@ -91,26 +79,21 @@ object DataInitializer {
         return registry;
     }
 
-//    fun initializePotionData(): WeaponRegistry {
-//        val registry = WeaponRegistry()
-//        registry.registerWeapon(
-//            "rat",
-//            WeaponParams(
-//                "iron sword",
-//                "iron_sword",
-//                1,
-//                2,
-//                10,
-//                "swings",
-//                false,
-//                null,
-//                null,
-//                5,
-//                ItemType.WEAPON,
-//                WeaponTypes.SHORTSWORD,
-//                Handed.ONE_HANDED
-//            )
-//        )
-//        return registry;
-//    }
+    @JvmStatic
+    fun initializePotionData(): Registry<PotionParams> {
+        val registry = Registry<PotionParams>()
+        registry.register(
+            "iron_sword",
+            PotionParams(
+                "Small Health Potion",
+                "small_health_potion",
+                50,
+                ItemType.HEALTH_POTION,
+                1,
+                Condition.NOEFFECT
+            )
+        )
+        return registry;
+    }
+
 }

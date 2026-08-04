@@ -66,6 +66,7 @@ public class PartyCharacter extends Character implements Combatant{
         this.toHit = calculateToHit();
         this.fist = new Weapon(
             "fist",
+            "first",
             (PartyCharacter) this,
             Math.round(agility / 10),
             1,
