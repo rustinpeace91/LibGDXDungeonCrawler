@@ -1,6 +1,7 @@
 package dungeon.crawler.GameSystem.Inventory;
 
 import dungeon.crawler.GameSystem.Character.Class.ClassLogic;
+import dungeon.crawler.GameSystem.Character.Combatant;
 import dungeon.crawler.GameSystem.Character.Condition;
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.GameSystem.Combat.Elemental;
@@ -65,7 +66,7 @@ public class Weapon extends Item{
     }
 
     @Override
-    public ArrayList<String> use(){
+    public ArrayList<String> use(Combatant target){
         ArrayList<String> value = new ArrayList();
         value.add("Weapon cannot be used");
         return value;

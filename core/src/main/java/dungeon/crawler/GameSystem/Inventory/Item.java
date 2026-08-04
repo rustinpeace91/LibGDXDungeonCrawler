@@ -1,5 +1,6 @@
 package dungeon.crawler.GameSystem.Inventory;
 
+import dungeon.crawler.GameSystem.Character.Combatant;
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.GameSystem.Character.Class.ClassLogic;
 // import dungeon.crawler.GameSystem.TestData.PlayerCharacter;
@@ -41,7 +42,7 @@ public class Item implements ItemLogic {
     }
 
     @Override
-    public ArrayList<String> use() {
+    public ArrayList<String> use(Combatant target) {
         return null;
     }
 

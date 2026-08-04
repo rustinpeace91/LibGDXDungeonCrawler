@@ -83,7 +83,7 @@ object ItemDataInitializer {
     fun initializePotionData(): Registry<PotionParams> {
         val registry = Registry<PotionParams>()
         registry.register(
-            "iron_sword",
+            "small_health_potion",
             PotionParams(
                 "Small Health Potion",
                 "small_health_potion",

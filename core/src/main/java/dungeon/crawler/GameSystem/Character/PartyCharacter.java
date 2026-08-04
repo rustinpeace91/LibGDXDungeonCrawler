@@ -263,4 +263,16 @@ public class PartyCharacter extends Character implements Combatant{
             mp = mp - amount;
         }
     }
+
+    @Override
+    public void addCondition(Condition condition) {
+        // prevent duplicates
+        conditions.remove(condition);
+        conditions.add(condition);
+    }
+
+    @Override
+    public void removeCondition(Condition condition) {
+        conditions.remove(condition);
+    }
 }
