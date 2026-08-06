@@ -273,6 +273,7 @@ public class CombatLogic {
         eventScreen.addMessages(flavorText);
         notifyOnEventScreenFocus();
         advanceState(CombatPhase.ACTIONSELECT_COMPLETE);
+
     }
 
     public void addItemAction(
@@ -298,6 +299,10 @@ public class CombatLogic {
             StringUtils.format("%s has chosen to use %s", currentCombatant.getName(), item.name)
         };
         currentCombatantID++;
+        returnFocus = true;
+        eventScreen.addMessages(flavorText);
+        notifyOnEventScreenFocus();
+        advanceState(CombatPhase.ACTIONSELECT_COMPLETE);
     }
 
 

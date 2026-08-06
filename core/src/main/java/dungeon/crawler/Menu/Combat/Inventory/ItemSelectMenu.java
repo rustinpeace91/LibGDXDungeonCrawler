@@ -58,6 +58,8 @@ public class ItemSelectMenu extends BaseLinearMenu{
                             item,
                             ItemSelectMenu.this
                         );
+                        setSubMenu(nextMenu);
+                        openSubMenu(nextMenu);
                     }
                 }
             );
@@ -92,7 +94,7 @@ public class ItemSelectMenu extends BaseLinearMenu{
 
     public void handleUseAction(Item item, int targetId){
         returnToParentMenu();
-        combatMenu.handleUseAction(item, targetId);
+        combatMenu.handleItemAction(item, targetId);
     }
 
 

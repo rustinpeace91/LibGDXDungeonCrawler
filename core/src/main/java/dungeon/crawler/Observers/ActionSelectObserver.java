@@ -2,6 +2,7 @@ package dungeon.crawler.Observers;
 
 import dungeon.crawler.Data.Spells.SpellNames;
 import dungeon.crawler.GameSystem.GameState.CombatActionState;
+import dungeon.crawler.GameSystem.Inventory.Item;
 
 public interface ActionSelectObserver {
     void onActionSelect(int CombatantID, CombatActionState state, int targetid);

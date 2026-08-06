@@ -166,7 +166,7 @@ public class CombatMenu extends BaseLinearMenu {
 
     public void handleItemAction(Item item, int targetId){
         int currentId = turnTracker.getCurrentCombatantID();
-        notifyActionSelect(currentId, CombatActionState.CAST, targetId, Item item);
+        notifyActionSelect(currentId, CombatActionState.USE, targetId, item);
     }
 
     public void notifyActionSelect(int combatantId, CombatActionState actionState, int targetId){
@@ -183,7 +183,7 @@ public class CombatMenu extends BaseLinearMenu {
 
     public void notifyActionSelect(int combatantId, CombatActionState actionState, int targetId, Item item){
         for (ActionSelectObserver observer : actionSelectObservers) {
-            observer.onActionSelect(combatantId, actionState, targetId, Item item);
+            observer.onActionSelect(combatantId, actionState, targetId, item);
         }
     }
 
