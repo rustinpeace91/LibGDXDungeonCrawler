@@ -5,6 +5,7 @@ import dungeon.crawler.Data.Spells.SpellRegistry;
 import dungeon.crawler.Data.Spells.SpellType;
 import dungeon.crawler.GameSystem.Character.Combatant;
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
+import dungeon.crawler.GameSystem.Character.Stance;
 import dungeon.crawler.GameSystem.Inventory.InventorySystem.InventorySystem;
 import dungeon.crawler.Utils.StringUtils;
 
@@ -64,6 +65,29 @@ public class CombatActionHandler {
             if(targetDead){
                 flavorText.add(StringUtils.format("%s has died", currentAction.target.getName()));
             }
+        }
+        return flavorText;
+    }
+
+    public ArrayList<String> handleMiscAction(CombatAction currentAction){
+        String damageText = "";
+        ArrayList<String> flavorText = new ArrayList<>();
+        boolean targetDead = false;
+        if(!currentAction.target.checkDeath()){
+            switch(currentAction.action){
+                case STAND:
+                    currentAction.combatant.setStance(Stance.STANDING);
+                    flavorText.add(StringUtils.format("%s has stood up", currentAction.combatant.getName()));
+                    break;
+                default:
+                    flavorText.add("nothin happens");
+                    break;
+
+
+            }
+
+        } else {
+            flavorText.add(StringUtils.format("%s is dead and cannot act", currentAction.combatant.getName()));
         }
         return flavorText;
     }

@@ -248,6 +248,11 @@ public class PartyCharacter extends Character implements Combatant{
         return stance;
     }
 
+
+    @Override
+    public void setStance(Stance newStance) {
+        stance = newStance;
+    }
     @Override
     public boolean hasCondition(Condition condition) {
         return conditions.contains(condition);

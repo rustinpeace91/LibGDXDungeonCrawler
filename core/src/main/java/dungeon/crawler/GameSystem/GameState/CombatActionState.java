@@ -5,5 +5,7 @@ public enum CombatActionState {
     DEFEND,
     CAST,
     USE,
-    HEAL
+    RUN,
+    STAND,
+    TAKE_COVER
 }

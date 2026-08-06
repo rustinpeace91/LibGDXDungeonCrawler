@@ -167,7 +167,11 @@ public class CombatLogic {
                 break;
             default:
                 Gdx.app.log("Combat", "ERROR: an action that does not exist");
-        }       advanceState(CombatPhase.ACTION_COMPLETE);
+                messages = actionHandler.handleMiscAction(currentAction);
+                messageArray = messages.toArray(new String[0]);
+                eventScreen.addMessages(messageArray);
+                advanceState(CombatPhase.ACTION_COMPLETE);
+        }
     }
 
     public void addAction(
@@ -175,23 +179,38 @@ public class CombatLogic {
         CombatActionState actionState,
         int targetId
     ) {
-        Combatant currentCombatant = game.gameState.party.get(id);
-        Combatant target = game.gameState.currentEnemyRoster.getOrDefault(targetId, null);
 
+        Combatant currentCombatant = game.gameState.party.get(id);
         int initiative = currentCombatant.rollInitiative();
 
-        CombatAction newAction = new CombatAction(
-            id,
-            initiative,
-            currentCombatant,
-            actionState,
-            target
-        );
+        CombatAction newAction;
+        if(actionState == CombatActionState.ATTACK) {
+            Combatant target = game.gameState.currentEnemyRoster.getOrDefault(targetId, null);
+            newAction = new CombatAction(
+                id,
+                initiative,
+                currentCombatant,
+                actionState,
+                target
+            );
+        } else {
+            newAction = new CombatAction(
+                id,
+                initiative,
+                currentCombatant,
+                actionState
+            );
+        }
+
+
         this.actionQueue.add(newAction);
+
         String actorName = ((PartyCharacter)currentCombatant).name;
         String[] flavorText = new String[] {
             StringUtils.format("%s has chosen to %s", actorName, actionState)
         };
+
+
         currentCombatantID++;
         returnFocus = true;
         eventScreen.addMessages(flavorText);

@@ -128,6 +128,11 @@ public class EnemyCombatant extends Enemy implements Combatant {
     }
 
     @Override
+    public void setStance(Stance newStance) {
+        stance = newStance;
+    }
+
+    @Override
     public boolean hasCondition(Condition condition) {
         return conditions.contains(condition);
     }

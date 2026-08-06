@@ -51,8 +51,6 @@ public class CombatMenu extends BaseLinearMenu {
         this.addButton("Attack", new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor){
-                // TODO: remove hard code
-                // handleAction(CombatActionState.ATTACK);
                 BaseLinearMenu nextMenu = new AttackSubMenu(
                     skin,
                     gameState
@@ -65,7 +63,16 @@ public class CombatMenu extends BaseLinearMenu {
         this.addButton("Action", new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor){
-                Gdx.app.log("Fight", "fuuuck u");
+                int currentId = turnTracker.getCurrentCombatantID();
+                PartyCharacter currentCombatant = gameState.party.get(currentId);
+
+                BaseLinearMenu nextMenu = new ActionSubMenu(
+                    skin,
+                    gameState,
+                    currentCombatant
+                );
+                setSubMenu(nextMenu);
+                openSubMenu(nextMenu);
             }
         });
 
@@ -130,7 +137,7 @@ public class CombatMenu extends BaseLinearMenu {
             }
         });
 
-        this.addButton("Run", new ChangeListener() {
+        this.addButton("Defend", new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor){
                 Gdx.app.log("Fight", "fuuuck u");
@@ -195,6 +202,10 @@ public class CombatMenu extends BaseLinearMenu {
 
     public void handleAttackSelection(int id){
         handleAction(CombatActionState.ATTACK, id);
+    }
+
+    public void handleActionSelection(CombatActionState action){
+        handleAction(action, -1);
     }
 
     public void resetMenu(){
