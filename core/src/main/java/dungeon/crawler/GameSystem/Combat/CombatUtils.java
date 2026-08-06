@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import dungeon.crawler.GameSystem.Character.Combatant;
+import dungeon.crawler.GameSystem.Character.Stance;
+import dungeon.crawler.GameSystem.Inventory.Item;
 
 public class CombatUtils {
 
@@ -52,4 +54,21 @@ public class CombatUtils {
         }
         return filteredCombatants;
     }
+
+    public static Map<Integer, Combatant> returnItemUseCombatants(
+        Map<Integer, ? extends Combatant> combatantMap, Item item
+    ) {
+        Map<Integer, Combatant> filteredCombatants = new HashMap<>();
+        for (Map.Entry<Integer, ? extends Combatant> combatant : combatantMap.entrySet()) {
+            if (
+                !combatant.getValue().checkDeath() &&
+                combatant.getValue().getStance() != Stance.COVER &&
+                combatant.getValue().getStance() != Stance.FLYING
+            ) {
+                filteredCombatants.put(combatant.getKey(), combatant.getValue());
+            }
+        }
+        return filteredCombatants;
+    }
+
 }

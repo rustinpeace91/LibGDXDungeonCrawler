@@ -4,6 +4,8 @@ import dungeon.crawler.Data.Spells.Spell;
 import dungeon.crawler.Data.Spells.SpellRegistry;
 import dungeon.crawler.Data.Spells.SpellType;
 import dungeon.crawler.GameSystem.Character.Combatant;
+import dungeon.crawler.GameSystem.Character.PartyCharacter;
+import dungeon.crawler.GameSystem.Inventory.InventorySystem.InventorySystem;
 import dungeon.crawler.Utils.StringUtils;
 
 import java.sql.Array;
@@ -73,6 +75,21 @@ public class CombatActionHandler {
         } else {
             return handleSingleSpell(currentAction);
         }
+    }
+
+    public ArrayList<String> handleItemUse(CombatAction currentAction){
+        ArrayList<String> flavorText = new ArrayList<>();
+        if(currentAction.target.checkDeath()){
+            flavorText.add(StringUtils.format("%s cannot use item as target is dead", currentAction.combatant.getName()));
+            return flavorText;
+        } else {
+            flavorText = currentAction.item.use(currentAction.target);
+            if(currentAction.combatant instanceof PartyCharacter) {
+                PartyCharacter character = (PartyCharacter)currentAction.combatant;
+                character.removeFromInventory(currentAction.item);
+            }
+        }
+        return flavorText;
     }
 
     public ArrayList<String> handleSingleSpell(CombatAction currentAction){

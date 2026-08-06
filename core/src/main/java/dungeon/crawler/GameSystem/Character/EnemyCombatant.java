@@ -123,6 +123,17 @@ public class EnemyCombatant extends Enemy implements Combatant {
     }
 
     @Override
+    public Stance getStance() {
+        return stance;
+    }
+
+    @Override
+    public boolean hasCondition(Condition condition) {
+        return conditions.contains(condition);
+    }
+
+
+    @Override
     public void addCondition(Condition condition) {
         // prevent duplicates
         conditions.remove(condition);

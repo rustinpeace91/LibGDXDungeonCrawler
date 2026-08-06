@@ -3,6 +3,9 @@ package dungeon.crawler.GameSystem.Inventory.InventorySystem;
 import dungeon.crawler.GameConstants;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import dungeon.crawler.GameSystem.Inventory.Item;
 
 public class InventorySystem{
@@ -24,6 +27,14 @@ public class InventorySystem{
         inventoryList.add(item);
     }
 
+    public void removeFromInventory(Item item){
+        inventoryList.remove(item);
+    }
+
+    public List<Item> getInventoryList() {
+        // TODO: Sort by type, then alphabetically
+        return Collections.unmodifiableList(inventoryList);
+    }
 
 
 }

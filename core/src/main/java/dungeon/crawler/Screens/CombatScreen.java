@@ -23,6 +23,7 @@ import dungeon.crawler.GameSystem.Combat.EnemyRenderer;
 import dungeon.crawler.GameSystem.Combat.PartyActionTracker;
 import dungeon.crawler.GameSystem.GameState.CombatActionState;
 import dungeon.crawler.GameSystem.GameState.CombatPhase;
+import dungeon.crawler.GameSystem.Inventory.Item;
 import dungeon.crawler.MainGame;
 import dungeon.crawler.Menu.Combat.CombatMenu;
 import dungeon.crawler.Menu.CombatEventScreen;
@@ -316,6 +317,15 @@ public class CombatScreen extends ScreenAdapter
         logicHandler.addCastAction(CombatantID, actionState, targetId, spellName);
     }
 
+    @Override
+    public void onActionSelect(
+        int CombatantID,
+        CombatActionState actionState,
+        int targetId,
+        Item item
+    ){
+        logicHandler.addItemAction(CombatantID, actionState, targetId, item);
+    }
 
     @Override
     public void onPlayerActionSelectComplete(){

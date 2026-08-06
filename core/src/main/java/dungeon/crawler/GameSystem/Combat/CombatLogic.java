@@ -17,6 +17,7 @@ import dungeon.crawler.GameSystem.Character.Enemy;
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.GameSystem.GameState.CombatActionState;
 import dungeon.crawler.GameSystem.GameState.CombatPhase;
+import dungeon.crawler.GameSystem.Inventory.Item;
 import dungeon.crawler.GameSystem.Leveling.LevelTable;
 import dungeon.crawler.MainGame;
 import dungeon.crawler.Menu.CombatEventScreen;
@@ -151,8 +152,11 @@ public class CombatLogic {
                 eventScreen.addMessages(new String[] {"the enemy stares at you dumbfounded"});
                 advanceState(CombatPhase.ACTION_COMPLETE);
                 break;
-            case HEAL:
-                Gdx.app.log("Combat", "heal Made");
+            case USE:
+                messages = actionHandler.handleItemUse(currentAction);
+                messageArray = messages.toArray(new String[0]);
+                eventScreen.addMessages(messageArray);
+                advanceState(CombatPhase.ACTION_COMPLETE);
                 break;
 
             case CAST:
@@ -269,6 +273,31 @@ public class CombatLogic {
         eventScreen.addMessages(flavorText);
         notifyOnEventScreenFocus();
         advanceState(CombatPhase.ACTIONSELECT_COMPLETE);
+    }
+
+    public void addItemAction(
+        int id,
+        CombatActionState actionState,
+        int targetId,
+        Item item
+    ){
+        Combatant currentCombatant = game.gameState.party.get(id);
+        Combatant target = game.gameState.party.get(targetId);
+        int initiative = currentCombatant.rollInitiative();
+
+        CombatAction newAction = new CombatAction(
+            id,
+            initiative,
+            currentCombatant,
+            actionState,
+            target,
+            item
+        );
+        this.actionQueue.add(newAction);
+        String[] flavorText = new String[] {
+            StringUtils.format("%s has chosen to use %s", currentCombatant.getName(), item.name)
+        };
+        currentCombatantID++;
     }
 
 
