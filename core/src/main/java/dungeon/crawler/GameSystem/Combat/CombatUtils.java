@@ -7,7 +7,10 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import dungeon.crawler.GameSystem.Character.Combatant;
+import dungeon.crawler.GameSystem.Character.EnemyCombatant;
+import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.GameSystem.Character.Stance;
+import dungeon.crawler.GameSystem.GameState.CombatActionState;
 import dungeon.crawler.GameSystem.Inventory.Item;
 
 public class CombatUtils {
@@ -70,5 +73,45 @@ public class CombatUtils {
         }
         return filteredCombatants;
     }
+
+    public static int returnPartyAgility(
+        Map<Integer, PartyCharacter> partyMap
+    ){
+        int total = 0;
+        for (Map.Entry<Integer, PartyCharacter> combatant : partyMap.entrySet()) {
+            total = total + combatant.getValue().agility;
+        }
+        return total;
+    }
+
+    public static ArrayList<CombatActionState> returnAvailableActions(
+        PartyCharacter currentCombatant
+    ){
+        ArrayList<CombatActionState> actions = new ArrayList<>();
+        actions.add(CombatActionState.RUN);
+        if(
+            // implement a canTakeCover method
+            (currentCombatant.charClass.getName() == "ranger" ||
+            currentCombatant.charClass.getName() == "thief") &&
+            currentCombatant.equipment.getWeapon().ranged &&
+            currentCombatant.getStance() != Stance.COVER
+        ){
+            actions.add(CombatActionState.TAKE_COVER);
+        }
+        if(currentCombatant.getStance() == Stance.PRONE){
+            actions.add(CombatActionState.STAND);
+        }
+        if(currentCombatant.getStance() == Stance.COVER){
+            actions.add(CombatActionState.LEAVE_COVER);
+        }
+
+        return actions;
+
+    }
+
+//    public static int returnCombinedEnemyLevel(
+//        Map<Integer, EnemyCombatant> EnemyMap
+//
+//    )
 
 }

@@ -1,4 +1,4 @@
-package dungeon.crawler.Menu.Combat;
+package dungeon.crawler.Menu.Combat.Action;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -10,22 +10,24 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import dungeon.crawler.GameSystem.Character.Combatant;
+import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.GameSystem.Combat.CombatAction;
 import dungeon.crawler.GameSystem.Combat.CombatUtils;
 import dungeon.crawler.GameSystem.GameState.CombatActionState;
 import dungeon.crawler.GameSystem.GameState.GameState;
 import dungeon.crawler.Menu.BaseLinearMenu;
+import dungeon.crawler.Menu.Combat.CombatMenu;
 
 public class ActionSubMenu extends BaseLinearMenu{
 
     private GameState gameState;
     private CombatMenu combatMenu;
-    private Combatant currentCombatant;
+    private PartyCharacter currentCombatant;
 
     public ActionSubMenu(
         Skin skin,
         GameState gameState,
-        Combatant currentCombatant
+        PartyCharacter currentCombatant
 
     ){
         super(skin);
@@ -43,13 +45,13 @@ public class ActionSubMenu extends BaseLinearMenu{
         );
 
         for (CombatActionState entry : entryavailableActions) {
-
-            this.addButton(entry,
+            String buttonName = entry.toString();
+            this.addButton(buttonName,
                 new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
                         returnToParentMenu();
-                        combatMenu.handleAttackSelection(entry);
+                        combatMenu.handleActionSelection(entry);
                     }
                 }
             );

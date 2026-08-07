@@ -7,5 +7,6 @@ public enum CombatActionState {
     USE,
     RUN,
     STAND,
-    TAKE_COVER
+    TAKE_COVER,
+    LEAVE_COVER
 }
