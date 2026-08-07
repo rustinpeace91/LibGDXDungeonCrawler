@@ -15,6 +15,7 @@ import dungeon.crawler.GameSystem.Character.Class.ClassLogic;
 import dungeon.crawler.GameSystem.Character.Class.FighterClass;
 import dungeon.crawler.GameSystem.Character.Class.HeroClass;
 import dungeon.crawler.GameSystem.Character.Class.WizardClass;
+import dungeon.crawler.GameSystem.Inventory.Weapon;
 
 public class PlayerFactory{
 
@@ -39,6 +40,7 @@ public class PlayerFactory{
     	// TODO: Get base stats from charClass method
         //
         Map<GameConstants.PLAYER_STATS, Integer> statMap = hc.returnBaseStats();
+        ItemFactory items = new ItemFactory();
 
         PartyCharacter pc = new PartyCharacter(
             "Hero",
@@ -58,14 +60,15 @@ public class PlayerFactory{
             hc,
             true
         );
-        pc.equip(WeaponFactory.getIronSword());
+        pc.equip(items.createWeaponFromID("iron_sword"));
+        pc.addToInventory(items.createPotionFromID("small_health_potion"));
         pc.charClass.fillSpells(1);
         return pc;
     }
 
 
     public static PartyCharacter generatePartyMember() {
-
+        ItemFactory items = new ItemFactory();
         FighterClass fc = new FighterClass();
         Map<GameConstants.PLAYER_STATS, Integer> statMap = fc.returnBaseStats();
         PartyCharacter pc = new PartyCharacter(
@@ -86,7 +89,7 @@ public class PlayerFactory{
             fc,
             false
         );
-        pc.equip(WeaponFactory.getIronSword());
+        pc.equip(items.createWeaponFromID("iron_sword"));
         return pc;
     }
 

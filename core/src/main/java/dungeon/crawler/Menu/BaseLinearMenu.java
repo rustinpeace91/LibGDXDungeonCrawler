@@ -127,7 +127,12 @@ public class BaseLinearMenu extends Table {
     }
 
     public void resetMenuSelection(){
-        getStage().setKeyboardFocus(buttonList.first());
+
+        if (buttonList != null && buttonList.size > 0) {
+            getStage().setKeyboardFocus(buttonList.first());
+        } else {
+            getStage().setKeyboardFocus(null);
+        }
     }
 
     public void refreshAndSetActive(){

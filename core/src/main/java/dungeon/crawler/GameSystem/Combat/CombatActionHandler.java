@@ -3,20 +3,23 @@ package dungeon.crawler.GameSystem.Combat;
 import dungeon.crawler.Data.Spells.Spell;
 import dungeon.crawler.Data.Spells.SpellRegistry;
 import dungeon.crawler.Data.Spells.SpellType;
-import dungeon.crawler.GameSystem.Character.Combatant;
+import dungeon.crawler.GameSystem.Character.*;
+import dungeon.crawler.GameSystem.Inventory.InventorySystem.InventorySystem;
 import dungeon.crawler.Utils.StringUtils;
 
 import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Random;
+import java.util.stream.Collectors;
 
 public class CombatActionHandler {
-    private Map<Integer, ? extends Combatant> playerRoster;
-    private Map<Integer, ? extends Combatant> enemyRoster;
+    private Map<Integer, PartyCharacter> playerRoster;
+    private Map<Integer, EnemyCombatant> enemyRoster;
 
     public CombatActionHandler(
-        Map<Integer, ? extends Combatant> playerRoster,
-        Map<Integer, ? extends Combatant> enemyRoster
+        Map<Integer, PartyCharacter> playerRoster,
+        Map<Integer, EnemyCombatant> enemyRoster
     ){
         this.playerRoster = playerRoster;
         this.enemyRoster = enemyRoster;
@@ -66,6 +69,52 @@ public class CombatActionHandler {
         return flavorText;
     }
 
+    public ArrayList<String> handleMiscAction(CombatAction currentAction){
+        String damageText = "";
+        ArrayList<String> flavorText = new ArrayList<>();
+        boolean targetDead = false;
+        if(!currentAction.target.checkDeath()){
+            switch(currentAction.action){
+                case STAND:
+                    currentAction.combatant.setStance(Stance.STANDING);
+                    flavorText.add(StringUtils.format("%s has stood up", currentAction.combatant.getName()));
+                    break;
+                case RUN:
+                    boolean successful = canRunAway();
+                    if(successful){
+                        flavorText.add(StringUtils.format("%s has stood up", currentAction.combatant.getName()));
+                    } else {
+                        flavorText.add(StringUtils.format("%s Party would have run away if it was implemented yet!", currentAction.combatant.getName()));
+                    }
+                    break;
+                default:
+                    flavorText.add("nothin happens");
+                    break;
+
+
+            }
+
+        } else {
+            flavorText.add(StringUtils.format("%s is dead and cannot act", currentAction.combatant.getName()));
+        }
+        return flavorText;
+    }
+
+    public boolean canRunAway(){
+
+        int partyAgilityModifier = CombatUtils.returnPartyAgility(playerRoster);
+        int enemyModifier = 0;
+        int enemyCount = 0;
+        for (Map.Entry<Integer, EnemyCombatant> combatant : enemyRoster.entrySet()) {
+            enemyModifier = enemyModifier + combatant.getValue().initiative;
+            enemyCount++;
+        }
+        Random dice = new Random();
+        int enemyRoll = (dice.nextInt(20) + 1) + (enemyModifier * enemyCount);
+        int partyRoll = (dice.nextInt(20) + 1) + (partyAgilityModifier);
+        return partyRoll > enemyRoll;
+    }
+
     public ArrayList<String> handleSpell(CombatAction currentAction){
         Spell spell = SpellRegistry.INSTANCE.get(currentAction.spell);
         if(spell.getType() == SpellType.AOE_DEFENSE || spell.getType() == SpellType.AOE_OFFENSE){
@@ -73,6 +122,21 @@ public class CombatActionHandler {
         } else {
             return handleSingleSpell(currentAction);
         }
+    }
+
+    public ArrayList<String> handleItemUse(CombatAction currentAction){
+        ArrayList<String> flavorText = new ArrayList<>();
+        if(currentAction.target.checkDeath()){
+            flavorText.add(StringUtils.format("%s cannot use item as target is dead", currentAction.combatant.getName()));
+            return flavorText;
+        } else {
+            flavorText = currentAction.item.use(currentAction.target);
+            if(currentAction.combatant instanceof PartyCharacter) {
+                PartyCharacter character = (PartyCharacter)currentAction.combatant;
+                character.removeFromInventory(currentAction.item);
+            }
+        }
+        return flavorText;
     }
 
     public ArrayList<String> handleSingleSpell(CombatAction currentAction){

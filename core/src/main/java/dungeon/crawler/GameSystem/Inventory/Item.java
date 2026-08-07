@@ -1,9 +1,12 @@
 package dungeon.crawler.GameSystem.Inventory;
 
+import dungeon.crawler.GameSystem.Character.Combatant;
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.GameSystem.Character.Class.ClassLogic;
 // import dungeon.crawler.GameSystem.TestData.PlayerCharacter;
 import dungeon.crawler.GameSystem.Inventory.ItemTypes.ItemType;
+
+import java.util.ArrayList;
 
 public class Item implements ItemLogic {
     public String name;
@@ -38,4 +41,23 @@ public class Item implements ItemLogic {
         return false;
     }
 
+    @Override
+    public ArrayList<String> use(Combatant target) {
+        return null;
+    }
+
 }
+
+// TODO: Item logic
+// create a factory method for Item types
+    // must respect existing weapon logic
+    // use method?
+    // Items and Weapons: can be added and removed form inventory, purchased, transferred between party members
+    // Weapons: can be equipped and unequipped, cannot be used
+        // creation logic: needs a bunch of stats
+            // maybe have a registry of weapon names and stats decoupled from logic. this is where JSON should come in
+    // Items (potions):can be used, cannot be equipped and unequipped
+        // creation logic ("potion name", ITEM_TYPE_ENUM, int powerLevel)
+// create a registry/repository for items that lazy loads (JSON?)
+// create a registry for items by storefront (?maybe next ticket)
+// how do we balance potions with weapons?

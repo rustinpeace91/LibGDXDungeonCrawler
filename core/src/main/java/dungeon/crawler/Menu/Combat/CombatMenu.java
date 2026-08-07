@@ -16,7 +16,10 @@ import dungeon.crawler.GameSystem.Combat.CombatUtils;
 import dungeon.crawler.GameSystem.Combat.PartyActionTracker;
 import dungeon.crawler.GameSystem.GameState.CombatActionState;
 import dungeon.crawler.GameSystem.GameState.GameState;
+import dungeon.crawler.GameSystem.Inventory.Item;
 import dungeon.crawler.Menu.BaseLinearMenu;
+import dungeon.crawler.Menu.Combat.Action.ActionSubMenu;
+import dungeon.crawler.Menu.Combat.Inventory.ItemSelectMenu;
 import dungeon.crawler.Menu.Combat.Magic.SpellSelectMenu;
 import dungeon.crawler.Observers.ActionSelectObserver;
 
@@ -49,8 +52,6 @@ public class CombatMenu extends BaseLinearMenu {
         this.addButton("Attack", new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor){
-                // TODO: remove hard code
-                // handleAction(CombatActionState.ATTACK);
                 BaseLinearMenu nextMenu = new AttackSubMenu(
                     skin,
                     gameState
@@ -63,7 +64,16 @@ public class CombatMenu extends BaseLinearMenu {
         this.addButton("Action", new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor){
-                Gdx.app.log("Fight", "fuuuck u");
+                int currentId = turnTracker.getCurrentCombatantID();
+                PartyCharacter currentCombatant = gameState.party.get(currentId);
+
+                BaseLinearMenu nextMenu = new ActionSubMenu(
+                    skin,
+                    gameState,
+                    currentCombatant
+                );
+                setSubMenu(nextMenu);
+                openSubMenu(nextMenu);
             }
         });
 
@@ -99,11 +109,36 @@ public class CombatMenu extends BaseLinearMenu {
         this.addButton("Inventory", new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor){
-                Gdx.app.log("Fight", "fuuuck u");
+                int currentId = turnTracker.getCurrentCombatantID();
+                PartyCharacter currentCombatant = gameState.party.get(currentId);
+                /* TODO: Create spell and target selection menu
+                Spell Submenu maintains reference to Spell Name and TargetID
+                Spell Submenu fills SpellName and then opens Target submenu
+                TargetSub Menu contains reference to Spell sub menu as parent menu
+                Fills reference to TargetID. Upon doing that notifies CombatMenu (this) which calls handleCastAction
+                with filled data
+
+                */
+                // TODO: check inventory UP HERE before menu is spawned
+                List<Item> availableItems = currentCombatant.inventory.getInventoryList();
+                if(!availableItems.isEmpty()){
+                    BaseLinearMenu nextMenu = new ItemSelectMenu(
+                        skin,
+                        gameState,
+                        currentCombatant,
+                        availableItems
+//                        spellList
+                    );
+                    setSubMenu(nextMenu);
+                    openSubMenu(nextMenu);
+                }
+
+
+//                    handleCastAction(CombatActionState.CAST, 1, SpellNames.FIREBALL);
             }
         });
 
-        this.addButton("Run", new ChangeListener() {
+        this.addButton("Defend", new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor){
                 Gdx.app.log("Fight", "fuuuck u");
@@ -137,6 +172,10 @@ public class CombatMenu extends BaseLinearMenu {
         notifyActionSelect(currentId, CombatActionState.CAST, targetId, spellName);
     }
 
+    public void handleItemAction(Item item, int targetId){
+        int currentId = turnTracker.getCurrentCombatantID();
+        notifyActionSelect(currentId, CombatActionState.USE, targetId, item);
+    }
 
     public void notifyActionSelect(int combatantId, CombatActionState actionState, int targetId){
         for (ActionSelectObserver observer : actionSelectObservers) {
@@ -149,7 +188,12 @@ public class CombatMenu extends BaseLinearMenu {
             observer.onActionSelect(combatantId, actionState, targetId, spellName);
         }
     }
-    
+
+    public void notifyActionSelect(int combatantId, CombatActionState actionState, int targetId, Item item){
+        for (ActionSelectObserver observer : actionSelectObservers) {
+            observer.onActionSelect(combatantId, actionState, targetId, item);
+        }
+    }
 
     public void addActionSelectObserver(ActionSelectObserver observer) {
         actionSelectObservers.add(observer);
@@ -159,6 +203,10 @@ public class CombatMenu extends BaseLinearMenu {
 
     public void handleAttackSelection(int id){
         handleAction(CombatActionState.ATTACK, id);
+    }
+
+    public void handleActionSelection(CombatActionState action){
+        handleAction(action, -1);
     }
 
     public void resetMenu(){

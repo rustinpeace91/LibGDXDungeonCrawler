@@ -17,4 +17,9 @@ public interface Combatant {
     boolean playerAligned();
     void resurrect();
     void longRest();
+    Stance getStance();
+    void setStance(Stance newStance);
+    boolean hasCondition(Condition condition);
+    void addCondition(Condition condition);
+    void removeCondition(Condition condition);
 }

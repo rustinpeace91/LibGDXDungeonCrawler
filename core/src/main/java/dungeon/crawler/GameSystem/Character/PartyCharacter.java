@@ -66,6 +66,7 @@ public class PartyCharacter extends Character implements Combatant{
         this.toHit = calculateToHit();
         this.fist = new Weapon(
             "fist",
+            "first",
             (PartyCharacter) this,
             Math.round(agility / 10),
             1,
@@ -174,6 +175,11 @@ public class PartyCharacter extends Character implements Combatant{
         return StringUtils.format("inventory full!");
     }
 
+    public String removeFromInventory(Item item){
+        inventory.removeFromInventory(item);
+        return StringUtils.format("%s removed", item.name);
+    }
+
     public ArrayList<String> LevelUp(int newLevel) {
         ArrayList<String> messages = new ArrayList();
         level = newLevel;
@@ -237,6 +243,19 @@ public class PartyCharacter extends Character implements Combatant{
             this.hp = maxHp;
             this.mp = maxMP;
         }
+    }@Override
+    public Stance getStance() {
+        return stance;
+    }
+
+
+    @Override
+    public void setStance(Stance newStance) {
+        stance = newStance;
+    }
+    @Override
+    public boolean hasCondition(Condition condition) {
+        return conditions.contains(condition);
     }
 
 
@@ -261,5 +280,17 @@ public class PartyCharacter extends Character implements Combatant{
         } else{
             mp = mp - amount;
         }
+    }
+
+    @Override
+    public void addCondition(Condition condition) {
+        // prevent duplicates
+        conditions.remove(condition);
+        conditions.add(condition);
+    }
+
+    @Override
+    public void removeCondition(Condition condition) {
+        conditions.remove(condition);
     }
 }

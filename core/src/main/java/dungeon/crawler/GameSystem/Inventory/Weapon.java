@@ -1,12 +1,15 @@
 package dungeon.crawler.GameSystem.Inventory;
 
 import dungeon.crawler.GameSystem.Character.Class.ClassLogic;
+import dungeon.crawler.GameSystem.Character.Combatant;
 import dungeon.crawler.GameSystem.Character.Condition;
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.GameSystem.Combat.Elemental;
 import dungeon.crawler.GameSystem.Inventory.ItemTypes.Handed;
 import dungeon.crawler.GameSystem.Inventory.ItemTypes.ItemType;
 import dungeon.crawler.GameSystem.Inventory.ItemTypes.WeaponTypes;
+
+import java.util.ArrayList;
 
 
 public class Weapon extends Item{
@@ -21,6 +24,7 @@ public class Weapon extends Item{
     public Handed handed;
     public Weapon(
         String name,
+        String id,
         PartyCharacter owner,
         int toHit,
         int damageLow,
@@ -59,6 +63,13 @@ public class Weapon extends Item{
     @Override
     public ItemType returnItemType() {
         return ItemType.WEAPON;
+    }
+
+    @Override
+    public ArrayList<String> use(Combatant target){
+        ArrayList<String> value = new ArrayList();
+        value.add("Weapon cannot be used");
+        return value;
     }
 
 }

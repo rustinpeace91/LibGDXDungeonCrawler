@@ -40,7 +40,7 @@ object DataInitializer {
                 "rat",
                 2,
                 50,
-                1,
+                2,
                 16,
                 0,
                 16,
@@ -63,7 +63,7 @@ object DataInitializer {
                 30,
                 0,
                 5,
-                Pair(2, 20),
+                Pair(2, 15),
                 "spider takes a bite"
             )
         )
@@ -80,8 +80,8 @@ object DataInitializer {
                 50,
                 0,
                 5,
-                Pair(4, 50),
-                "skeleton takes a bite"
+                Pair(4, 20),
+                "skeleton swings like a madman"
             )
         )
         return registry;
