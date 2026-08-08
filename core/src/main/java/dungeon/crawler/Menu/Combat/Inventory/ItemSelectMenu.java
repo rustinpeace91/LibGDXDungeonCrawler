@@ -6,23 +6,15 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Array;
-import dungeon.crawler.Data.Spells.Spell;
-import dungeon.crawler.Data.Spells.SpellNames;
-import dungeon.crawler.Data.Spells.SpellRegistry;
-import dungeon.crawler.Data.Spells.SpellType;
-import dungeon.crawler.GameSystem.Character.Combatant;
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
-import dungeon.crawler.GameSystem.Combat.CombatUtils;
 import dungeon.crawler.GameSystem.GameState.GameState;
 import dungeon.crawler.GameSystem.Inventory.Item;
 import dungeon.crawler.Menu.BaseLinearMenu;
 import dungeon.crawler.Menu.Combat.CombatMenu;
 import dungeon.crawler.Menu.ScrollableLinearMenu;
+import dungeon.crawler.Menu.PagePosition;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class ItemSelectMenu extends ScrollableLinearMenu<Item> {
 

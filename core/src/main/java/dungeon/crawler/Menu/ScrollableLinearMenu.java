@@ -17,12 +17,14 @@ public abstract class ScrollableLinearMenu<T> extends BaseLinearMenu{
     protected int pageEnd;
     protected int currentPage;
     private ArrayList<T> menuItems;
+    private PagePosition pagePos;
 
     public ScrollableLinearMenu(Skin skin) {
         super(skin);
         pageStart = 0;
         menuItems = new ArrayList<>();
         pageEnd = Math.min(MAX_ROWS, menuItems.size());
+        pagePos = PagePosition.FORWARD;
     }
 
     public void intializeItems(ArrayList<T> items){
@@ -78,7 +80,15 @@ public abstract class ScrollableLinearMenu<T> extends BaseLinearMenu{
 
         this.buttonList = populateButtonList();
         if (buttonList != null && buttonList.size > 0) {
-            getStage().setKeyboardFocus(buttonList.get(1));
+            if(pagePos == PagePosition.FORWARD){
+                currentButtonIndex = 1;
+            } else {
+                currentButtonIndex = MAX_ROWS - 1;
+            }
+            getStage().setKeyboardFocus(buttonList.get(currentButtonIndex));
+
+            recallMenuSelection();
+
         } else {
             getStage().setKeyboardFocus(null);
         }
@@ -89,12 +99,14 @@ public abstract class ScrollableLinearMenu<T> extends BaseLinearMenu{
     public void pageForward(){
         pageStart = pageEnd;
         pageEnd = Math.min(pageStart + MAX_ROWS, menuItems.size());
+        pagePos = PagePosition.FORWARD;
         updateButtons();
     };
 
     public void pageBackward(){
         pageStart = Math.max(pageStart - MAX_ROWS, 0);
         pageEnd = Math.min(pageStart + MAX_ROWS, menuItems.size());
+        pagePos = PagePosition.BACKWARD;
         updateButtons();
     }
 }
