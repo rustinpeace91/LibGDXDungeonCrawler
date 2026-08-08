@@ -44,7 +44,15 @@ public class ItemSelectMenu extends BaseLinearMenu{
 
 
     protected void attackButtons(){
+        this.defaults().size(170f, 60f).pad(5f);
+        this.addButton("^",
+            new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
 
+                }
+            }
+        );
         for (Item item : availableItems) {
 
             String buttonName = item.name;
@@ -63,8 +71,15 @@ public class ItemSelectMenu extends BaseLinearMenu{
                     }
                 }
             );
-
         }
+        this.addButton("v",
+            new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+
+                }
+            }
+        );
     }
 
     @Override
