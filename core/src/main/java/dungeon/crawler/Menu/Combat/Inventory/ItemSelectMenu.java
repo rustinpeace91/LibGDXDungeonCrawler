@@ -1,5 +1,6 @@
 package dungeon.crawler.Menu.Combat.Inventory;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -17,44 +18,42 @@ import dungeon.crawler.GameSystem.GameState.GameState;
 import dungeon.crawler.GameSystem.Inventory.Item;
 import dungeon.crawler.Menu.BaseLinearMenu;
 import dungeon.crawler.Menu.Combat.CombatMenu;
+import dungeon.crawler.Menu.ScrollableLinearMenu;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class ItemSelectMenu extends BaseLinearMenu{
+public class ItemSelectMenu extends ScrollableLinearMenu<Item> {
 
     private GameState gameState;
     private CombatMenu combatMenu;
     private PartyCharacter currentCombatant;
-    private final List<Item> availableItems;
+    private final ArrayList<Item> availableItems;
 
     public ItemSelectMenu(
         Skin skin,
         GameState gameState,
         PartyCharacter currentCombatant,
-        List<Item> availableItems
+        ArrayList<Item> availableItems
     ){
         super(skin);
         this.gameState = gameState;
         this.currentCombatant = currentCombatant;
         this.availableItems = availableItems;
-        this.attackButtons();
+        this.initializeButtons();
     }
 
 
-    protected void attackButtons(){
+
+    protected void updateButtons(){
         this.defaults().size(170f, 60f).pad(5f);
-        this.addButton("^",
-            new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
+        this.clearChildren();
+        this.initializeArrow();
+        addScrollArrowUp();
 
-                }
-            }
-        );
-        for (Item item : availableItems) {
-
+        for (int i=pageStart; i < pageEnd; i++) {
+            Item item = availableItems.get(i);
             String buttonName = item.name;
             this.addButton(buttonName,
                 new ChangeListener() {
@@ -72,14 +71,22 @@ public class ItemSelectMenu extends BaseLinearMenu{
                 }
             );
         }
-        this.addButton("v",
-            new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
+        if(getStage() == null) {
+            Gdx.app.log("Menu Error", "refreshAndSetActive called BEFORE linear menu added to stage");
+            // no return. Let it break the game
+        }
+        setVisible(true);
 
-                }
-            }
-        );
+        addScrollArrowDown();
+        if (parentMenu != null) {
+            refreshAndSetActive();
+        }
+
+    }
+    protected void initializeButtons(){
+
+        this.intializeItems(availableItems);
+        updateButtons();
     }
 
     @Override
@@ -111,7 +118,6 @@ public class ItemSelectMenu extends BaseLinearMenu{
         returnToParentMenu();
         combatMenu.handleItemAction(item, targetId);
     }
-
 
 
 }

@@ -77,6 +77,13 @@ public class BaseLinearMenu extends Table {
         addButton(buttonName, listener, null);
     }
 
+    public void addFocusButton(
+        String buttonName,
+        FocusListener listener
+    ){
+        addFocusButton(buttonName, listener, null);
+    }
+
     public void addButton(
         String buttonName,
         ChangeListener listener,
@@ -92,6 +99,23 @@ public class BaseLinearMenu extends Table {
             newButton.setUserObject(userObject);
         }
     }
+
+    public void addFocusButton(
+        String buttonName,
+        FocusListener listener,
+        Object userObject
+    ){
+        TextButton newButton = new TextButton(buttonName, skin);
+
+        this.add(newButton).row();
+        newButton.addListener(listener);
+        // 3. Attach the behavior immediately
+        applyFocusBehavior(newButton);
+        if(userObject != null){
+            newButton.setUserObject(userObject);
+        }
+    }
+
 
 
     /* call after all button logic is added */

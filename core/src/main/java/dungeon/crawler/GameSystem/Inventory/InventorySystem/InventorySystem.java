@@ -31,9 +31,10 @@ public class InventorySystem{
         inventoryList.remove(item);
     }
 
-    public List<Item> getInventoryList() {
+    public ArrayList<Item> getInventoryList() {
         // TODO: Sort by type, then alphabetically
-        return Collections.unmodifiableList(inventoryList);
+        return new ArrayList<>(this.inventoryList);
+
     }
 
 

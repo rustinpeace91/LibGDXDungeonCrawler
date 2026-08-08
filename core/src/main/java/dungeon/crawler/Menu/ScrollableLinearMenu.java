@@ -1,0 +1,100 @@
+package dungeon.crawler.Menu;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
+
+import java.sql.Array;
+import java.util.ArrayList;
+/* Menu generated from a dynamic list of objects */
+
+
+public abstract class ScrollableLinearMenu<T> extends BaseLinearMenu{
+    protected final int MAX_ROWS = 5;
+    protected int pageStart;
+    protected int pageEnd;
+    protected int currentPage;
+    private ArrayList<T> menuItems;
+
+    public ScrollableLinearMenu(Skin skin) {
+        super(skin);
+        pageStart = 0;
+        menuItems = new ArrayList<>();
+        pageEnd = Math.min(MAX_ROWS, menuItems.size());
+    }
+
+    public void intializeItems(ArrayList<T> items){
+        this.menuItems = items;
+        pageEnd = Math.min(MAX_ROWS, menuItems.size());
+    }
+
+    public void addScrollArrowUp(){
+        if(pageStart > 0){
+            this.addFocusButton("^",
+                new FocusListener() {
+                    @Override
+                    public void keyboardFocusChanged(
+                        FocusEvent event,
+                        Actor actor,
+                        boolean focused
+                    ) {
+                        if (focused) {
+                            pageBackward();
+                        }
+                    }
+                }
+            );
+        }
+    }
+
+    public void addScrollArrowDown() {
+        if (pageEnd < menuItems.size()) {
+            this.addFocusButton("v",
+                new FocusListener() {
+                    @Override
+                    public void keyboardFocusChanged(
+                        FocusEvent event,
+                        Actor actor,
+                        boolean focused
+                    ) {
+                        if (focused) {
+                            pageForward();
+                        }
+                    }
+                }
+            );
+        }
+    }
+
+    @Override
+    public void refreshAndSetActive(){
+        if(getStage() == null) {
+            Gdx.app.log("Menu Error", "refreshAndSetActive called BEFORE linear menu added to stage");
+            // no return. Let it break the game
+        }
+        setVisible(true);
+
+        this.buttonList = populateButtonList();
+        if (buttonList != null && buttonList.size > 0) {
+            getStage().setKeyboardFocus(buttonList.get(1));
+        } else {
+            getStage().setKeyboardFocus(null);
+        }
+    }
+
+
+    protected abstract void updateButtons();
+    public void pageForward(){
+        pageStart = pageEnd;
+        pageEnd = Math.min(pageStart + MAX_ROWS, menuItems.size());
+        updateButtons();
+    };
+
+    public void pageBackward(){
+        pageStart = Math.max(pageStart - MAX_ROWS, 0);
+        pageEnd = Math.min(pageStart + MAX_ROWS, menuItems.size());
+        updateButtons();
+    }
+}

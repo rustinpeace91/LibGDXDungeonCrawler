@@ -120,7 +120,7 @@ public class CombatMenu extends BaseLinearMenu {
 
                 */
                 // TODO: check inventory UP HERE before menu is spawned
-                List<Item> availableItems = currentCombatant.inventory.getInventoryList();
+                ArrayList<Item> availableItems = currentCombatant.inventory.getInventoryList();
                 if(!availableItems.isEmpty()){
                     BaseLinearMenu nextMenu = new ItemSelectMenu(
                         skin,

@@ -65,7 +65,13 @@ public class PlayerFactory{
         pc.addToInventory(items.createPotionFromID("small_health_potion"));
         pc.addToInventory(items.createPotionFromID("small_health_potion"));
         pc.addToInventory(items.createPotionFromID("small_health_potion"));
-
+        pc.addToInventory(items.createPotionFromID("small_health_potion"));
+        pc.addToInventory(items.createPotionFromID("small_health_potion"));
+        pc.addToInventory(items.createPotionFromID("small_health_potion"));
+        pc.addToInventory(items.createPotionFromID("small_health_potion"));        pc.addToInventory(items.createPotionFromID("small_health_potion"));
+        pc.addToInventory(items.createPotionFromID("small_health_potion"));
+        pc.addToInventory(items.createPotionFromID("small_health_potion"));
+        pc.addToInventory(items.createPotionFromID("small_health_potion"));
         pc.charClass.fillSpells(1);
         return pc;
     }
