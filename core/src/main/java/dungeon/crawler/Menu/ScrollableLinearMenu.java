@@ -5,13 +5,14 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
+import com.badlogic.gdx.utils.compression.lzma.Base;
 
 import java.sql.Array;
 import java.util.ArrayList;
 /* Menu generated from a dynamic list of objects */
 
 
-public abstract class ScrollableLinearMenu<T> extends BaseLinearMenu{
+public abstract class ScrollableLinearMenu<T> extends BaseLinearMenu {
     protected final int MAX_ROWS = 5;
     protected int pageStart;
     protected int pageEnd;

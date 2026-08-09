@@ -62,4 +62,14 @@ public class GameConstants {
 
     public static final int MAX_PLAYER_INVENTORY_SPACE = 10;
 
+
+    // MENU DIMENSIONS
+    public static final float COMBAT_MENU_HEIGHT=60f;
+    public static final float COMBAT_MENU_PAD=5f;
+    public static final float COMBAT_MENU_WIDTH=185f;
+    public static final float COMBAT_SUBMENU_WIDTH=180f;
+    public static final float COMBAT_SUBMENU_PAD=5f;
+    public static final float COMBAT_SUBMENU_WIDTH_DIFF=30f;
+
+
 }
