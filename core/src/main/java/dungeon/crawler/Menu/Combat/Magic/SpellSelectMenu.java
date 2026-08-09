@@ -19,8 +19,9 @@ import dungeon.crawler.GameSystem.Combat.CombatUtils;
 import dungeon.crawler.GameSystem.GameState.GameState;
 import dungeon.crawler.Menu.BaseLinearMenu;
 import dungeon.crawler.Menu.Combat.CombatMenu;
+import dungeon.crawler.Menu.ScrollableLinearMenu;
 
-public class SpellSelectMenu extends BaseLinearMenu{
+public class SpellSelectMenu extends ScrollableLinearMenu<SpellNames> {
 
     private GameState gameState;
     private CombatMenu combatMenu;
@@ -38,18 +39,22 @@ public class SpellSelectMenu extends BaseLinearMenu{
         this.gameState = gameState;
         this.currentCombatant = currentCombatant;
         this.spellList = spellList;
-        this.attackButtons();
+        this.initializeButtons();
+
     }
 
 
-    protected void attackButtons(){
-
+    protected void updateButtons(){
+        this.defaults().size(190f, 60f).pad(5f);
+        this.clearChildren();
+//        this.initializeArrow();
+        addScrollArrowUp();
         Map<Integer, Combatant> availableCombatants = CombatUtils.returnAliveCombatants(
             this.gameState.currentEnemyRoster
         );
         SpellRegistry spellRegistry = SpellRegistry.INSTANCE;
-        for (SpellNames spellID : spellList) {
-
+        for (int i=pageStart; i < pageEnd; i++) {
+            SpellNames spellID = spellList.get(i);
             Spell spell = spellRegistry.get(spellID);
             String buttonName = spell.getName() + "/" + String.valueOf(spell.getCost()) + " MP";
             this.addButton(buttonName,
@@ -73,8 +78,16 @@ public class SpellSelectMenu extends BaseLinearMenu{
                     }
                 }
             );
+            addScrollArrowDown();
+
 
         }
+    }
+
+    protected void initializeButtons(){
+
+        this.intializeItems(spellList);
+        updateButtons();
     }
 
     @Override

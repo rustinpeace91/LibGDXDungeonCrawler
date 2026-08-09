@@ -39,9 +39,9 @@ public class ItemSelectMenu extends ScrollableLinearMenu<Item> {
 
 
     protected void updateButtons(){
-        this.defaults().size(170f, 60f).pad(5f);
+        this.defaults().size(190f, 60f).pad(5f);
         this.clearChildren();
-        this.initializeArrow();
+//        this.initializeArrow();
         addScrollArrowUp();
 
         for (int i=pageStart; i < pageEnd; i++) {
