@@ -74,6 +74,7 @@ public class ActionSubMenu extends BaseLinearMenu implements CombatSubMenu {
 
             setDefaults();
             this.clearChildren();
+            this.initializeArrow();
             this.attackButtons();
             setSizeandPosition();
 

@@ -49,7 +49,7 @@ public class SpellSelectMenu extends ScrollableLinearMenu<SpellNames> implements
 
     protected void updateButtons(){
         this.clearChildren();
-//        this.initializeArrow();
+        this.initializeArrow();
         scrollableResetDefaults();
         addScrollArrowUp();
         Map<Integer, Combatant> availableCombatants = CombatUtils.returnAliveCombatants(

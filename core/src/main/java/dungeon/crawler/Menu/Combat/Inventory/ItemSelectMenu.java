@@ -11,17 +11,20 @@ import dungeon.crawler.GameSystem.GameState.GameState;
 import dungeon.crawler.GameSystem.Inventory.Item;
 import dungeon.crawler.Menu.BaseLinearMenu;
 import dungeon.crawler.Menu.Combat.CombatMenu;
+import dungeon.crawler.Menu.CombatSubMenu;
 import dungeon.crawler.Menu.ScrollableLinearMenu;
 import dungeon.crawler.Menu.PagePosition;
 
 import java.util.ArrayList;
 
-public class ItemSelectMenu extends ScrollableLinearMenu<Item> {
+public class ItemSelectMenu extends ScrollableLinearMenu<Item> implements CombatSubMenu  {
 
     private GameState gameState;
     private CombatMenu combatMenu;
     private PartyCharacter currentCombatant;
     private final ArrayList<Item> availableItems;
+
+    public BaseLinearMenu asCombatMenu(){return this;}
 
     public ItemSelectMenu(
         Skin skin,
@@ -39,9 +42,9 @@ public class ItemSelectMenu extends ScrollableLinearMenu<Item> {
 
 
     protected void updateButtons(){
-        this.defaults().size(190f, 60f).pad(5f);
+        scrollableResetDefaults();
         this.clearChildren();
-//        this.initializeArrow();
+        this.initializeArrow();
         addScrollArrowUp();
 
         for (int i=pageStart; i < pageEnd; i++) {
@@ -79,26 +82,29 @@ public class ItemSelectMenu extends ScrollableLinearMenu<Item> {
 
         this.intializeItems(availableItems);
         updateButtons();
+
     }
 
     @Override
     protected void setStage(Stage stage) {
 
         super.setStage(stage);
+
         if(parentMenu != null){
-            float wif = this.getWidth();
+//            float wif = this.getWidth();
 
             combatMenu = (CombatMenu)parentMenu;
-            this.defaults().size(110f, 30f).pad(5f);
-
-            this.defaults().pad(2);
-
-            this.pack();
-            this.setOrigin(Align.topRight);
-
-            float targetX = parentMenu.getStage().getWidth(); // Right edge of screen
-            float targetY = parentMenu.getTop();
-            this.setPosition(targetX, targetY, Align.topRight);
+//            this.defaults().size(180f, 60f).pad(5f);
+//
+//            this.defaults().pad(2);
+//
+//            this.pack();
+//            this.setOrigin(Align.topRight);
+//
+//            float targetX = parentMenu.getStage().getWidth(); // Right edge of screen
+//            float targetY = parentMenu.getTop();
+//            this.setPosition(targetX, targetY, Align.topRight);
+            setSizeandPosition();
         }
 
         if (stage != null) {
