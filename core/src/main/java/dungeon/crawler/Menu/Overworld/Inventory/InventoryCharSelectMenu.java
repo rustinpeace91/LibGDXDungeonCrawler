@@ -1,4 +1,5 @@
-package dungeon.crawler.Menu.Overworld;
+package dungeon.crawler.Menu.Overworld.Inventory;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -6,23 +7,26 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
-
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.GameSystem.GameState.GameState;
 import dungeon.crawler.Menu.BaseLinearMenu;
+import dungeon.crawler.Menu.Overworld.PartyCharacterStatusMenu;
 import dungeon.crawler.Utils.StringUtils;
+// TODO: refactor this and statusselectionmenu
 
-public class StatusSelectionMenu extends BaseLinearMenu {
+public class InventoryCharSelectMenu extends BaseLinearMenu
+{
+
     private GameState gameState;
-    private PartyCharacterStatusMenu partyStatusMenu;
+    private InventoryStatusMenu partyStatusMenu;
 
-	public StatusSelectionMenu(
+    public InventoryCharSelectMenu(
         Skin skin,
         GameState gameState
     ){
         super(skin);
         this.gameState = gameState;
-        this.partyStatusMenu = new PartyCharacterStatusMenu(
+        this.partyStatusMenu = new InventoryStatusMenu(
             skin,
             gameState.player
         );
@@ -72,7 +76,7 @@ public class StatusSelectionMenu extends BaseLinearMenu {
                 (key, character) -> {
                     addButton(
                         character.name,
-                        new ChangeListener (){
+                        new ChangeListener(){
                             @Override
                             public void changed(ChangeEvent event, Actor actor){
                                 // nothing for now. This is for hovering
@@ -92,19 +96,19 @@ public class StatusSelectionMenu extends BaseLinearMenu {
             if(actor instanceof TextButton){
                 TextButton button = (TextButton) actor;
                 button.addListener(new FocusListener(){
-                @Override
-                public void keyboardFocusChanged(FocusEvent event, Actor actor, boolean focused) {
-                    TextButton button = (TextButton) actor;
-                    PartyCharacter character = (PartyCharacter)button.getUserObject();
-                    if (focused) {
-                        if(button.getUserObject() instanceof PartyCharacter){
-                            partyStatusMenu.showCharacter(character);
-                        } else {
-                            partyStatusMenu.setText(StringUtils.format("This is the status text for: \n %s", button.getText()));
+                    @Override
+                    public void keyboardFocusChanged(FocusEvent event, Actor actor, boolean focused) {
+                        TextButton button = (TextButton) actor;
+                        PartyCharacter character = (PartyCharacter)button.getUserObject();
+                        if (focused) {
+                            if(button.getUserObject() instanceof PartyCharacter){
+                                partyStatusMenu.showCharacter(character);
+                            } else {
+                                partyStatusMenu.setText(StringUtils.format("This is the status text for: \n %s", button.getText()));
 
+                            }
                         }
                     }
-                }
                 });
             }
         }

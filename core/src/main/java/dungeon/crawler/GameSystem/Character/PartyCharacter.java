@@ -10,6 +10,7 @@ import static dungeon.crawler.GameConstants.PLAYER_STATS.INTELLIGENCE;
 import static dungeon.crawler.GameConstants.PLAYER_STATS.PERCEPTION;
 import static dungeon.crawler.GameConstants.PLAYER_STATS.STRENGTH;
 import dungeon.crawler.GameSystem.Character.Class.ClassLogic;
+import dungeon.crawler.GameSystem.Combat.Attack;
 import dungeon.crawler.GameSystem.Combat.AttackDamage;
 import dungeon.crawler.GameSystem.Inventory.Item;
 import dungeon.crawler.GameSystem.Inventory.Weapon;
@@ -223,9 +224,15 @@ public class PartyCharacter extends Character implements Combatant{
     @Override
     public int getDefense() {
         // TODO Auto-generated method stub
-        return 10;
+        int bonus = equipment.getDefenseBonus();
+        return 10 + bonus;
     }
-
+    public String getAttackDamageString(){
+        Weapon attackWeapon = getWeapon();
+        String dmgString = String.valueOf(attackWeapon.damageLow) + "-" + String.valueOf(attackWeapon.damageHigh);
+//        attackDamage = attackDamage + " + " + String.valueOf(getDamageBonus());
+        return dmgString;
+    }
     @Override
     public boolean playerAligned() {
         return true;

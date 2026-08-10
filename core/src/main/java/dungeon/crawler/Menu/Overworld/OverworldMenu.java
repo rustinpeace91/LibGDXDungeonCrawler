@@ -11,6 +11,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import dungeon.crawler.GameConstants;
 import dungeon.crawler.GameSystem.GameState.GameState;
 import dungeon.crawler.Menu.BaseLinearMenu;
+import dungeon.crawler.Menu.Overworld.Inventory.InventoryCharSelectMenu;
+import dungeon.crawler.Menu.Overworld.Inventory.InventoryStatusMenu;
 import dungeon.crawler.Menu.Toggleable;
 import dungeon.crawler.Observers.MenuInputObserver;
 import dungeon.crawler.Observers.ScreenChangeObserver;
@@ -49,7 +51,12 @@ public class OverworldMenu extends BaseLinearMenu implements Toggleable {
         this.addButton("Inventory", new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor){
-
+                InventoryCharSelectMenu newMenu = new InventoryCharSelectMenu(
+                    skin,
+                    gameState
+                );
+                setSubMenu(newMenu);
+                openSubMenu(newMenu);
             }
         });
 

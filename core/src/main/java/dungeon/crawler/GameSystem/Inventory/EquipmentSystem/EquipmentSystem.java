@@ -62,5 +62,51 @@ public class EquipmentSystem {
         return rightHand;
     }
 
+    public Weapon getRightHand(){
+        return rightHand;
+    }
+    public Armor getLeftHand(){
+        return leftHand;
+    }
+    public Armor getHead(){
+        return head;
+    }
+    public Armor getBody(){
+        return body;
+    }
+    public Armor getFeet(){
+        return feet;
+    }
+
+    public boolean isEquipped(Item item){
+        if(!(
+                item.returnItemType() == ItemType.ARMOR ||
+                item.returnItemType() == ItemType.WEAPON
+            )
+        ){
+            return false;
+        }
+        Item[] equipslots = {rightHand, leftHand, body, feet, head};
+
+        for(Item e: equipslots){
+            if(e == item){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public int getDefenseBonus(){
+
+        Armor[] equipslots = {leftHand, body, feet, head};
+        int bonus = 0;
+        for(Armor e: equipslots){
+            if(e != null) {
+                bonus = bonus + e.defenseBonus;
+            }
+        }
+        return bonus;
+    }
+
 
 }

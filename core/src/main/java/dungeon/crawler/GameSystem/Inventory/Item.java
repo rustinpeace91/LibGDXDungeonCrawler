@@ -30,6 +30,11 @@ public class Item implements ItemLogic {
     }
 
     @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
     public boolean equippable() {
         ItemType itemType = returnItemType();
         return itemType == ItemType.ARMOR || itemType == ItemType.WEAPON;
