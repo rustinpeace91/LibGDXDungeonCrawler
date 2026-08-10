@@ -104,6 +104,8 @@ public abstract class ScrollableLinearMenu<T> extends BaseLinearMenu {
         updateButtons();
     };
 
+
+
     public void pageBackward(){
         pageStart = Math.max(pageStart - MAX_ROWS, 0);
         pageEnd = Math.min(pageStart + MAX_ROWS, menuItems.size());

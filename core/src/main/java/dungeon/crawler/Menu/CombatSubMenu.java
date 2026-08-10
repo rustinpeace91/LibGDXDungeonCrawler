@@ -11,7 +11,7 @@ public interface CombatSubMenu {
        - setDefaults();
        - Whatever the menu does to construct the buttons (varies heavily by menu)
        - setSizeandPosition();
-       so it's not as modular as I would like, but it will work for the scope of this game. 
+       so it's not as modular as I would like, but it will work for the scope of this game.
     */
     BaseLinearMenu asCombatMenu();
 
@@ -19,6 +19,16 @@ public interface CombatSubMenu {
     default void setDefaults(){
         asCombatMenu().defaults().size(
             GameConstants.COMBAT_SUBMENU_WIDTH,
+            GameConstants.COMBAT_MENU_HEIGHT
+        ).pad(5f);
+    }
+    /* Why do we need to reset defaults for Scrollable menus?
+    Becasue it turns out clearChildren() also clears all size settings.
+    Why do we need seperate widths for Scrollable menus?  No idea.  Hate it.
+     */
+    default void scrollableResetDefaults(){
+        asCombatMenu().defaults().size(
+            GameConstants.SCROLLABLE_SUBMENU_WIDTH,
             GameConstants.COMBAT_MENU_HEIGHT
         ).pad(5f);
     }

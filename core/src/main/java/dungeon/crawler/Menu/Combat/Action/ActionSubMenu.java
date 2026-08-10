@@ -18,8 +18,9 @@ import dungeon.crawler.GameSystem.GameState.CombatActionState;
 import dungeon.crawler.GameSystem.GameState.GameState;
 import dungeon.crawler.Menu.BaseLinearMenu;
 import dungeon.crawler.Menu.Combat.CombatMenu;
+import dungeon.crawler.Menu.CombatSubMenu;
 
-public class ActionSubMenu extends BaseLinearMenu{
+public class ActionSubMenu extends BaseLinearMenu implements CombatSubMenu {
 
     private GameState gameState;
     private CombatMenu combatMenu;
@@ -36,6 +37,9 @@ public class ActionSubMenu extends BaseLinearMenu{
         this.currentCombatant = currentCombatant;
         this.attackButtons();
     }
+
+    @Override
+    public BaseLinearMenu asCombatMenu(){return this;}
 
 
     protected void attackButtons(){
@@ -63,30 +67,23 @@ public class ActionSubMenu extends BaseLinearMenu{
 
     @Override
     protected void setStage(Stage stage) {
-
         super.setStage(stage);
         if(parentMenu != null){
-
-
-            float wif = this.getWidth();
-
             combatMenu = (CombatMenu)parentMenu;
-            this.defaults().size(110f, 30f).pad(5f);
 
-            this.defaults().pad(2);
 
-            this.pack();
-            this.setOrigin(Align.topRight);
+            setDefaults();
+            this.clearChildren();
+            this.attackButtons();
+            setSizeandPosition();
 
-            float targetX = parentMenu.getStage().getWidth(); // Right edge of screen
-            float targetY = parentMenu.getTop();
-            this.setPosition(targetX, targetY, Align.topRight);
+
         }
-
         if (stage != null) {
             refreshAndSetActive();
         }
     }
+
 
     // spawn menu
     // take in GameState as parametera
