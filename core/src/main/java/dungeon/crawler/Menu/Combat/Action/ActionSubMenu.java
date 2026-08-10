@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
+import com.badlogic.gdx.utils.Align;
 import dungeon.crawler.GameSystem.Character.Combatant;
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.GameSystem.Combat.CombatAction;
@@ -17,8 +18,9 @@ import dungeon.crawler.GameSystem.GameState.CombatActionState;
 import dungeon.crawler.GameSystem.GameState.GameState;
 import dungeon.crawler.Menu.BaseLinearMenu;
 import dungeon.crawler.Menu.Combat.CombatMenu;
+import dungeon.crawler.Menu.CombatSubMenu;
 
-public class ActionSubMenu extends BaseLinearMenu{
+public class ActionSubMenu extends BaseLinearMenu implements CombatSubMenu {
 
     private GameState gameState;
     private CombatMenu combatMenu;
@@ -36,8 +38,12 @@ public class ActionSubMenu extends BaseLinearMenu{
         this.attackButtons();
     }
 
+    @Override
+    public BaseLinearMenu asCombatMenu(){return this;}
+
 
     protected void attackButtons(){
+        this.defaults().size(190f, 60f).pad(5f);
 
         // redundant for loops here are fine. There won't be more than 5 enemies max
         ArrayList<CombatActionState> entryavailableActions = CombatUtils.returnAvailableActions(
@@ -61,21 +67,24 @@ public class ActionSubMenu extends BaseLinearMenu{
 
     @Override
     protected void setStage(Stage stage) {
-
         super.setStage(stage);
         if(parentMenu != null){
-
-            this.setPosition(parentMenu.getStage().getWidth() - (this.parentMenu.getWidth() + 50), this.parentMenu.getOriginY());
             combatMenu = (CombatMenu)parentMenu;
-            this.defaults().pad(2);
 
-            this.pack();
+
+            setDefaults();
+            this.clearChildren();
+            this.initializeArrow();
+            this.attackButtons();
+            setSizeandPosition();
+
+
         }
-
         if (stage != null) {
             refreshAndSetActive();
         }
     }
+
 
     // spawn menu
     // take in GameState as parametera

@@ -62,6 +62,16 @@ public class PlayerFactory{
         );
         pc.equip(items.createWeaponFromID("iron_sword"));
         pc.addToInventory(items.createPotionFromID("small_health_potion"));
+        pc.addToInventory(items.createPotionFromID("small_health_potion"));
+        pc.addToInventory(items.createPotionFromID("small_health_potion"));
+        pc.addToInventory(items.createPotionFromID("small_health_potion"));
+        pc.addToInventory(items.createPotionFromID("small_health_potion"));
+        pc.addToInventory(items.createPotionFromID("small_health_potion"));
+        pc.addToInventory(items.createPotionFromID("small_health_potion"));
+        pc.addToInventory(items.createPotionFromID("small_health_potion"));        pc.addToInventory(items.createPotionFromID("small_health_potion"));
+        pc.addToInventory(items.createPotionFromID("small_health_potion"));
+        pc.addToInventory(items.createPotionFromID("small_health_potion"));
+        pc.addToInventory(items.createPotionFromID("small_health_potion"));
         pc.charClass.fillSpells(1);
         return pc;
     }

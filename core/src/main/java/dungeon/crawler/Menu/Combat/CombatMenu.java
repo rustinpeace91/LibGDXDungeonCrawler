@@ -48,7 +48,7 @@ public class CombatMenu extends BaseLinearMenu {
     private void initializeVisualMenu(){
         this.clearChildren();
         this.initializeArrow();
-        this.defaults().size(110f, 30f).pad(5f);
+        this.defaults().size(170f, 60f).pad(5f);
         this.addButton("Attack", new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor){
@@ -120,7 +120,7 @@ public class CombatMenu extends BaseLinearMenu {
 
                 */
                 // TODO: check inventory UP HERE before menu is spawned
-                List<Item> availableItems = currentCombatant.inventory.getInventoryList();
+                ArrayList<Item> availableItems = currentCombatant.inventory.getInventoryList();
                 if(!availableItems.isEmpty()){
                     BaseLinearMenu nextMenu = new ItemSelectMenu(
                         skin,
@@ -139,6 +139,13 @@ public class CombatMenu extends BaseLinearMenu {
         });
 
         this.addButton("Defend", new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor){
+                Gdx.app.log("Fight", "fuuuck u");
+            }
+        });
+
+        this.addButton("Status", new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor){
                 Gdx.app.log("Fight", "fuuuck u");

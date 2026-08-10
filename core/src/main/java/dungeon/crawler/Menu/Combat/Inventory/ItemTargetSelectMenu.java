@@ -12,10 +12,12 @@ import dungeon.crawler.GameSystem.Combat.CombatUtils;
 import dungeon.crawler.GameSystem.GameState.GameState;
 import dungeon.crawler.GameSystem.Inventory.Item;
 import dungeon.crawler.Menu.BaseLinearMenu;
+import dungeon.crawler.Menu.Combat.CombatMenu;
+import dungeon.crawler.Menu.CombatSubMenu;
 
 import java.util.Map;
 
-public class ItemTargetSelectMenu extends BaseLinearMenu{
+public class ItemTargetSelectMenu extends BaseLinearMenu implements CombatSubMenu {
 
     private GameState gameState;
     private ItemSelectMenu itemMenu;
@@ -34,6 +36,7 @@ public class ItemTargetSelectMenu extends BaseLinearMenu{
 
     }
 
+    public BaseLinearMenu asCombatMenu(){return this;}
 
     protected void attackButtons(){
 
@@ -57,18 +60,18 @@ public class ItemTargetSelectMenu extends BaseLinearMenu{
 
     @Override
     protected void setStage(Stage stage) {
-
         super.setStage(stage);
         if(parentMenu != null){
 
-            this.setPosition(parentMenu.getStage().getWidth() - (this.parentMenu.getWidth() + 50), this.parentMenu.getOriginY());
-            this.defaults().pad(2);
 
-            this.pack();
-            this.setPosition(parentMenu.getStage().getWidth() - this.getWidth(), this.parentMenu.getOriginY());
+            setDefaults();
+            this.clearChildren();
+            this.initializeArrow();
+            this.attackButtons();
+            setSizeandPosition();
+
 
         }
-
         if (stage != null) {
             refreshAndSetActive();
         }

@@ -19,8 +19,10 @@ import dungeon.crawler.GameSystem.Combat.CombatUtils;
 import dungeon.crawler.GameSystem.GameState.GameState;
 import dungeon.crawler.Menu.BaseLinearMenu;
 import dungeon.crawler.Menu.Combat.CombatMenu;
+import dungeon.crawler.Menu.CombatSubMenu;
+import dungeon.crawler.Menu.ScrollableLinearMenu;
 
-public class SpellSelectMenu extends BaseLinearMenu{
+public class SpellSelectMenu extends ScrollableLinearMenu<SpellNames> implements CombatSubMenu {
 
     private GameState gameState;
     private CombatMenu combatMenu;
@@ -38,18 +40,24 @@ public class SpellSelectMenu extends BaseLinearMenu{
         this.gameState = gameState;
         this.currentCombatant = currentCombatant;
         this.spellList = spellList;
-        this.attackButtons();
+        this.initializeButtons();
+
+
     }
 
+    public BaseLinearMenu asCombatMenu(){return this;}
 
-    protected void attackButtons(){
-
+    protected void updateButtons(){
+        this.clearChildren();
+        this.initializeArrow();
+        scrollableResetDefaults();
+        addScrollArrowUp();
         Map<Integer, Combatant> availableCombatants = CombatUtils.returnAliveCombatants(
             this.gameState.currentEnemyRoster
         );
         SpellRegistry spellRegistry = SpellRegistry.INSTANCE;
-        for (SpellNames spellID : spellList) {
-
+        for (int i=pageStart; i < pageEnd; i++) {
+            SpellNames spellID = spellList.get(i);
             Spell spell = spellRegistry.get(spellID);
             String buttonName = spell.getName() + "/" + String.valueOf(spell.getCost()) + " MP";
             this.addButton(buttonName,
@@ -73,28 +81,38 @@ public class SpellSelectMenu extends BaseLinearMenu{
                     }
                 }
             );
+            addScrollArrowDown();
+
 
         }
+    }
+
+    protected void initializeButtons(){
+
+        this.intializeItems(spellList);
+        updateButtons();
     }
 
     @Override
     protected void setStage(Stage stage) {
 
         super.setStage(stage);
+
         if(parentMenu != null){
-            float wif = this.getWidth();
+//            float wif = this.getWidth();
 
             combatMenu = (CombatMenu)parentMenu;
-            this.defaults().size(110f, 30f).pad(5f);
-
-            this.defaults().pad(2);
-
-            this.pack();
-            this.setOrigin(Align.topRight);
-
-            float targetX = parentMenu.getStage().getWidth(); // Right edge of screen
-            float targetY = parentMenu.getTop();
-            this.setPosition(targetX, targetY, Align.topRight);
+//            this.defaults().size(180f, 60f).pad(5f);
+//
+//            this.defaults().pad(2);
+//
+//            this.pack();
+//            this.setOrigin(Align.topRight);
+//
+//            float targetX = parentMenu.getStage().getWidth(); // Right edge of screen
+//            float targetY = parentMenu.getTop();
+//            this.setPosition(targetX, targetY, Align.topRight);
+            setSizeandPosition();
         }
 
         if (stage != null) {
