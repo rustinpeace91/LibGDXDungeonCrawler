@@ -45,7 +45,6 @@ public class InventoryStatusMenu extends StandardStatusMenu {
         setText(
             text
         );
-        this.setSize(200f, 300f);
     }
 
     public void setCharacter(PartyCharacter characterValue){

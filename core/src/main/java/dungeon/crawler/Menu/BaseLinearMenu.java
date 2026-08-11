@@ -22,6 +22,7 @@ import com.badlogic.gdx.utils.Array;
 
 import dungeon.crawler.GameConstants;
 import dungeon.crawler.AssetManager.Assets;
+import dungeon.crawler.Menu.Misc.PopUpUtils;
 import dungeon.crawler.Observers.ScreenChangeObserver;
 // TODO: Consider passing the stage in here, then using it to spawn submenus
 public class BaseLinearMenu extends Table {
@@ -179,6 +180,11 @@ public class BaseLinearMenu extends Table {
             getStage().setKeyboardFocus(buttonList.get(currentButtonIndex));
         }
     }
+
+    public void showPopup(String message, float time){
+        PopUpUtils.showToast(this.getStage(), this.getSkin(),  message, time);
+    }
+
 
     public void unFocus(){
         if(getStage() == null) {

@@ -82,14 +82,6 @@ public class CombatMenu extends BaseLinearMenu {
             public void changed(ChangeEvent event, Actor actor){
                 int currentId = turnTracker.getCurrentCombatantID();
                 PartyCharacter currentCombatant = gameState.party.get(currentId);
-                /* TODO: Create spell and target selection menu
-                Spell Submenu maintains reference to Spell Name and TargetID
-                Spell Submenu fills SpellName and then opens Target submenu
-                TargetSub Menu contains reference to Spell sub menu as parent menu
-                Fills reference to TargetID. Upon doing that notifies CombatMenu (this) which calls handleCastAction
-                with filled data
-
-                */
                 if (currentCombatant.charClass.isMagicUser()){
                     ArrayList<SpellNames> spellList = currentCombatant.charClass.getMagicSystem().availableSpells;
                     BaseLinearMenu nextMenu = new SpellSelectMenu(
@@ -111,12 +103,7 @@ public class CombatMenu extends BaseLinearMenu {
             public void changed(ChangeEvent event, Actor actor){
                 int currentId = turnTracker.getCurrentCombatantID();
                 PartyCharacter currentCombatant = gameState.party.get(currentId);
-                /* TODO: Create spell and target selection menu
-                Spell Submenu maintains reference to Spell Name and TargetID
-                Spell Submenu fills SpellName and then opens Target submenu
-                TargetSub Menu contains reference to Spell sub menu as parent menu
-                Fills reference to TargetID. Upon doing that notifies CombatMenu (this) which calls handleCastAction
-                with filled data
+                /*
 
                 */
                 // TODO: check inventory UP HERE before menu is spawned

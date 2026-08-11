@@ -9,9 +9,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.GameSystem.GameState.GameState;
+import dungeon.crawler.GameSystem.Inventory.Item;
 import dungeon.crawler.Menu.BaseLinearMenu;
+import dungeon.crawler.Menu.Misc.PopUpUtils;
 import dungeon.crawler.Menu.Overworld.PartyCharacterStatusMenu;
 import dungeon.crawler.Utils.StringUtils;
+
+import java.util.ArrayList;
 // TODO: refactor this and statusselectionmenu
 
 public class InventoryCharSelectMenu extends BaseLinearMenu
@@ -58,6 +62,7 @@ public class InventoryCharSelectMenu extends BaseLinearMenu
         );
         stage.addActor(subStatusMenu);
         refreshAndSetActive();
+        subStatusMenu.alignTopRight(stage);
         this.addFocusListeners();
         this.buttonList = populateButtonList();
         this.resetMenuSelection();
@@ -70,6 +75,7 @@ public class InventoryCharSelectMenu extends BaseLinearMenu
         super.closeMenuStack();
     }
 
+
     private void addPartyButtons(){
         if(gameState.party != null){
             gameState.party.forEach(
@@ -77,9 +83,23 @@ public class InventoryCharSelectMenu extends BaseLinearMenu
                     addButton(
                         character.name,
                         new ChangeListener(){
+                            ArrayList<Item> availableItems = character.inventory.getInventoryList();
                             @Override
                             public void changed(ChangeEvent event, Actor actor){
-                                // nothing for now. This is for hovering
+                                if(!availableItems.isEmpty()){
+                                    BaseLinearMenu nextMenu = new InventoryMenu(
+                                        skin,
+                                        gameState,
+                                        character,
+                                        availableItems
+                                    );
+                                    setSubMenu(nextMenu);
+                                    openSubMenu(nextMenu);
+                                } else {
+                                    showPopup("No Items in Inventory", 1f);
+                                }
+                                // else display a small popup
+
                             }
                         },
                         character

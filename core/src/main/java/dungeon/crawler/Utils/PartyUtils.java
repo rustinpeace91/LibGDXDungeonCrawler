@@ -5,7 +5,7 @@ import java.util.Map;
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
 
 public class PartyUtils {
-    
+
     public static PartyCharacter returnPartyMemberByName(
         Map<Integer, PartyCharacter> party, String name
     ) {
@@ -17,5 +17,7 @@ public class PartyUtils {
         }
         return null;
     }
+
+
 
 }

@@ -94,16 +94,6 @@ public class ItemSelectMenu extends ScrollableLinearMenu<Item> implements Combat
 //            float wif = this.getWidth();
 
             combatMenu = (CombatMenu)parentMenu;
-//            this.defaults().size(180f, 60f).pad(5f);
-//
-//            this.defaults().pad(2);
-//
-//            this.pack();
-//            this.setOrigin(Align.topRight);
-//
-//            float targetX = parentMenu.getStage().getWidth(); // Right edge of screen
-//            float targetY = parentMenu.getTop();
-//            this.setPosition(targetX, targetY, Align.topRight);
             setSizeandPosition();
         }
 

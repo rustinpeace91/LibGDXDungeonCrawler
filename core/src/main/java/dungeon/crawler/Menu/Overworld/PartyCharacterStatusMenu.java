@@ -38,7 +38,7 @@ public class PartyCharacterStatusMenu extends StandardStatusMenu {
 
             )
         );
-        this.setSize(200f, 300f);
+//        this.setSize(200f, 300f);
     }
 
     public void setCharacter(PartyCharacter characterValue){

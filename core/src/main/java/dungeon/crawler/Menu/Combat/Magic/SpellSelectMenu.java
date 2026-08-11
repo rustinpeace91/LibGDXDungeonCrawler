@@ -64,7 +64,6 @@ public class SpellSelectMenu extends ScrollableLinearMenu<SpellNames> implements
                 new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
-
                         if(spell.getType() == SpellType.AOE_DEFENSE || spell.getType() == SpellType.AOE_OFFENSE){
                             returnToParentMenu();
                             combatMenu.handleCastAction(spellID, -1);
