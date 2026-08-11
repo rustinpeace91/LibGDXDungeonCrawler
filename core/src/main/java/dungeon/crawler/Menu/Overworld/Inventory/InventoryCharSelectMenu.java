@@ -76,6 +76,10 @@ public class InventoryCharSelectMenu extends BaseLinearMenu
     }
 
 
+    public void finishTransfer(){
+        returnToParentMenu();
+    }
+
     private void addPartyButtons(){
         if(gameState.party != null){
             gameState.party.forEach(

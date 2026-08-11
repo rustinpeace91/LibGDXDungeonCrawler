@@ -23,7 +23,7 @@ public class InventoryMenu extends ScrollableLinearMenu<Item>  implements Overwo
     private GameState gameState;
 //    private CombatMenu combatMenu;
     private PartyCharacter currentCombatant;
-    private final ArrayList<Item> availableItems;
+    private ArrayList<Item> availableItems;
 
     public BaseLinearMenu asCombatMenu(){return this;}
 
@@ -56,14 +56,14 @@ public class InventoryMenu extends ScrollableLinearMenu<Item>  implements Overwo
                 new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
-//                        BaseLinearMenu nextMenu = new ItemTargetSelectMenu(
-//                            skin,
-//                            gameState,
-//                            item,
-//                            ItemSelectMenu.this
-//                        );
-//                        setSubMenu(nextMenu);
-//                        openSubMenu(nextMenu);
+                        BaseLinearMenu nextMenu = new InventoryOptions(
+                            skin,
+                            gameState,
+                            currentCombatant,
+                            item
+                        );
+                        setSubMenu(nextMenu);
+                        openSubMenu(nextMenu);
                     }
                 }
             );
@@ -85,6 +85,13 @@ public class InventoryMenu extends ScrollableLinearMenu<Item>  implements Overwo
         this.intializeItems(availableItems);
         updateButtons();
 
+    }
+
+    public void finishTransfer(){
+        availableItems = currentCombatant.inventory.getInventoryList();
+        this.initializeButtons();
+
+        updateButtons();
     }
 
     @Override

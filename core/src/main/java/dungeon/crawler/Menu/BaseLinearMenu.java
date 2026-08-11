@@ -311,6 +311,8 @@ public class BaseLinearMenu extends Table {
                 this.subStatusMenu.setVisible(false);
                 this.subStatusMenu.remove();
             }
+        } else {
+            Gdx.app.log("ERROR", "RETURN TOI PARENT MENU CALLED WHEN NO PARENT MENU EXISTS");
         }
     }
 

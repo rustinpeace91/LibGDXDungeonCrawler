@@ -2,6 +2,7 @@ package dungeon.crawler;
 
 import java.util.Map;
 
+import dungeon.crawler.GameSystem.Inventory.ItemTypes.ItemType;
 import dungeon.crawler.Player.PlayerDirection;
 public class GameConstants {
     public enum GAME_SCREEN {
@@ -19,6 +20,18 @@ public class GameConstants {
         INTELLIGENCE,
         PERCEPTION
     }
+
+    // ITEM STATS
+    public final ItemType[] USABLE_ITEMS = new ItemType[]{
+        ItemType.CURE_POTION,
+        ItemType.HEALTH_POTION
+    };
+
+    public final ItemType[] EQUIPPABLE_ITEMS = new ItemType[]{
+        ItemType.WEAPON,
+        ItemType.ARMOR
+    };
+
 
     // screen
     public static final int RESOLUTION_WIDTH = 960;
