@@ -45,7 +45,10 @@ public BaseLinearMenu asCombatMenu(){return this;}
     protected void updateButtons(){
 
         this.clearChildren();
-        setTitle(StringUtils.format("%s's Inventory", currentCombatant.getName()));
+        setTitle(selectedItem.getName() + "\n" + ItemUtils.itemStats(
+            currentCombatant,
+            selectedItem
+        ));
         this.initializeArrow();
 
         this.addButton("Transfer",
@@ -86,11 +89,41 @@ public BaseLinearMenu asCombatMenu(){return this;}
                 }
             );
         }
+        if(Arrays.asList(GameConstants.EQUIPPABLE_ITEMS).contains(selectedItem.returnItemType())){
+            if(currentCombatant.equipment.isEquipped(selectedItem)){
+                this.addButton("Unequip",
+                    new ChangeListener() {
+                        @Override
+                        public void changed(ChangeEvent event, Actor actor) {
+                            ItemUtils.unEquipItem(currentCombatant, selectedItem);
+                            showPopup(StringUtils.format(
+                                "%s Removed the %s",
+                                currentCombatant.getName(), selectedItem.getName()
+                            ), 1f);
+                            finishItemOption();
+                        }
+                    }
+                );
+            } else {
+                this.addButton("Equip",
+                    new ChangeListener() {
+                        @Override
+                        public void changed(ChangeEvent event, Actor actor) {
+                            ItemUtils.equipItem(currentCombatant, selectedItem);
+                            showPopup(StringUtils.format(
+                                "%s equiped a %s",
+                                currentCombatant.getName(), selectedItem.getName()
+                            ), 1f);
+                            finishItemOption();
+                        }
+                    }
+                );
+            }
 
-//        if(selectedItem.returnItemType() == Item)
+        }
+
         if(getStage() == null) {
             Gdx.app.log("Menu Error", "refreshAndSetActive called BEFORE linear menu added to stage");
-            // no return. Let it break the game
         }
         setVisible(true);
 
@@ -117,9 +150,7 @@ public BaseLinearMenu asCombatMenu(){return this;}
         super.setStage(stage);
 
         if(parentMenu != null){
-//            float wif = this.getWidth();
 
-//            combatMenu = (CombatMenu)parentMenu;
             setSizeandPosition();
         }
 
@@ -130,6 +161,5 @@ public BaseLinearMenu asCombatMenu(){return this;}
 
     public void handleUseAction(Item item, int targetId){
         returnToParentMenu();
-//        combatMenu.handleItemAction(item, targetId);
     }
 }

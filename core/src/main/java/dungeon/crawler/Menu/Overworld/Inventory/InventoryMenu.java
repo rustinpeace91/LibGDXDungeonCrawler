@@ -12,6 +12,7 @@ import dungeon.crawler.Menu.BaseLinearMenu;
 import dungeon.crawler.Menu.Combat.CombatMenu;
 import dungeon.crawler.Menu.Combat.Inventory.ItemSelectMenu;
 import dungeon.crawler.Menu.Combat.Inventory.ItemTargetSelectMenu;
+import dungeon.crawler.Menu.Observers.StatusMenuObserver;
 import dungeon.crawler.Menu.OverworldSubMenu;
 import dungeon.crawler.Menu.ScrollableLinearMenu;
 import dungeon.crawler.Utils.StringUtils;
@@ -21,9 +22,9 @@ import java.util.ArrayList;
 public class InventoryMenu extends ScrollableLinearMenu<Item>  implements OverworldSubMenu {
 
     private GameState gameState;
-//    private CombatMenu combatMenu;
     private PartyCharacter currentCombatant;
     private ArrayList<Item> availableItems;
+    private final StatusMenuObserver statusMenuObserver;
 
     public BaseLinearMenu asCombatMenu(){return this;}
 
@@ -31,12 +32,14 @@ public class InventoryMenu extends ScrollableLinearMenu<Item>  implements Overwo
         Skin skin,
         GameState gameState,
         PartyCharacter currentCombatant,
-        ArrayList<Item> availableItems
+        ArrayList<Item> availableItems,
+        StatusMenuObserver statusMenuObserver
     ){
         super(skin);
         this.gameState = gameState;
         this.currentCombatant = currentCombatant;
         this.availableItems = availableItems;
+        this.statusMenuObserver = statusMenuObserver;
         this.initializeButtons();
     }
 
@@ -51,6 +54,10 @@ public class InventoryMenu extends ScrollableLinearMenu<Item>  implements Overwo
         for (int i=pageStart; i < pageEnd; i++) {
             Item item = availableItems.get(i);
             String buttonName = item.name;
+            if(currentCombatant.equipment.isEquipped(item)){
+                buttonName = "(E) " + item.name;
+            }
+
             this.addButton(buttonName,
                 new ChangeListener() {
                     @Override
@@ -90,8 +97,8 @@ public class InventoryMenu extends ScrollableLinearMenu<Item>  implements Overwo
 
     public void finishItemOption(){
         this.initializeButtons();
-
         updateButtons();
+        statusMenuObserver.refreshObservers();
     }
 
     @Override

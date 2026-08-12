@@ -154,7 +154,6 @@ public class PartyCharacter extends Character implements Combatant{
     // }
     //
     public String equip(Item item){
-        String x = "yea";
 
         if(!item.equippable()){
             return StringUtils.format("%s is not an equippable item!", item.name);
@@ -168,6 +167,15 @@ public class PartyCharacter extends Character implements Combatant{
 
     }
 
+    public String unEquip(Item item){
+        String x = "";
+        if(equipment.isEquipped(item)){
+            equipment.unEquipItem(item);
+            return StringUtils.format("%s unequipped %s", getName(), item.name);
+        }
+        return x;
+    }
+
     public String addToInventory(Item item){
         if(inventory.enoughSpace()){
             inventory.addToInventory(item);
@@ -178,6 +186,9 @@ public class PartyCharacter extends Character implements Combatant{
 
     public String removeFromInventory(Item item){
         inventory.removeFromInventory(item);
+        if(equipment.isEquipped(item)){
+
+        }
         return StringUtils.format("%s removed", item.name);
     }
 

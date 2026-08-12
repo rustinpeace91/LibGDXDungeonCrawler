@@ -3,10 +3,11 @@ package dungeon.crawler.Menu.Overworld;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
+import dungeon.crawler.Menu.Observers.StatusMenu;
 import dungeon.crawler.Menu.StandardStatusMenu;
 import dungeon.crawler.Utils.StringUtils;
 
-public class PartyCharacterStatusMenu extends StandardStatusMenu {
+public class PartyCharacterStatusMenu extends StandardStatusMenu implements StatusMenu {
     private PartyCharacter character;
     public PartyCharacterStatusMenu (
         Skin skin,
@@ -39,6 +40,11 @@ public class PartyCharacterStatusMenu extends StandardStatusMenu {
             )
         );
 //        this.setSize(200f, 300f);
+    }
+
+    @Override
+    public void refresh(){
+        displayCharacter();
     }
 
     public void setCharacter(PartyCharacter characterValue){

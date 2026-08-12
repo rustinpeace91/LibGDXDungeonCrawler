@@ -12,6 +12,7 @@ import dungeon.crawler.GameSystem.GameState.GameState;
 import dungeon.crawler.GameSystem.Inventory.Item;
 import dungeon.crawler.Menu.BaseLinearMenu;
 import dungeon.crawler.Menu.Misc.PopUpUtils;
+import dungeon.crawler.Menu.Observers.StatusMenuObserver;
 import dungeon.crawler.Menu.Overworld.PartyCharacterStatusMenu;
 import dungeon.crawler.Menu.OverworldSubMenu;
 import dungeon.crawler.Utils.StringUtils;
@@ -25,6 +26,7 @@ public class InventoryCharSelectMenu extends BaseLinearMenu implements Overworld
     private GameState gameState;
     private InventoryStatusMenu partyStatusMenu;
     public BaseLinearMenu asCombatMenu(){return this;}
+    public StatusMenuObserver statusMenuObserver = new StatusMenuObserver();
 
     public InventoryCharSelectMenu(
         Skin skin,
@@ -39,6 +41,7 @@ public class InventoryCharSelectMenu extends BaseLinearMenu implements Overworld
 
         // shut up linter
         this.subStatusMenu = partyStatusMenu;
+        statusMenuObserver.addObserver(this.partyStatusMenu);
         this.isToggleable = true;
     }
 
@@ -80,6 +83,7 @@ public class InventoryCharSelectMenu extends BaseLinearMenu implements Overworld
     @Override
     public void refreshAndSetActive(){
         addPartyButtons();
+        this.addFocusListeners();
         super.refreshAndSetActive();
     }
     public void finishItemOption(){
@@ -104,7 +108,8 @@ public class InventoryCharSelectMenu extends BaseLinearMenu implements Overworld
                                         skin,
                                         gameState,
                                         character,
-                                        availableItems
+                                        availableItems,
+                                        statusMenuObserver
                                     );
                                     setSubMenu(nextMenu);
                                     openSubMenu(nextMenu);
@@ -135,6 +140,8 @@ public class InventoryCharSelectMenu extends BaseLinearMenu implements Overworld
                         PartyCharacter character = (PartyCharacter)button.getUserObject();
                         if (focused) {
                             if(button.getUserObject() instanceof PartyCharacter){
+//                                statusMenuObserver.refreshObservers();
+
                                 partyStatusMenu.showCharacter(character);
                             } else {
                                 partyStatusMenu.setText(StringUtils.format("This is the status text for: \n %s", button.getText()));

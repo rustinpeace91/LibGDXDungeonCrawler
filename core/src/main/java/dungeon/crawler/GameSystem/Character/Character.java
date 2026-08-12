@@ -39,4 +39,8 @@ public class Character {
     public int getMp() {
         return mp;
     }
+
+    public int getHp() {
+        return hp;
+    }
 }

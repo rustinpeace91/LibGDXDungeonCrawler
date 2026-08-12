@@ -94,7 +94,6 @@ public class BaseLinearMenu extends Table {
 
         this.add(newButton).row();
         newButton.addListener(listener);
-        // 3. Attach the behavior immediately
         applyFocusBehavior(newButton);
         if(userObject != null){
             newButton.setUserObject(userObject);
@@ -110,7 +109,6 @@ public class BaseLinearMenu extends Table {
 
         this.add(newButton).row();
         newButton.addListener(listener);
-        // 3. Attach the behavior immediately
         applyFocusBehavior(newButton);
         if(userObject != null){
             newButton.setUserObject(userObject);
