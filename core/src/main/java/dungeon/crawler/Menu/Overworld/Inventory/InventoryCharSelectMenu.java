@@ -13,16 +13,18 @@ import dungeon.crawler.GameSystem.Inventory.Item;
 import dungeon.crawler.Menu.BaseLinearMenu;
 import dungeon.crawler.Menu.Misc.PopUpUtils;
 import dungeon.crawler.Menu.Overworld.PartyCharacterStatusMenu;
+import dungeon.crawler.Menu.OverworldSubMenu;
 import dungeon.crawler.Utils.StringUtils;
 
 import java.util.ArrayList;
 // TODO: refactor this and statusselectionmenu
 
-public class InventoryCharSelectMenu extends BaseLinearMenu
+public class InventoryCharSelectMenu extends BaseLinearMenu implements OverworldSubMenu
 {
 
     private GameState gameState;
     private InventoryStatusMenu partyStatusMenu;
+    public BaseLinearMenu asCombatMenu(){return this;}
 
     public InventoryCharSelectMenu(
         Skin skin,
@@ -75,12 +77,19 @@ public class InventoryCharSelectMenu extends BaseLinearMenu
         super.closeMenuStack();
     }
 
-
-    public void finishTransfer(){
+    @Override
+    public void refreshAndSetActive(){
+        addPartyButtons();
+        super.refreshAndSetActive();
+    }
+    public void finishItemOption(){
         returnToParentMenu();
     }
 
     private void addPartyButtons(){
+        this.clearChildren();
+        setTitle(StringUtils.format("Select Character"));
+        this.initializeArrow();
         if(gameState.party != null){
             gameState.party.forEach(
                 (key, character) -> {

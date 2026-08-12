@@ -22,12 +22,12 @@ public class GameConstants {
     }
 
     // ITEM STATS
-    public final ItemType[] USABLE_ITEMS = new ItemType[]{
+    public static final ItemType[] USABLE_ITEMS = new ItemType[]{
         ItemType.CURE_POTION,
         ItemType.HEALTH_POTION
     };
 
-    public final ItemType[] EQUIPPABLE_ITEMS = new ItemType[]{
+    public static final ItemType[] EQUIPPABLE_ITEMS = new ItemType[]{
         ItemType.WEAPON,
         ItemType.ARMOR
     };

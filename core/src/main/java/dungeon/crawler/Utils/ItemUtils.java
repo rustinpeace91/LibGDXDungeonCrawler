@@ -19,4 +19,10 @@ public class ItemUtils {
         sender.removeFromInventory(item);
         reciever.addToInventory(item);
     }
+
+    public static void useItem(PartyCharacter user, Item item){
+        item.use(user);
+        user.removeFromInventory(item);
+        // TODO: handle strings and other stuff here
+    }
 }

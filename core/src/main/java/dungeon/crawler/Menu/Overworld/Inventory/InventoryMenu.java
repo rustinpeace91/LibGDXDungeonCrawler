@@ -44,7 +44,6 @@ public class InventoryMenu extends ScrollableLinearMenu<Item>  implements Overwo
 
     protected void updateButtons(){
 //        scrollableResetDefaults();
-
         this.clearChildren();
         setTitle(StringUtils.format("%s's Inventory", currentCombatant.getName()));
         this.initializeArrow();
@@ -68,6 +67,7 @@ public class InventoryMenu extends ScrollableLinearMenu<Item>  implements Overwo
                 }
             );
         }
+        addBackButton();
         if(getStage() == null) {
             Gdx.app.log("Menu Error", "refreshAndSetActive called BEFORE linear menu added to stage");
             // no return. Let it break the game
@@ -81,14 +81,14 @@ public class InventoryMenu extends ScrollableLinearMenu<Item>  implements Overwo
 
     }
     protected void initializeButtons(){
+        availableItems = currentCombatant.inventory.getInventoryList();
 
         this.intializeItems(availableItems);
         updateButtons();
 
     }
 
-    public void finishTransfer(){
-        availableItems = currentCombatant.inventory.getInventoryList();
+    public void finishItemOption(){
         this.initializeButtons();
 
         updateButtons();

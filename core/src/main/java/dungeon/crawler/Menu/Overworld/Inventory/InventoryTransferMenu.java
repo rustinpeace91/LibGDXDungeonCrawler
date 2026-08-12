@@ -70,7 +70,7 @@ public class InventoryTransferMenu extends BaseLinearMenu implements OverworldSu
                                 ), 1f);
                             }
                             // TODO! go back to Inventory Menu
-                            finishTransfer();
+                            finishItemOption();
 //                            itemMenu.handleUseAction(selectedItem, id);
                         }
                     }
@@ -96,10 +96,10 @@ public class InventoryTransferMenu extends BaseLinearMenu implements OverworldSu
 
     }
 
-    protected void finishTransfer(){
+    protected void finishItemOption(){
         InventoryOptions inventoryMenu = (InventoryOptions)parentMenu;
         returnToParentMenu();
-        inventoryMenu.finishTransfer();
+        inventoryMenu.finishItemOption();
     }
 
     @Override

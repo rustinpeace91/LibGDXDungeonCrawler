@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.utils.compression.lzma.Base;
+import dungeon.crawler.Menu.Overworld.Inventory.InventoryOptions;
 
 import java.sql.Array;
 import java.util.ArrayList;
@@ -81,7 +82,9 @@ public abstract class ScrollableLinearMenu<T> extends BaseLinearMenu {
 
         this.buttonList = populateButtonList();
         if (buttonList != null && buttonList.size > 0) {
-            if(pagePos == PagePosition.FORWARD){
+            if(pageStart == 0) {
+                currentButtonIndex = 0;
+            } else if(pagePos == PagePosition.FORWARD){
                 currentButtonIndex = 1;
             } else {
                 currentButtonIndex = MAX_ROWS - 1;
@@ -95,7 +98,21 @@ public abstract class ScrollableLinearMenu<T> extends BaseLinearMenu {
         }
     }
 
-
+    /* for dynamic menus. if there are no items we want a back button because BaseLinearMenu does not
+    support empty menus (my bad)
+     */
+    public void addBackButton(){
+        if(menuItems.size() < 1){
+            this.addButton("Back",
+                new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        returnToParentMenu();
+                    }
+                }
+            );
+        }
+    }
     protected abstract void updateButtons();
     public void pageForward(){
         pageStart = pageEnd;
