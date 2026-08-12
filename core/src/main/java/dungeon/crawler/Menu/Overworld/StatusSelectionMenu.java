@@ -47,11 +47,12 @@ public class StatusSelectionMenu extends BaseLinearMenu {
         }
 
 
-        float x = this.parentMenu.getWidth() + this.getWidth() + 40;
-        float y = Gdx.graphics.getHeight() - getHeight() - 150;
-        subStatusMenu.setPosition(
-            x, y
-        );
+//        float x = this.parentMenu.getWidth() + this.getWidth() + 40;
+//        float y = Gdx.graphics.getHeight() - getHeight() - 150;
+//        subStatusMenu.setPosition(
+//            x, y
+//        );
+        subStatusMenu.alignTopRight(stage);
         stage.addActor(subStatusMenu);
         refreshAndSetActive();
         this.addFocusListeners();
@@ -103,7 +104,6 @@ public class StatusSelectionMenu extends BaseLinearMenu {
                             partyStatusMenu.setText(StringUtils.format("This is the status text for: \n %s", button.getText()));
 
                         }
-                    } else {
                     }
                 }
                 });

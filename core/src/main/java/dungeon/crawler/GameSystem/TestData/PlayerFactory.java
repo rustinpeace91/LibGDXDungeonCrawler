@@ -15,6 +15,7 @@ import dungeon.crawler.GameSystem.Character.Class.ClassLogic;
 import dungeon.crawler.GameSystem.Character.Class.FighterClass;
 import dungeon.crawler.GameSystem.Character.Class.HeroClass;
 import dungeon.crawler.GameSystem.Character.Class.WizardClass;
+import dungeon.crawler.GameSystem.Inventory.Item;
 import dungeon.crawler.GameSystem.Inventory.Weapon;
 
 public class PlayerFactory{
@@ -60,18 +61,14 @@ public class PlayerFactory{
             hc,
             true
         );
-        pc.equip(items.createWeaponFromID("iron_sword"));
+        Item sword = items.createWeaponFromID("iron_sword");
+        pc.addToInventory(sword);
+        pc.equip(sword);
         pc.addToInventory(items.createPotionFromID("small_health_potion"));
         pc.addToInventory(items.createPotionFromID("small_health_potion"));
         pc.addToInventory(items.createPotionFromID("small_health_potion"));
         pc.addToInventory(items.createPotionFromID("small_health_potion"));
-        pc.addToInventory(items.createPotionFromID("small_health_potion"));
-        pc.addToInventory(items.createPotionFromID("small_health_potion"));
-        pc.addToInventory(items.createPotionFromID("small_health_potion"));
-        pc.addToInventory(items.createPotionFromID("small_health_potion"));        pc.addToInventory(items.createPotionFromID("small_health_potion"));
-        pc.addToInventory(items.createPotionFromID("small_health_potion"));
-        pc.addToInventory(items.createPotionFromID("small_health_potion"));
-        pc.addToInventory(items.createPotionFromID("small_health_potion"));
+
         pc.charClass.fillSpells(1);
         return pc;
     }

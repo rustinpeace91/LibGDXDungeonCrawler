@@ -85,7 +85,7 @@ object ItemDataInitializer {
         registry.register(
             "small_health_potion",
             PotionParams(
-                "Small Health Potion",
+                "Heal Potion (sm)",
                 "small_health_potion",
                 50,
                 ItemType.HEALTH_POTION,

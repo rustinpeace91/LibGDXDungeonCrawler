@@ -10,6 +10,7 @@ import static dungeon.crawler.GameConstants.PLAYER_STATS.INTELLIGENCE;
 import static dungeon.crawler.GameConstants.PLAYER_STATS.PERCEPTION;
 import static dungeon.crawler.GameConstants.PLAYER_STATS.STRENGTH;
 import dungeon.crawler.GameSystem.Character.Class.ClassLogic;
+import dungeon.crawler.GameSystem.Combat.Attack;
 import dungeon.crawler.GameSystem.Combat.AttackDamage;
 import dungeon.crawler.GameSystem.Inventory.Item;
 import dungeon.crawler.GameSystem.Inventory.Weapon;
@@ -153,7 +154,6 @@ public class PartyCharacter extends Character implements Combatant{
     // }
     //
     public String equip(Item item){
-        String x = "yea";
 
         if(!item.equippable()){
             return StringUtils.format("%s is not an equippable item!", item.name);
@@ -167,6 +167,15 @@ public class PartyCharacter extends Character implements Combatant{
 
     }
 
+    public String unEquip(Item item){
+        String x = "";
+        if(equipment.isEquipped(item)){
+            equipment.unEquipItem(item);
+            return StringUtils.format("%s unequipped %s", getName(), item.name);
+        }
+        return x;
+    }
+
     public String addToInventory(Item item){
         if(inventory.enoughSpace()){
             inventory.addToInventory(item);
@@ -177,6 +186,9 @@ public class PartyCharacter extends Character implements Combatant{
 
     public String removeFromInventory(Item item){
         inventory.removeFromInventory(item);
+        if(equipment.isEquipped(item)){
+
+        }
         return StringUtils.format("%s removed", item.name);
     }
 
@@ -223,9 +235,15 @@ public class PartyCharacter extends Character implements Combatant{
     @Override
     public int getDefense() {
         // TODO Auto-generated method stub
-        return 10;
+        int bonus = equipment.getDefenseBonus();
+        return 10 + bonus;
     }
-
+    public String getAttackDamageString(){
+        Weapon attackWeapon = getWeapon();
+        String dmgString = String.valueOf(attackWeapon.damageLow) + "-" + String.valueOf(attackWeapon.damageHigh);
+//        attackDamage = attackDamage + " + " + String.valueOf(getDamageBonus());
+        return dmgString;
+    }
     @Override
     public boolean playerAligned() {
         return true;

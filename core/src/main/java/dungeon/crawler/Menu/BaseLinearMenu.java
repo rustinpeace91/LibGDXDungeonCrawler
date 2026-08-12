@@ -22,6 +22,7 @@ import com.badlogic.gdx.utils.Array;
 
 import dungeon.crawler.GameConstants;
 import dungeon.crawler.AssetManager.Assets;
+import dungeon.crawler.Menu.Misc.PopUpUtils;
 import dungeon.crawler.Observers.ScreenChangeObserver;
 // TODO: Consider passing the stage in here, then using it to spawn submenus
 public class BaseLinearMenu extends Table {
@@ -93,7 +94,6 @@ public class BaseLinearMenu extends Table {
 
         this.add(newButton).row();
         newButton.addListener(listener);
-        // 3. Attach the behavior immediately
         applyFocusBehavior(newButton);
         if(userObject != null){
             newButton.setUserObject(userObject);
@@ -109,7 +109,6 @@ public class BaseLinearMenu extends Table {
 
         this.add(newButton).row();
         newButton.addListener(listener);
-        // 3. Attach the behavior immediately
         applyFocusBehavior(newButton);
         if(userObject != null){
             newButton.setUserObject(userObject);
@@ -179,6 +178,11 @@ public class BaseLinearMenu extends Table {
             getStage().setKeyboardFocus(buttonList.get(currentButtonIndex));
         }
     }
+
+    public void showPopup(String message, float time){
+        PopUpUtils.showToast(this.getStage(), this.getSkin(),  message, time);
+    }
+
 
     public void unFocus(){
         if(getStage() == null) {
@@ -305,6 +309,8 @@ public class BaseLinearMenu extends Table {
                 this.subStatusMenu.setVisible(false);
                 this.subStatusMenu.remove();
             }
+        } else {
+            Gdx.app.log("ERROR", "RETURN TOI PARENT MENU CALLED WHEN NO PARENT MENU EXISTS");
         }
     }
 

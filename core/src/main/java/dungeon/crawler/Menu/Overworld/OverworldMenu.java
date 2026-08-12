@@ -11,6 +11,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import dungeon.crawler.GameConstants;
 import dungeon.crawler.GameSystem.GameState.GameState;
 import dungeon.crawler.Menu.BaseLinearMenu;
+import dungeon.crawler.Menu.Observers.StatusMenuObserver;
+import dungeon.crawler.Menu.Overworld.Inventory.InventoryCharSelectMenu;
+import dungeon.crawler.Menu.Overworld.Inventory.InventoryStatusMenu;
 import dungeon.crawler.Menu.Toggleable;
 import dungeon.crawler.Observers.MenuInputObserver;
 import dungeon.crawler.Observers.ScreenChangeObserver;
@@ -18,6 +21,7 @@ import dungeon.crawler.Observers.ScreenChangeObserver;
 public class OverworldMenu extends BaseLinearMenu implements Toggleable {
     private final List<MenuInputObserver> listeners = new ArrayList<>();
     protected final GameState gameState;
+    private final StatusMenuObserver statusMenuObserver;
 
     public OverworldMenu (
         Skin skin,
@@ -27,6 +31,7 @@ public class OverworldMenu extends BaseLinearMenu implements Toggleable {
             skin
         );
         this.gameState = gameState;
+        this.statusMenuObserver = new StatusMenuObserver();
         setToggleable(true);
     // TODO: Make into a for loop?
         // TextButton inventoryButton = new TextButton("inventory", skin);
@@ -49,7 +54,12 @@ public class OverworldMenu extends BaseLinearMenu implements Toggleable {
         this.addButton("Inventory", new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor){
-
+                InventoryCharSelectMenu newMenu = new InventoryCharSelectMenu(
+                    skin,
+                    gameState
+                );
+                setSubMenu(newMenu);
+                openSubMenu(newMenu);
             }
         });
 

@@ -9,6 +9,7 @@ import dungeon.crawler.GameSystem.Inventory.ItemTypes.ItemType;
 import java.util.ArrayList;
 
 public class Item implements ItemLogic {
+    private final ItemType itemType;
     public String name;
     public PartyCharacter owner;
     public int value;
@@ -22,11 +23,17 @@ public class Item implements ItemLogic {
         this.owner = owner;
         // the original value of the item for sale, shopowners will  add their own tax to this value
         this.value = value;
+        this.itemType = itemType;
     }
     @Override
     public ItemType returnItemType() {
         // TODO Auto-generated method stub
-        return null;
+        return itemType;
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     @Override

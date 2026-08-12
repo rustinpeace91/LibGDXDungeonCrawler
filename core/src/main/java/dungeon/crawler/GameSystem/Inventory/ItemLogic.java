@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 public interface ItemLogic {
     public ItemType returnItemType();
+    public String getName();
     public boolean equippable();
     public boolean canEquip(ClassLogic charClass);
     public ArrayList<String> use(Combatant target);

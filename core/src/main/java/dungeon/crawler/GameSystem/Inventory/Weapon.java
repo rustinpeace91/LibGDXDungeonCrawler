@@ -72,4 +72,9 @@ public class Weapon extends Item{
         return value;
     }
 
+    public String getAttackDamageString(){
+        String attackDamage = String.valueOf(damageLow) + " - " + String.valueOf(damageHigh);
+        return attackDamage;
+    }
+
 }
