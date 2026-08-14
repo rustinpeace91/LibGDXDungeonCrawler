@@ -39,7 +39,7 @@ public class CombatPartyOrderScreen extends Table {
            way I've gotten the menus to work is to do:
            - setDefaults();
            - Whatever the menu does to construct the buttons (varies heavily by menu)
-           - setSizeandPosition();
+           - setSizeandPosition(GameConstants.SUBMENU_SIZE.TALL);
            so it's not as modular as I would like, but it will work for the scope of this game.
         */
         BaseLinearMenu asCombatMenu();

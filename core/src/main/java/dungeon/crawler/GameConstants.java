@@ -21,6 +21,13 @@ public class GameConstants {
         PERCEPTION
     }
 
+    public enum SUBMENU_SIZE {
+        SMALL,
+        MEDIUM,
+        TALL,
+        DYNAMIC
+    }
+
     // ITEM STATS
     public static final ItemType[] USABLE_ITEMS = new ItemType[]{
         ItemType.CURE_POTION,
@@ -36,6 +43,9 @@ public class GameConstants {
     // screen
     public static final int RESOLUTION_WIDTH = 960;
     public static final int RESOLUTION_HEIGHT = 720;
+
+//    public static final int RESOLUTION_WIDTH = 640;
+//    public static final int RESOLUTION_HEIGHT = 480;
 
     // player
     public static final float TOWN_MOVEMENT_DURATION = 0.15f;
@@ -73,7 +83,8 @@ public class GameConstants {
 
     );
 
-    public static final int MAX_PLAYER_INVENTORY_SPACE = 10;
+    public static final int MAX_PLAYER_INVENTORY_SPACE = 15;
+    public static final int MAX_PLAYER_BAG_SPACE = 128;
 
 
     // COMBAT MENU DIMENSIONS

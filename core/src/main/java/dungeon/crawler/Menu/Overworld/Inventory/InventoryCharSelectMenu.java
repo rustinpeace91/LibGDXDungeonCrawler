@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
+import dungeon.crawler.GameConstants;
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.GameSystem.GameState.GameState;
 import dungeon.crawler.GameSystem.Inventory.Item;
@@ -25,24 +26,26 @@ public class InventoryCharSelectMenu extends BaseLinearMenu implements Overworld
 
     private GameState gameState;
     private InventoryStatusMenu partyStatusMenu;
-    public BaseLinearMenu asCombatMenu(){return this;}
-    public StatusMenuObserver statusMenuObserver = new StatusMenuObserver();
+    protected boolean canSellItems;
 
+    public StatusMenuObserver statusMenuObserver = new StatusMenuObserver();
+    public BaseLinearMenu asCombatMenu(){return this;}
     public InventoryCharSelectMenu(
         Skin skin,
-        GameState gameState
+        GameState gameState,
+        boolean isTogglebale
     ){
         super(skin);
+        this.canSellItems = false;
         this.gameState = gameState;
         this.partyStatusMenu = new InventoryStatusMenu(
             skin,
             gameState.player
         );
-
-        // shut up linter
+//
         this.subStatusMenu = partyStatusMenu;
         statusMenuObserver.addObserver(this.partyStatusMenu);
-        this.isToggleable = true;
+        this.isToggleable = isTogglebale;
     }
 
 
@@ -56,9 +59,10 @@ public class InventoryCharSelectMenu extends BaseLinearMenu implements Overworld
 
 
         if(parentMenu != null){
-            this.setPosition(this.parentMenu.getOriginX() + 200, Gdx.graphics.getHeight() - this.getHeight());
-        }
+//            this.setPosition(this.parentMenu.getOriginX() + 200, Gdx.graphics.getHeight() - this.getHeight());
+            setSizeandPosition(GameConstants.SUBMENU_SIZE.MEDIUM);
 
+        }
 
         float x = this.parentMenu.getWidth() + this.getWidth() + 40;
         float y = Gdx.graphics.getHeight() - getHeight() - 150;
@@ -78,6 +82,10 @@ public class InventoryCharSelectMenu extends BaseLinearMenu implements Overworld
     public void closeMenuStack() {
         this.subStatusMenu.remove();
         super.closeMenuStack();
+    }
+
+    public void setCanSellItems(boolean value){
+        canSellItems = value;
     }
 
     @Override
@@ -109,7 +117,8 @@ public class InventoryCharSelectMenu extends BaseLinearMenu implements Overworld
                                         gameState,
                                         character,
                                         availableItems,
-                                        statusMenuObserver
+                                        statusMenuObserver,
+                                        canSellItems
                                     );
                                     setSubMenu(nextMenu);
                                     openSubMenu(nextMenu);
@@ -124,8 +133,37 @@ public class InventoryCharSelectMenu extends BaseLinearMenu implements Overworld
                     );
                 }
             );
+
+            addButton(
+                "Bag",
+                new ChangeListener(){
+                    ArrayList<Item> availableItems = gameState.partyBag.inventory.getInventoryList();
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor){
+                        if(!availableItems.isEmpty()){
+                            BaseLinearMenu nextMenu = new InventoryBagMenu(
+                                skin,
+                                gameState,
+                                gameState.partyBag,
+                                availableItems,
+                                statusMenuObserver
+                            );
+                            setSubMenu(nextMenu);
+                            openSubMenu(nextMenu);
+                        } else {
+                            showPopup("No Items in Inventory", 1f);
+                        }
+                        // else display a small popup
+
+                    }
+                },
+                // just show the hero. whatever
+                gameState.player
+            );
+
         }
         this.pack();
+        setSizeandPosition(GameConstants.SUBMENU_SIZE.MEDIUM);
     }
     @Override
     public void addFocusListeners(){

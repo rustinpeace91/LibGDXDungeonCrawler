@@ -1,4 +1,4 @@
-package dungeon.crawler.Menu.Overworld.Inventory;
+package dungeon.crawler.Menu.Shop;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -20,29 +20,28 @@ import dungeon.crawler.Utils.StringUtils;
 
 import java.util.ArrayList;
 
-public class InventoryMenu extends ScrollableLinearMenu<Item>  implements OverworldSubMenu {
+public class ShopItemMenu extends ScrollableLinearMenu<Item>  implements OverworldSubMenu {
 
     private GameState gameState;
-    private PartyCharacter currentCombatant;
+//    private PartyCharacter currentCombatant;
     private ArrayList<Item> availableItems;
-    private final StatusMenuObserver statusMenuObserver;
+//    private final StatusMenuObserver statusMenuObserver;
     private final boolean canSellItems;
 
     public BaseLinearMenu asCombatMenu(){return this;}
 
-    public InventoryMenu(
+    public <canSellItems> ShopItemMenu(
         Skin skin,
         GameState gameState,
-        PartyCharacter currentCombatant,
         ArrayList<Item> availableItems,
-        StatusMenuObserver statusMenuObserver,
+//        StatusMenuObserver statusMenuObserver,
         boolean canSellItems
     ){
         super(skin);
         this.gameState = gameState;
-        this.currentCombatant = currentCombatant;
+//        this.currentCombatant = currentCombatant;
         this.availableItems = availableItems;
-        this.statusMenuObserver = statusMenuObserver;
+//        this.statusMenuObserver = statusMenuObserver;
         this.canSellItems = canSellItems;
 
         this.initializeButtons();
@@ -53,29 +52,26 @@ public class InventoryMenu extends ScrollableLinearMenu<Item>  implements Overwo
     protected void updateButtons(){
 //        scrollableResetDefaults();
         this.clearChildren();
-        setTitle(StringUtils.format("%s's Inventory", currentCombatant.getName()));
+        setTitle(StringUtils.format("Shop Inventory"));
         this.initializeArrow();
         addScrollArrowUp();
         for (int i=pageStart; i < pageEnd; i++) {
             Item item = availableItems.get(i);
             String buttonName = item.name;
-            if(currentCombatant.equipment.isEquipped(item)){
-                buttonName = "(E) " + item.name;
-            }
 
             this.addButton(buttonName,
                 new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
-                        BaseLinearMenu nextMenu = new InventoryOptions(
-                            skin,
-                            gameState,
-                            currentCombatant,
-                            item,
-                            canSellItems
-                        );
-                        setSubMenu(nextMenu);
-                        openSubMenu(nextMenu);
+//                        BaseLinearMenu nextMenu = new InventoryOptions(
+//                            skin,
+//                            gameState,
+//                            currentCombatant,
+//                            item,
+//                            canSellItems
+//                        );
+//                        setSubMenu(nextMenu);
+//                        openSubMenu(nextMenu);
                     }
                 }
             );
@@ -94,7 +90,7 @@ public class InventoryMenu extends ScrollableLinearMenu<Item>  implements Overwo
 
     }
     protected void initializeButtons(){
-        availableItems = currentCombatant.inventory.getInventoryList();
+//        availableItems = currentCombatant.inventory.getInventoryList();
 
         this.intializeItems(availableItems);
         updateButtons();
@@ -104,7 +100,7 @@ public class InventoryMenu extends ScrollableLinearMenu<Item>  implements Overwo
     public void finishItemOption(){
         this.initializeButtons();
         updateButtons();
-        statusMenuObserver.refreshObservers();
+//        statusMenuObserver.refreshObservers();
     }
 
     @Override

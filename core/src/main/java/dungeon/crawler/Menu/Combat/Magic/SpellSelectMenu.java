@@ -14,6 +14,7 @@ import dungeon.crawler.Data.Spells.Spell;
 import dungeon.crawler.Data.Spells.SpellNames;
 import dungeon.crawler.Data.Spells.SpellRegistry;
 import dungeon.crawler.Data.Spells.SpellType;
+import dungeon.crawler.GameConstants;
 import dungeon.crawler.GameSystem.Character.Combatant;
 import dungeon.crawler.GameSystem.Combat.CombatUtils;
 import dungeon.crawler.GameSystem.GameState.GameState;
@@ -111,7 +112,7 @@ public class SpellSelectMenu extends ScrollableLinearMenu<SpellNames> implements
 //            float targetX = parentMenu.getStage().getWidth(); // Right edge of screen
 //            float targetY = parentMenu.getTop();
 //            this.setPosition(targetX, targetY, Align.topRight);
-            setSizeandPosition();
+            setSizeandPosition(GameConstants.SUBMENU_SIZE.TALL);
         }
 
         if (stage != null) {

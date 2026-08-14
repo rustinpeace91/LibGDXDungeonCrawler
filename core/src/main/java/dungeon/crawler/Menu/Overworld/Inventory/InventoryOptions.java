@@ -23,33 +23,61 @@ public class InventoryOptions extends BaseLinearMenu implements OverworldSubMenu
     private final GameState gameState;
     private final PartyCharacter currentCombatant;
     private final Item selectedItem;
-
+    private final boolean canSellItems;
 
 
     public InventoryOptions(
         Skin skin,
         GameState gameState,
         PartyCharacter currentCombatant,
-        Item selectedItem
+        Item selectedItem,
+        boolean canSellItems
     ){
         super(skin);
         this.gameState = gameState;
         this.currentCombatant = currentCombatant;
         this.selectedItem = selectedItem;
+        this.canSellItems = canSellItems;
         this.initializeButtons();
     }
 
-public BaseLinearMenu asCombatMenu(){return this;}
+    public BaseLinearMenu asCombatMenu(){return this;}
 
 
     protected void updateButtons(){
 
         this.clearChildren();
-        setTitle(selectedItem.getName() + "\n" + ItemUtils.itemStats(
+        String title = selectedItem.getName() + "\n" + ItemUtils.itemStats(
             currentCombatant,
             selectedItem
-        ));
+        );
+        if(canSellItems){
+            title = title + "\n" + selectedItem.value + " Gold";
+        }
+        setTitle(title);
         this.initializeArrow();
+        if(canSellItems){
+
+            this.addButton("Sell",
+                new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        ItemUtils.useItem(currentCombatant, selectedItem);
+                        gameState.addGold(selectedItem.value);
+                        // unequip is safe. returns blank if not equippable
+                        currentCombatant.unEquip(selectedItem);
+                        currentCombatant.removeFromInventory(selectedItem);
+                        showPopup(StringUtils.format(
+                            "%s sold a %s for %s gold",
+                            currentCombatant.getName(),
+                            selectedItem.getName(),
+                            String.valueOf(selectedItem.value)
+                        ), 1.5f);
+                        FinishMenuComplete();
+                    }
+                }
+            );
+        }
 
         this.addButton("Transfer",
             new ChangeListener() {
@@ -76,7 +104,7 @@ public BaseLinearMenu asCombatMenu(){return this;}
                             "%s used a %s",
                             currentCombatant.getName(), selectedItem.getName()
                         ), 1f);
-                        finishItemOption();
+                        FinishMenuComplete();
 //                        BaseLinearMenu nextMenu = new InventoryTransferMenu(
 //                            skin,
 //                            gameState,
@@ -100,7 +128,7 @@ public BaseLinearMenu asCombatMenu(){return this;}
                                 "%s Removed the %s",
                                 currentCombatant.getName(), selectedItem.getName()
                             ), 1f);
-                            finishItemOption();
+                            FinishMenuComplete();
                         }
                     }
                 );
@@ -114,7 +142,7 @@ public BaseLinearMenu asCombatMenu(){return this;}
                                 "%s equiped a %s",
                                 currentCombatant.getName(), selectedItem.getName()
                             ), 1f);
-                            finishItemOption();
+                            FinishMenuComplete();
                         }
                     }
                 );
@@ -138,7 +166,8 @@ public BaseLinearMenu asCombatMenu(){return this;}
 
     }
 
-    public void finishItemOption(){
+    @Override
+    public void FinishMenuComplete(){
         InventoryMenu inventoryMenu = (InventoryMenu)parentMenu;
         returnToParentMenu();
         inventoryMenu.finishItemOption();
@@ -151,7 +180,7 @@ public BaseLinearMenu asCombatMenu(){return this;}
 
         if(parentMenu != null){
 
-            setSizeandPosition();
+            setSizeandPosition(GameConstants.SUBMENU_SIZE.TALL);
         }
 
         if (stage != null) {

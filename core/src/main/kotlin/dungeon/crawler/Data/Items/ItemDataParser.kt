@@ -70,10 +70,65 @@ object ItemDataInitializer {
                 false,
                 null,
                 null,
-                5,
+                500,
                 ItemType.WEAPON,
                 WeaponTypes.SHORTSWORD,
                 Handed.ONE_HANDED
+            )
+        )
+        registry.register(
+            "wooden_staff",
+            WeaponParams(
+                "Wooden Staff",
+                "wooden_staff",
+                0,
+                1,
+                6,
+                "swings",
+                false,
+                null,
+                null,
+                20,
+                ItemType.WEAPON,
+                WeaponTypes.STAFF,
+                Handed.ONE_HANDED
+            )
+        )
+
+        registry.register(
+            "wooden_club",
+            WeaponParams(
+                "Wooden Club",
+                "wooden_club",
+                0,
+                1,
+                8,
+                "swings",
+                false,
+                null,
+                null,
+                40,
+                ItemType.WEAPON,
+                WeaponTypes.CLUB,
+                Handed.ONE_HANDED
+            )
+        )
+        registry.register(
+            "wooden_hammer",
+            WeaponParams(
+                "Wooden Hammer",
+                "wooden_hammer",
+                0,
+                1,
+                12,
+                "swings",
+                false,
+                null,
+                null,
+                120,
+                ItemType.WEAPON,
+                WeaponTypes.HAMMER,
+                Handed.TWO_HANDED
             )
         )
         return registry;

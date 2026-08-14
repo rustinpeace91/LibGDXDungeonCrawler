@@ -10,12 +10,17 @@ import dungeon.crawler.Data.Maps.ScreenTransitionProperties;
 import dungeon.crawler.GameSystem.Character.EnemyCombatant;
 import dungeon.crawler.GameSystem.DebugConsole.DebugConsoleWrapper;
 import dungeon.crawler.GameSystem.GameState.GameState;
+import dungeon.crawler.GameSystem.Inventory.Item;
+import dungeon.crawler.GameSystem.Inventory.ShopItemSpawner;
 import dungeon.crawler.GameSystem.TestData.EnemyFactory;
 import dungeon.crawler.Menu.TestMenus.MenuTestScreen;
 import dungeon.crawler.Observers.CombatScreenObserver;
 import dungeon.crawler.Observers.ScreenChangeObserver;
 import dungeon.crawler.Screens.CombatScreen;
 import dungeon.crawler.Screens.InnScreen;
+import dungeon.crawler.Screens.ShopScreen;
+
+import java.util.ArrayList;
 
 public class MainGame extends Game implements ScreenChangeObserver,
     CombatScreenObserver {
@@ -67,9 +72,12 @@ public class MainGame extends Game implements ScreenChangeObserver,
             CombatScreen combatScreen = new CombatScreen(this);
             setScreen(combatScreen);
         } else if(screen == GameConstants.GAME_SCREEN.TEST_SCREEN){
-            MenuTestScreen testScreen = new MenuTestScreen(this);
+            ScreenTransitionProperties worldScreenData = MapRegistry.WORLD_MAP_DATA.get(gameState.screenID);
+            int shopIndex = worldScreenData.shopIndex;
+            ArrayList<Item> inventory = ShopItemSpawner.spawnItems(shopIndex);
+            ShopScreen shopScreen = new ShopScreen(this, inventory);
             setScreen(
-                testScreen
+                shopScreen
             );
         }
     }
@@ -135,6 +143,5 @@ public class MainGame extends Game implements ScreenChangeObserver,
     @Override
     public void dispose(){
         assets.dispose();
-        // clean up mf
     }
 }

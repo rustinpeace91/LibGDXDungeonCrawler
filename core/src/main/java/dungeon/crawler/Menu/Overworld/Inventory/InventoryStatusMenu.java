@@ -8,8 +8,11 @@ import dungeon.crawler.Menu.StandardStatusMenu;
 import dungeon.crawler.Utils.ItemUtils;
 import dungeon.crawler.Utils.StringUtils;
 
-public class InventoryStatusMenu extends StandardStatusMenu implements StatusMenu {
+public class InventoryStatusMenu extends StandardStatusMenu
+    implements StatusMenu
+{
     private PartyCharacter character;
+
     public InventoryStatusMenu (
         Skin skin,
         PartyCharacter character

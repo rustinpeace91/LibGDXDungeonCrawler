@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import dungeon.crawler.Data.Spells.Spell;
 import dungeon.crawler.Data.Spells.SpellType;
+import dungeon.crawler.GameConstants;
 import dungeon.crawler.GameSystem.Character.Combatant;
 import dungeon.crawler.GameSystem.Combat.CombatUtils;
 import dungeon.crawler.GameSystem.GameState.GameState;
@@ -68,7 +69,7 @@ public class ItemTargetSelectMenu extends BaseLinearMenu implements CombatSubMen
             this.clearChildren();
             this.initializeArrow();
             this.attackButtons();
-            setSizeandPosition();
+            setSizeandPosition(GameConstants.SUBMENU_SIZE.TALL);
 
 
         }

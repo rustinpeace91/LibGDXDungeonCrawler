@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import com.badlogic.gdx.utils.Align;
+import dungeon.crawler.GameConstants;
 import dungeon.crawler.GameSystem.Character.Combatant;
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.GameSystem.Combat.CombatAction;
@@ -76,7 +77,7 @@ public class ActionSubMenu extends BaseLinearMenu implements CombatSubMenu {
             this.clearChildren();
             this.initializeArrow();
             this.attackButtons();
-            setSizeandPosition();
+            setSizeandPosition(GameConstants.SUBMENU_SIZE.TALL);
 
 
         }

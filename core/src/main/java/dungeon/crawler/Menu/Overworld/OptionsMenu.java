@@ -11,7 +11,7 @@ import dungeon.crawler.Menu.BaseLinearMenu;
 
 public class OptionsMenu extends BaseLinearMenu{
     private GameState gameState;
-    
+
     public OptionsMenu(
         Skin skin,
         GameState gameState
@@ -27,7 +27,7 @@ public class OptionsMenu extends BaseLinearMenu{
         if(stage == null) return;
 
 
-        
+
         this.addOptionsButtons();
 
 
@@ -35,24 +35,19 @@ public class OptionsMenu extends BaseLinearMenu{
         if(parentMenu != null){
             this.setPosition(this.parentMenu.getOriginX() + 200, Gdx.graphics.getHeight() - (this.getHeight() + 20));
         }
-        // float x = this.parentMenu.getWidth() + this.getWidth() + 40;
-        // float y = Gdx.graphics.getHeight() - getHeight() - 200;
-        // subStatusMenu.setPosition(
-        //     x, y
-        // ); 
-        // stage.addActor(subStatusMenu);
-        refreshAndSetActive(); 
+
+        refreshAndSetActive();
         // this.addFocusListeners();
         this.buttonList = populateButtonList();
         this.resetMenuSelection();
     }
 
-    protected void addOptionsButtons(){
+    protected void addOptionsButtons() {
         addButton(
             "Music",
-            new ChangeListener (){
+            new ChangeListener() {
                 @Override
-                public void changed(ChangeEvent event, Actor actor){
+                public void changed(ChangeEvent event, Actor actor) {
                     // nothing for now. This is for hovering
                 }
             }
@@ -61,9 +56,9 @@ public class OptionsMenu extends BaseLinearMenu{
 
         addButton(
             "Appearance",
-            new ChangeListener (){
+            new ChangeListener() {
                 @Override
-                public void changed(ChangeEvent event, Actor actor){
+                public void changed(ChangeEvent event, Actor actor) {
                     // nothing for now. This is for hovering
                 }
             }
@@ -72,9 +67,9 @@ public class OptionsMenu extends BaseLinearMenu{
 
         addButton(
             "Save",
-            new ChangeListener (){
+            new ChangeListener() {
                 @Override
-                public void changed(ChangeEvent event, Actor actor){
+                public void changed(ChangeEvent event, Actor actor) {
                     // nothing for now. This is for hovering
                 }
             }

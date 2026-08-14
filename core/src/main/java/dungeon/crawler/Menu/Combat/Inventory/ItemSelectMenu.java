@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
+import dungeon.crawler.GameConstants;
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.GameSystem.GameState.GameState;
 import dungeon.crawler.GameSystem.Inventory.Item;
@@ -94,7 +95,7 @@ public class ItemSelectMenu extends ScrollableLinearMenu<Item> implements Combat
 //            float wif = this.getWidth();
 
             combatMenu = (CombatMenu)parentMenu;
-            setSizeandPosition();
+            setSizeandPosition(GameConstants.SUBMENU_SIZE.TALL);
         }
 
         if (stage != null) {
