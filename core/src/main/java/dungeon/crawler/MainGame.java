@@ -16,6 +16,7 @@ import dungeon.crawler.GameSystem.TestData.EnemyFactory;
 import dungeon.crawler.Menu.TestMenus.MenuTestScreen;
 import dungeon.crawler.Observers.CombatScreenObserver;
 import dungeon.crawler.Observers.ScreenChangeObserver;
+import dungeon.crawler.Screens.ChurchScreen;
 import dungeon.crawler.Screens.CombatScreen;
 import dungeon.crawler.Screens.InnScreen;
 import dungeon.crawler.Screens.ShopScreen;
@@ -75,10 +76,15 @@ public class MainGame extends Game implements ScreenChangeObserver,
             ScreenTransitionProperties worldScreenData = MapRegistry.WORLD_MAP_DATA.get(gameState.screenID);
             int shopIndex = worldScreenData.shopIndex;
             ArrayList<Item> inventory = ShopItemSpawner.spawnItems(shopIndex);
-            ShopScreen shopScreen = new ShopScreen(this, inventory);
-            setScreen(
-                shopScreen
+//            ShopScreen shopScreen = new ShopScreen(this, inventory);
+//            setScreen(
+//                shopScreen
+//            );
+            ChurchScreen  churchScreen = new ChurchScreen(
+                this,
+                shopIndex
             );
+            setScreen(churchScreen);
         }
     }
 

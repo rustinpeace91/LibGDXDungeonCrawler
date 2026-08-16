@@ -37,7 +37,7 @@ public class GameState {
         partyBag = new Bag();
         overWorldCoordinates = new Vector2(0,0);
         currentEnemyRoster = new HashMap<>();
-        gold = 200;
+        gold = 600;
         isPlayerDead = false;
         currentMap = "";
         screenID = 1;

@@ -271,7 +271,14 @@ public class PartyCharacter extends Character implements Combatant, Inventory{
             this.hp = maxHp;
             this.mp = maxMP;
         }
-    }@Override
+    }
+
+    @Override
+    public void removeAllStatuses() {
+        conditions = new ArrayList<>();
+    }
+
+    @Override
     public Stance getStance() {
         return stance;
     }

@@ -137,11 +137,19 @@ public class InventoryOptions extends BaseLinearMenu implements OverworldSubMenu
                     new ChangeListener() {
                         @Override
                         public void changed(ChangeEvent event, Actor actor) {
-                            ItemUtils.equipItem(currentCombatant, selectedItem);
-                            showPopup(StringUtils.format(
-                                "%s equiped a %s",
-                                currentCombatant.getName(), selectedItem.getName()
-                            ), 1f);
+                            if(selectedItem.canEquip(currentCombatant.charClass)){
+                                ItemUtils.equipItem(currentCombatant, selectedItem);
+                                showPopup(StringUtils.format(
+                                    "%s equiped a %s",
+                                    currentCombatant.getName(), selectedItem.getName()
+                                ), 1f);
+                            } else {
+                                showPopup(StringUtils.format(
+                                    "%ss cannot equip a %s",
+                                    currentCombatant.charClass.getName(), selectedItem.getName()
+                                ), 2f);
+                            }
+
                             FinishMenuComplete();
                         }
                     }

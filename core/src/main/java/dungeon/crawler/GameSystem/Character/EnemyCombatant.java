@@ -123,6 +123,11 @@ public class EnemyCombatant extends Enemy implements Combatant {
     }
 
     @Override
+    public void removeAllStatuses() {
+
+    }
+
+    @Override
     public Stance getStance() {
         return stance;
     }
