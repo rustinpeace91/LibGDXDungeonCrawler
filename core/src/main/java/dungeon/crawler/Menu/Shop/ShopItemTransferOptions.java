@@ -15,13 +15,13 @@ import dungeon.crawler.Utils.ItemUtils;
 
 import java.util.Arrays;
 
-public class ShopItemPurchaseMenu extends BaseLinearMenu implements OverworldSubMenu {
+public class ShopItemTransferOptions extends BaseLinearMenu implements OverworldSubMenu {
     private final GameState gameState;
     private final Item selectedItem;
     private final PartyCharacter currentCombatant;
 
 
-    public ShopItemPurchaseMenu(
+    public ShopItemTransferOptions(
         Skin skin,
         GameState gameState,
         PartyCharacter currentCombatant,
@@ -41,31 +41,43 @@ public class ShopItemPurchaseMenu extends BaseLinearMenu implements OverworldSub
 
         this.clearChildren();
         String title = selectedItem.getName() + "\n" +
-            ItemUtils.getStorePrice(selectedItem);
+            selectedItem.value + " Gold \n"+
+            "Where would you like it to go";
 
         setTitle(title);
         this.initializeArrow();
-
-        this.addButton("Buy",
+        this.addButton("Inventory",
             new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    if(!ItemUtils.anySpace(currentCombatant, gameState.partyBag)) {
-                        showPopup("Inventory and bag completely full", 2f);
+                    if(!currentCombatant.enoughSpace()) {
+                        showPopup("Inventory completely full", 2f);
 
-                    } else if(!ItemUtils.enoughGold(gameState, selectedItem)) {
-                        showPopup("Not enough gold for this item", 2f);
                     } else {
-                        BaseLinearMenu nextMenu = new ShopItemTransferOptions(
-                            skin,
-                            gameState,
-                            currentCombatant,
-                            selectedItem
-                        );
-                        setSubMenu(nextMenu);
-                        openSubMenu(nextMenu);
+                        ItemUtils.buyItem(gameState, selectedItem);
+                        currentCombatant.addToInventory(selectedItem);
+                        showPopup(selectedItem.getName() + " purchased!", 2f);
+                        FinishMenuComplete();
                     }
-
+//                        setSubMenu(nextMenu);
+//                        openSubMenu(nextMenu);
+                }
+            }
+        );
+        this.addButton("Bag",
+            new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    if(!gameState.partyBag.enoughSpace()) {
+                        showPopup("Bag completely full", 2f);
+                    } else {
+                        ItemUtils.buyItem(gameState, selectedItem);
+                        gameState.partyBag.addToInventory(selectedItem);
+                        showPopup(selectedItem.getName() + " purchased!", 2f);
+                        FinishMenuComplete();
+                    }
+//                        setSubMenu(nextMenu);
+//                        openSubMenu(nextMenu);
                 }
             }
         );
@@ -105,15 +117,10 @@ public class ShopItemPurchaseMenu extends BaseLinearMenu implements OverworldSub
             refreshAndSetActive();
         }
     }
-
     @Override
     public void FinishMenuComplete(){
-//        OverworldSubMenu inventoryMenu = (OverworldSubMenu)parentMenu;
+        OverworldSubMenu inventoryMenu = (OverworldSubMenu)parentMenu;
         returnToParentMenu();
-//        inventoryMenu.FinishMenuComplete();
-    }
-
-    public void handleUseAction(Item item, int targetId){
-        returnToParentMenu();
+        inventoryMenu.FinishMenuComplete();
     }
 }

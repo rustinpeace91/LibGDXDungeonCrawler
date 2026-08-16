@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.compression.lzma.Base;
 import dungeon.crawler.GameConstants;
+import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.GameSystem.GameState.GameState;
 import dungeon.crawler.GameSystem.Inventory.Item;
 import dungeon.crawler.GameSystem.Inventory.ItemTypes.ItemType;
@@ -29,12 +30,15 @@ public class ShopItemCategoryMenu extends BaseLinearMenu implements OverworldSub
     protected final GameState gameState;
     private final ArrayList<Item> shopInventory;
     private final StatusMenuObserver statusMenuObserver;
+    private final PartyCharacter currentCombatant;
+
     public BaseLinearMenu asCombatMenu(){return this;}
 
     public ShopItemCategoryMenu (
         Skin skin,
         GameState gameState,
-        ArrayList<Item> shopInventory
+        ArrayList<Item> shopInventory,
+        PartyCharacter currentCombatant
     ) {
         super(
             skin
@@ -42,7 +46,7 @@ public class ShopItemCategoryMenu extends BaseLinearMenu implements OverworldSub
         this.gameState = gameState;
         this.shopInventory = shopInventory;
         this.statusMenuObserver = new StatusMenuObserver();
-
+        this.currentCombatant = currentCombatant;
 
 //        this.setPosition(10, Gdx.graphics.getHeight() - this.getHeight() - 50);
 
@@ -64,6 +68,7 @@ public class ShopItemCategoryMenu extends BaseLinearMenu implements OverworldSub
                     skin,
                     gameState,
                     weapons,
+                    currentCombatant,
                     false
                 );
                 setSubMenu(newMenu);

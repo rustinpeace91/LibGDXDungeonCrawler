@@ -52,7 +52,7 @@ public class ShopMainMenu extends BaseLinearMenu{
         this.addButton("Buy", new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor){
-                ShopItemCategoryMenu newMenu = new ShopItemCategoryMenu(
+                ShopCharSelectMenu newMenu = new ShopCharSelectMenu(
                     skin,
                     gameState,
                     shopInventory

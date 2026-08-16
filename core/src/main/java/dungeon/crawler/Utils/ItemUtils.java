@@ -1,8 +1,10 @@
 package dungeon.crawler.Utils;
 
 import dungeon.crawler.GameConstants;
+import dungeon.crawler.GameSystem.Character.Bag;
 import dungeon.crawler.GameSystem.Character.Inventory;
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
+import dungeon.crawler.GameSystem.GameState.GameState;
 import dungeon.crawler.GameSystem.Inventory.Armor;
 import dungeon.crawler.GameSystem.Inventory.Item;
 import dungeon.crawler.GameSystem.Inventory.ItemTypes.ItemType;
@@ -21,6 +23,32 @@ public class ItemUtils {
 
     public static boolean canTransferItem(PartyCharacter sender, PartyCharacter reciever, Item item){
         return reciever.inventory.enoughSpace();
+    }
+
+    public static boolean anySpace(PartyCharacter sender, Bag bag){
+        if(sender.inventory.enoughSpace() || bag.enoughSpace()){
+            return true;
+        }
+        return false;
+    }
+
+
+    public static boolean enoughGold(GameState gamestate, Item selectedItem){
+        if(gamestate.gold < Math.round(selectedItem.value * GameConstants.SHOP_MARKUP)){
+            return false;
+        };
+        return true;
+    }
+
+    public static int getStorePrice(Item selectedItem){
+        return Math.round(selectedItem.value * GameConstants.SHOP_MARKUP);
+    }
+
+    public static void buyItem(GameState gamestate, Item selectedItem){
+        int price = Math.round(selectedItem.value * GameConstants.SHOP_MARKUP);
+        if(gamestate.gold > price){
+            gamestate.removeGold(price);
+        };
     }
 
     public static void transferItem(Inventory sender, Inventory reciever, Item item){

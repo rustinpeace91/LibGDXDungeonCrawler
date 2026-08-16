@@ -85,6 +85,7 @@ public class GameConstants {
 
     public static final int MAX_PLAYER_INVENTORY_SPACE = 15;
     public static final int MAX_PLAYER_BAG_SPACE = 128;
+    public static final float SHOP_MARKUP = 4f;
 
 
     // COMBAT MENU DIMENSIONS

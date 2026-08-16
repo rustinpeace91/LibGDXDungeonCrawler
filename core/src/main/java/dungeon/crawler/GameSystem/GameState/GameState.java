@@ -37,7 +37,7 @@ public class GameState {
         partyBag = new Bag();
         overWorldCoordinates = new Vector2(0,0);
         currentEnemyRoster = new HashMap<>();
-        gold = 20;
+        gold = 200;
         isPlayerDead = false;
         currentMap = "";
         screenID = 1;
@@ -56,6 +56,10 @@ public class GameState {
 
     public void addGold(int value){
         this.gold = gold + value;
+    }
+
+    public void removeGold(int value){
+        this.gold = gold - value;
     }
 
     public int getGold(){

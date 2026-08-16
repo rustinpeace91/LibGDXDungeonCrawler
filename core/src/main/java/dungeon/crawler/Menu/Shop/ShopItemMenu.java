@@ -22,6 +22,7 @@ import java.util.ArrayList;
 
 public class ShopItemMenu extends ScrollableLinearMenu<Item>  implements OverworldSubMenu {
 
+    private final PartyCharacter currentCombatant;
     private GameState gameState;
 //    private PartyCharacter currentCombatant;
     private ArrayList<Item> availableItems;
@@ -34,6 +35,7 @@ public class ShopItemMenu extends ScrollableLinearMenu<Item>  implements Overwor
         Skin skin,
         GameState gameState,
         ArrayList<Item> availableItems,
+        PartyCharacter currentCombatant,
 //        StatusMenuObserver statusMenuObserver,
         boolean canSellItems
     ){
@@ -43,7 +45,7 @@ public class ShopItemMenu extends ScrollableLinearMenu<Item>  implements Overwor
         this.availableItems = availableItems;
 //        this.statusMenuObserver = statusMenuObserver;
         this.canSellItems = canSellItems;
-
+        this.currentCombatant = currentCombatant;
         this.initializeButtons();
     }
 
@@ -63,15 +65,14 @@ public class ShopItemMenu extends ScrollableLinearMenu<Item>  implements Overwor
                 new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
-//                        BaseLinearMenu nextMenu = new InventoryOptions(
-//                            skin,
-//                            gameState,
-//                            currentCombatant,
-//                            item,
-//                            canSellItems
-//                        );
-//                        setSubMenu(nextMenu);
-//                        openSubMenu(nextMenu);
+                        ShopItemPurchaseMenu nextMenu = new ShopItemPurchaseMenu(
+                            skin,
+                            gameState,
+                            currentCombatant,
+                            item
+                        );
+                        setSubMenu(nextMenu);
+                        openSubMenu(nextMenu);
                     }
                 }
             );
