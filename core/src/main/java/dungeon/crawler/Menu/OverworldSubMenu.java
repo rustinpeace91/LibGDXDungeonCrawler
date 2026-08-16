@@ -51,6 +51,7 @@ public interface OverworldSubMenu {
         is it's modular, and can be edited from the constants file if we want to change the font size later
          */
         float menuHeight;
+        float menuWidth = GameConstants.COMBAT_SUBMENU_WIDTH + GameConstants.COMBAT_SUBMENU_WIDTH_DIFF;
         switch(size){
             case SMALL:
                 menuHeight = 200f;
@@ -58,9 +59,14 @@ public interface OverworldSubMenu {
             case MEDIUM:
                 menuHeight = 300f;
                 break;
+            case WIDE:
+                menuHeight = 300f;
+                menuWidth = 400f;
+                break;
             default:
                 menuHeight = 400f;
                 break;
+
         }
 
         asCombatMenu().top();
@@ -69,7 +75,7 @@ public interface OverworldSubMenu {
 //        float menuHeight = targetY;
         // remove hardcoding.  have env variables?
         asCombatMenu().setSize(
-            GameConstants.COMBAT_SUBMENU_WIDTH + GameConstants.COMBAT_SUBMENU_WIDTH_DIFF,
+            menuWidth,
             menuHeight
         );
         asCombatMenu().setPosition(

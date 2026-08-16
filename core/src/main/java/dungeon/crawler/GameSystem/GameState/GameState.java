@@ -1,5 +1,6 @@
 package dungeon.crawler.GameSystem.GameState;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,17 +24,18 @@ public class GameState {
 
     public GameState(){
         // TODO: make an actual constructor
-        setUpTestData();
     }
-
+    // TODO: Refactor this shit so we're not repeating
     public void setUpTestData(){
         player = PlayerFactory.generate();
         PartyCharacter fighter = PlayerFactory.generatePartyMember();
         PartyCharacter wizard = PlayerFactory.generateWizard();
+        PartyCharacter thief = PlayerFactory.generateThief();
         party = new HashMap<>();
         party.put(0, player);
         party.put(1, fighter);
         party.put(2, wizard);
+        party.put(3, thief);
         partyBag = new Bag();
         overWorldCoordinates = new Vector2(0,0);
         currentEnemyRoster = new HashMap<>();
@@ -42,6 +44,25 @@ public class GameState {
         currentMap = "";
         screenID = 1;
     }
+
+    public void SetUpClassDataFromString(ArrayList<String> partyList){
+        player = PlayerFactory.generate();
+        party = new HashMap<>();
+        for(int i = 0; i < partyList.size(); i++){
+            String className = partyList.get(i);
+            PartyCharacter chr = PlayerFactory.generateClass(className);
+            party.put(i, chr);
+        }
+        partyBag = new Bag();
+        overWorldCoordinates = new Vector2(0,0);
+        currentEnemyRoster = new HashMap<>();
+        gold = 600;
+        isPlayerDead = false;
+        currentMap = "";
+        screenID = 1;
+    }
+
+
 
     public void updateWorldCoordinates(Vector2 newCoords){
         overWorldCoordinates = newCoords;

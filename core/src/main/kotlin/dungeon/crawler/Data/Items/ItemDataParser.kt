@@ -61,11 +61,11 @@ object ItemDataInitializer {
         registry.register(
             "iron_sword",
             WeaponParams(
-                "iron sword",
+                "Iron Sword",
                 "iron_sword",
                 1,
-                2,
-                10,
+                4,
+                12,
                 "swings",
                 false,
                 null,
@@ -120,7 +120,7 @@ object ItemDataInitializer {
                 "wooden_hammer",
                 0,
                 1,
-                12,
+                18,
                 "swings",
                 false,
                 null,
@@ -128,6 +128,24 @@ object ItemDataInitializer {
                 120,
                 ItemType.WEAPON,
                 WeaponTypes.HAMMER,
+                Handed.TWO_HANDED
+            )
+        )
+        registry.register(
+            "wooden_bow",
+            WeaponParams(
+                "Crude Wooden Bow",
+                "wooden_bow",
+                1,
+                2,
+                14,
+                "shoots",
+                true,
+                null,
+                null,
+                80,
+                ItemType.WEAPON,
+                WeaponTypes.SHORTBOW,
                 Handed.TWO_HANDED
             )
         )

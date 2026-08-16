@@ -27,8 +27,12 @@ public class GameConstants {
         SMALL,
         MEDIUM,
         TALL,
+        WIDE,
         DYNAMIC
     }
+
+    public static final int MAX_PARTY_SIZE=4;
+    public static final String[] AVAILABLE_CLASSES = {"Fighter", "Thief", "Wizard"};
 
     // ITEM STATS
     public static final ItemType[] USABLE_ITEMS = new ItemType[]{

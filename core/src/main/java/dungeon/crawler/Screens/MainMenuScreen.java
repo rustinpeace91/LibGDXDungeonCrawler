@@ -17,34 +17,32 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import dungeon.crawler.GameConstants;
 import dungeon.crawler.GameSystem.Inventory.Item;
 import dungeon.crawler.MainGame;
-import dungeon.crawler.Menu.Church.ChurchMainMenu;
 import dungeon.crawler.Menu.InputHandlers.MenuInputHandler;
+import dungeon.crawler.Menu.MainMenu.MainMenu;
 import dungeon.crawler.Menu.Shop.ShopMainMenu;
 import dungeon.crawler.Menu.TestMenus.TestShopMenu;
 import dungeon.crawler.Observers.MenuInputObserver;
 
 import java.util.ArrayList;
 
-public class ChurchScreen extends ScreenAdapter  implements MenuInputObserver {
-    private final int shopIndex;
+public class MainMenuScreen extends ScreenAdapter  implements MenuInputObserver {
     private MainGame game;
-    private ChurchMainMenu shopMenu;
+    private MainMenu mainMenu;
     private SpriteBatch batch;
     private Stage uiStage;
     private MenuInputHandler menuInputHandler;
     private Skin skin;
-    private Texture backgroundTexture;
-    private ArrayList<Item> inventory;
 
-    public ChurchScreen(
-        MainGame game,
-        int shopIndex
+    private Texture backgroundTexture;
+    private ArrayList<String> partySelection;
+
+    public MainMenuScreen(
+        MainGame game
     ){
         this.uiStage = new Stage(new FitViewport(GameConstants.RESOLUTION_WIDTH, GameConstants.RESOLUTION_HEIGHT));
         this.game = game;
         this.batch = new SpriteBatch();
-        this.shopIndex= shopIndex;
-
+        this.partySelection = new ArrayList<>();
         this.backgroundTexture = new Texture(Gdx.files.internal("Misc/storefront.jpg"));
         // 1. Load the PNG
         Texture texture = new Texture(Gdx.files.internal("Misc/storefront.jpg"));
@@ -62,21 +60,21 @@ public class ChurchScreen extends ScreenAdapter  implements MenuInputObserver {
         imageActor.setFillParent(true);
 
         uiStage.addActor(imageActor);
+        resetClassString();
     }
 
     @Override
     public void show(){
         skin = new Skin(Gdx.files.internal(GameConstants.MENU_SKIN));
-        shopMenu = new ChurchMainMenu(
+        mainMenu = new MainMenu(
             skin,
-            this,
-            this.game.gameState,
-            shopIndex
+            game.gameState,
+            this
         );
-        this.uiStage.addActor(shopMenu);
+        this.uiStage.addActor(mainMenu);
         this.menuInputHandler = new MenuInputHandler(
             uiStage,
-            shopMenu
+            mainMenu
         );
         InputMultiplexer multiplexer = setUpInput();
         Gdx.input.setInputProcessor(multiplexer);
@@ -113,14 +111,43 @@ public class ChurchScreen extends ScreenAdapter  implements MenuInputObserver {
     @Override
     public void onMenuToggled(boolean menuVisible){};
 
+    public void addClassString(String name){
+        partySelection.add(name);
+    }
+
+    public void resetClassString(){
+        partySelection = new ArrayList<>();
+        partySelection.add("Hero");
+    }
+
+    public void removeLastClassString(){
+        if (
+            partySelection != null &&
+            !partySelection.isEmpty() &&
+            partySelection.size() > 1
+        ) {
+            partySelection.remove(partySelection.size() - 1);
+        }
+    }
+
+    public ArrayList<String> getPartySelection(){
+        return partySelection;
+    }
+
+    public void startGame(){
+        game.gameState.SetUpClassDataFromString(partySelection);
+        game.startGame();
+    }
+
+    public void startGamePreset(){
+        game.gameState.setUpTestData();
+        game.startGame();
+    }
+
     @Override
     public void dispose() {
         skin.dispose();
         uiStage.dispose();
         this.backgroundTexture .dispose();
-    }
-
-    public void exitShop(){
-        game.onScreenChange(GameConstants.GAME_SCREEN.WALK_TOWN);
     }
 }

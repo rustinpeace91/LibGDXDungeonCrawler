@@ -32,6 +32,7 @@ public class ShopScreen extends ScreenAdapter  implements MenuInputObserver {
 
     private Texture backgroundTexture;
     private ArrayList<Item> inventory;
+    private Skin skin;
 
     public ShopScreen(
         MainGame game,
@@ -41,6 +42,7 @@ public class ShopScreen extends ScreenAdapter  implements MenuInputObserver {
         this.game = game;
         this.batch = new SpriteBatch();
         this.inventory = inventory;
+        skin = new Skin(Gdx.files.internal(GameConstants.MENU_SKIN));
 
         this.backgroundTexture = new Texture(Gdx.files.internal("Misc/storefront.jpg"));
         // 1. Load the PNG
@@ -63,7 +65,7 @@ public class ShopScreen extends ScreenAdapter  implements MenuInputObserver {
 
     @Override
     public void show(){
-        Skin skin = new Skin(Gdx.files.internal(GameConstants.MENU_SKIN));
+
         shopMenu = new ShopMainMenu(
             skin,
             this,
@@ -109,6 +111,14 @@ public class ShopScreen extends ScreenAdapter  implements MenuInputObserver {
 
     @Override
     public void onMenuToggled(boolean menuVisible){};
+
+
+    @Override
+    public void dispose() {
+        skin.dispose();
+        uiStage.dispose();
+        this.backgroundTexture .dispose();
+    }
 
     public void exitShop(){
         game.onScreenChange(GameConstants.GAME_SCREEN.WALK_TOWN);

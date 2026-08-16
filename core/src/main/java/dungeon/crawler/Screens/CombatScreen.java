@@ -391,6 +391,7 @@ public class CombatScreen extends ScreenAdapter
     public void dispose(){
         uiStage.dispose();
         enemyRenderer.dispose();
+        backgroundTexture.dispose();
         // clean up mf
     }
 
