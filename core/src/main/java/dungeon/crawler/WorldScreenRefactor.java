@@ -20,8 +20,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.vabrant.console.ConsoleCache;
-import com.vabrant.console.gui.GUIConsole;
 
 import dungeon.crawler.GameSystem.Enemies.EnemySpawner;
 import dungeon.crawler.Menu.InputHandlers.MenuInputHandler;
@@ -74,7 +72,6 @@ PlayerPositionObserver {
 // observers
     public ArrayList<ScreenChangeObserver> screenChangeObservers;
 
-    public GUIConsole console;
 
 
     public WorldScreenRefactor(
@@ -90,9 +87,6 @@ PlayerPositionObserver {
         this.map = new TmxMapLoader().load(mapFile);
         this.renderer = new OrthogonalTiledMapRenderer(map);
         this.overWorld = screen.equals(GameConstants.GAME_SCREEN.WALK_OVERWORLD);
-        ConsoleCache cache = new ConsoleCache();
-        this.console=this.game.debugConsoleHandler.console;
-        console.setCache(cache);
         setUpCamera();
         float screenCenterY = camera.viewportHeight / 2f;
         float screenCenterX = camera.viewportWidth / 2f;
@@ -181,7 +175,6 @@ PlayerPositionObserver {
         InputMultiplexer multiplexer = new InputMultiplexer();
         // --- Configure the InputMultiplexer ---
         multiplexer.addProcessor(menuInputHanlder);
-        multiplexer.addProcessor(console.getInput());
         // 6. Tell LibGDX to use the multiplexer for all input events
         return multiplexer;
     }
@@ -212,14 +205,13 @@ PlayerPositionObserver {
         spriteBatch.begin();
         characterSprite.render(spriteBatch);
         spriteBatch.end();
-        if(menuVisible && console.isHidden()) {
+        if(menuVisible) {
         // if(menuVisible){
             String gold = String.valueOf(this.game.gameState.gold);
             goldMenu.setText(StringUtils.format("Gold: %s ", gold));
             uiStage.act(Gdx.graphics.getDeltaTime());
             uiStage.draw();
         }
-        console.draw();
 
     }
 
