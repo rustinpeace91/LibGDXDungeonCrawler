@@ -189,7 +189,14 @@ public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
             if (props.containsKey("general_shop")) {
                 // 3. Notify your observers (MainGame, etc.)
                 for (ScreenChangeObserver obs : screenObservers) {
-                    obs.onScreenChange(GameConstants.GAME_SCREEN.TEST_SCREEN);
+                    obs.onScreenChange(GameConstants.GAME_SCREEN.SHOP_SCREEN);
+                }
+
+            }
+            if (props.containsKey("church")) {
+                // 3. Notify your observers (MainGame, etc.)
+                for (ScreenChangeObserver obs : screenObservers) {
+                    obs.onScreenChange(GameConstants.GAME_SCREEN.CHURCH_SCREEN);
                 }
 
             }

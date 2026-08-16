@@ -1,7 +1,7 @@
+
 plugins {
   id 'java'
 }
-
 sourceSets.main.resources.srcDirs += [ rootProject.file('assets').path ]
 project.ext.mainClassName = "dungeon.crawler.teavm.TeaVMBuilder"
 eclipse.project.name = appName + "-teavm"

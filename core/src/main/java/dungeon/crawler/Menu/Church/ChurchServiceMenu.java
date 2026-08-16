@@ -42,8 +42,7 @@ public class ChurchServiceMenu extends BaseLinearMenu implements OverworldSubMen
 
         this.clearChildren();
         String title = service + " costs \n" +
-            price + " Gold \n"+
-            "Where would you like it to go";
+            price + " Gold \n";
 
         setTitle(title);
         this.initializeArrow();

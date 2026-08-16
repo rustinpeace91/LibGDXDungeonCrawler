@@ -11,7 +11,9 @@ public class GameConstants {
         WALK_TOWN,
         COMBAT,
         INN,
-        TEST_SCREEN
+        TEST_SCREEN,
+        SHOP_SCREEN,
+        CHURCH_SCREEN
     };
 
     public enum PLAYER_STATS {

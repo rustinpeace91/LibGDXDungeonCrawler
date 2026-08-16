@@ -72,19 +72,25 @@ public class MainGame extends Game implements ScreenChangeObserver,
         else if(screen == GameConstants.GAME_SCREEN.COMBAT){
             CombatScreen combatScreen = new CombatScreen(this);
             setScreen(combatScreen);
-        } else if(screen == GameConstants.GAME_SCREEN.TEST_SCREEN){
+        } else if(screen == GameConstants.GAME_SCREEN.SHOP_SCREEN){
             ScreenTransitionProperties worldScreenData = MapRegistry.WORLD_MAP_DATA.get(gameState.screenID);
             int shopIndex = worldScreenData.shopIndex;
             ArrayList<Item> inventory = ShopItemSpawner.spawnItems(shopIndex);
-//            ShopScreen shopScreen = new ShopScreen(this, inventory);
-//            setScreen(
-//                shopScreen
-//            );
+            ShopScreen shopScreen = new ShopScreen(this, inventory);
+            setScreen(
+                shopScreen
+            );
+
+            setScreen(shopScreen);
+        } else if(screen == GameConstants.GAME_SCREEN.CHURCH_SCREEN){
+            ScreenTransitionProperties worldScreenData = MapRegistry.WORLD_MAP_DATA.get(gameState.screenID);
+            int shopIndex = worldScreenData.shopIndex;
             ChurchScreen  churchScreen = new ChurchScreen(
                 this,
                 shopIndex
             );
             setScreen(churchScreen);
+
         }
     }
 
