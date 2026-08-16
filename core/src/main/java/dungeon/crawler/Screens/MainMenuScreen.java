@@ -31,6 +31,7 @@ public class MainMenuScreen extends ScreenAdapter  implements MenuInputObserver 
     private SpriteBatch batch;
     private Stage uiStage;
     private MenuInputHandler menuInputHandler;
+    private Skin skin;
 
     private Texture backgroundTexture;
     private ArrayList<String> partySelection;
@@ -64,7 +65,7 @@ public class MainMenuScreen extends ScreenAdapter  implements MenuInputObserver 
 
     @Override
     public void show(){
-        Skin skin = new Skin(Gdx.files.internal(GameConstants.MENU_SKIN));
+        skin = new Skin(Gdx.files.internal(GameConstants.MENU_SKIN));
         mainMenu = new MainMenu(
             skin,
             game.gameState,
@@ -141,5 +142,12 @@ public class MainMenuScreen extends ScreenAdapter  implements MenuInputObserver 
     public void startGamePreset(){
         game.gameState.setUpTestData();
         game.startGame();
+    }
+
+    @Override
+    public void dispose() {
+        skin.dispose();
+        uiStage.dispose();
+        this.backgroundTexture .dispose();
     }
 }

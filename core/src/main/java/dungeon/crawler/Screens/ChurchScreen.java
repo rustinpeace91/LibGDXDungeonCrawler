@@ -32,7 +32,7 @@ public class ChurchScreen extends ScreenAdapter  implements MenuInputObserver {
     private SpriteBatch batch;
     private Stage uiStage;
     private MenuInputHandler menuInputHandler;
-
+    private Skin skin;
     private Texture backgroundTexture;
     private ArrayList<Item> inventory;
 
@@ -66,7 +66,7 @@ public class ChurchScreen extends ScreenAdapter  implements MenuInputObserver {
 
     @Override
     public void show(){
-        Skin skin = new Skin(Gdx.files.internal(GameConstants.MENU_SKIN));
+        skin = new Skin(Gdx.files.internal(GameConstants.MENU_SKIN));
         shopMenu = new ChurchMainMenu(
             skin,
             this,
@@ -112,6 +112,13 @@ public class ChurchScreen extends ScreenAdapter  implements MenuInputObserver {
 
     @Override
     public void onMenuToggled(boolean menuVisible){};
+
+    @Override
+    public void dispose() {
+        skin.dispose();
+        uiStage.dispose();
+        this.backgroundTexture .dispose();
+    }
 
     public void exitShop(){
         game.onScreenChange(GameConstants.GAME_SCREEN.WALK_TOWN);
