@@ -55,12 +55,13 @@ configure(subprojects) {
   }
   compileKotlin.compilerOptions.jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
   compileTestKotlin.compilerOptions.jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
-  
+
 }
 
 subprojects {
   version = "$projectVersion"
   ext.appName = 'LibGDXDungeonCrawler'
+
   repositories {
     mavenCentral()
 //    maven { url 'https://s01.oss.sonatype.org' }

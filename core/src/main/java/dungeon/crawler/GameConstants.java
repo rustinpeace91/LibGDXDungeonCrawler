@@ -11,7 +11,9 @@ public class GameConstants {
         WALK_TOWN,
         COMBAT,
         INN,
-        TEST_SCREEN
+        TEST_SCREEN,
+        SHOP_SCREEN,
+        CHURCH_SCREEN
     };
 
     public enum PLAYER_STATS {
@@ -19,6 +21,13 @@ public class GameConstants {
         AGILITY,
         INTELLIGENCE,
         PERCEPTION
+    }
+
+    public enum SUBMENU_SIZE {
+        SMALL,
+        MEDIUM,
+        TALL,
+        DYNAMIC
     }
 
     // ITEM STATS
@@ -36,6 +45,9 @@ public class GameConstants {
     // screen
     public static final int RESOLUTION_WIDTH = 960;
     public static final int RESOLUTION_HEIGHT = 720;
+
+//    public static final int RESOLUTION_WIDTH = 640;
+//    public static final int RESOLUTION_HEIGHT = 480;
 
     // player
     public static final float TOWN_MOVEMENT_DURATION = 0.15f;
@@ -73,7 +85,9 @@ public class GameConstants {
 
     );
 
-    public static final int MAX_PLAYER_INVENTORY_SPACE = 10;
+    public static final int MAX_PLAYER_INVENTORY_SPACE = 15;
+    public static final int MAX_PLAYER_BAG_SPACE = 128;
+    public static final float SHOP_MARKUP = 4f;
 
 
     // COMBAT MENU DIMENSIONS

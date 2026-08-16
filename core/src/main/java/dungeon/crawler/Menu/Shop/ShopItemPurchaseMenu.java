@@ -1,79 +1,81 @@
-package dungeon.crawler.Menu.Combat.Inventory;
+package dungeon.crawler.Menu.Shop;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.Align;
 import dungeon.crawler.GameConstants;
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.GameSystem.GameState.GameState;
 import dungeon.crawler.GameSystem.Inventory.Item;
 import dungeon.crawler.Menu.BaseLinearMenu;
-import dungeon.crawler.Menu.Combat.CombatMenu;
-import dungeon.crawler.Menu.CombatSubMenu;
-import dungeon.crawler.Menu.ScrollableLinearMenu;
-import dungeon.crawler.Menu.PagePosition;
+import dungeon.crawler.Menu.OverworldSubMenu;
+import dungeon.crawler.Utils.ItemUtils;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 
-public class ItemSelectMenu extends ScrollableLinearMenu<Item> implements CombatSubMenu  {
+public class ShopItemPurchaseMenu extends BaseLinearMenu implements OverworldSubMenu {
+    private final GameState gameState;
+    private final Item selectedItem;
+    private final PartyCharacter currentCombatant;
 
-    private GameState gameState;
-    private CombatMenu combatMenu;
-    private PartyCharacter currentCombatant;
-    private final ArrayList<Item> availableItems;
 
-    public BaseLinearMenu asCombatMenu(){return this;}
-
-    public ItemSelectMenu(
+    public ShopItemPurchaseMenu(
         Skin skin,
         GameState gameState,
         PartyCharacter currentCombatant,
-        ArrayList<Item> availableItems
+        Item selectedItem
     ){
         super(skin);
         this.gameState = gameState;
+        this.selectedItem = selectedItem;
         this.currentCombatant = currentCombatant;
-        this.availableItems = availableItems;
         this.initializeButtons();
     }
 
+    public BaseLinearMenu asCombatMenu(){return this;}
 
 
     protected void updateButtons(){
-        scrollableResetDefaults();
-        this.clearChildren();
-        this.initializeArrow();
-        addScrollArrowUp();
 
-        for (int i=pageStart; i < pageEnd; i++) {
-            Item item = availableItems.get(i);
-            String buttonName = item.name;
-            this.addButton(buttonName,
-                new ChangeListener() {
-                    @Override
-                    public void changed(ChangeEvent event, Actor actor) {
-                        BaseLinearMenu nextMenu = new ItemTargetSelectMenu(
+        this.clearChildren();
+        String title = selectedItem.getName() + "\n" +
+            ItemUtils.getStorePrice(selectedItem);
+
+        setTitle(title);
+        this.initializeArrow();
+
+        this.addButton("Buy",
+            new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    if(!ItemUtils.anySpace(currentCombatant, gameState.partyBag)) {
+                        showPopup("Inventory and bag completely full", 2f);
+
+                    } else if(!ItemUtils.enoughGold(gameState, selectedItem)) {
+                        showPopup("Not enough gold for this item", 2f);
+                    } else {
+                        BaseLinearMenu nextMenu = new ShopItemTransferOptions(
                             skin,
                             gameState,
-                            item,
-                            ItemSelectMenu.this
+                            currentCombatant,
+                            selectedItem
                         );
                         setSubMenu(nextMenu);
                         openSubMenu(nextMenu);
                     }
+
                 }
-            );
-        }
+            }
+        );
+
+
         if(getStage() == null) {
             Gdx.app.log("Menu Error", "refreshAndSetActive called BEFORE linear menu added to stage");
-            // no return. Let it break the game
         }
         setVisible(true);
 
-        addScrollArrowDown();
         if (parentMenu != null) {
             refreshAndSetActive();
         }
@@ -81,9 +83,12 @@ public class ItemSelectMenu extends ScrollableLinearMenu<Item> implements Combat
     }
     protected void initializeButtons(){
 
-        this.intializeItems(availableItems);
         updateButtons();
 
+    }
+
+    public void finishItemOption(){
+        returnToParentMenu();
     }
 
     @Override
@@ -92,9 +97,7 @@ public class ItemSelectMenu extends ScrollableLinearMenu<Item> implements Combat
         super.setStage(stage);
 
         if(parentMenu != null){
-//            float wif = this.getWidth();
 
-            combatMenu = (CombatMenu)parentMenu;
             setSizeandPosition(GameConstants.SUBMENU_SIZE.TALL);
         }
 
@@ -103,10 +106,14 @@ public class ItemSelectMenu extends ScrollableLinearMenu<Item> implements Combat
         }
     }
 
-    public void handleUseAction(Item item, int targetId){
+    @Override
+    public void FinishMenuComplete(){
+//        OverworldSubMenu inventoryMenu = (OverworldSubMenu)parentMenu;
         returnToParentMenu();
-        combatMenu.handleItemAction(item, targetId);
+//        inventoryMenu.FinishMenuComplete();
     }
 
-
+    public void handleUseAction(Item item, int targetId){
+        returnToParentMenu();
+    }
 }

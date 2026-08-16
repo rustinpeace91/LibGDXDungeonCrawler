@@ -7,14 +7,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 
+import dungeon.crawler.GameConstants;
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.GameSystem.GameState.GameState;
 import dungeon.crawler.Menu.BaseLinearMenu;
+import dungeon.crawler.Menu.OverworldSubMenu;
 import dungeon.crawler.Utils.StringUtils;
 
-public class StatusSelectionMenu extends BaseLinearMenu {
+public class StatusSelectionMenu extends BaseLinearMenu implements OverworldSubMenu {
     private GameState gameState;
     private PartyCharacterStatusMenu partyStatusMenu;
+    public BaseLinearMenu asCombatMenu(){return this;}
 
 	public StatusSelectionMenu(
         Skin skin,
@@ -43,7 +46,9 @@ public class StatusSelectionMenu extends BaseLinearMenu {
 
 
         if(parentMenu != null){
-            this.setPosition(this.parentMenu.getOriginX() + 200, Gdx.graphics.getHeight() - this.getHeight());
+//            this.setPosition(this.parentMenu.getOriginX() + 200, Gdx.graphics.getHeight() - this.getHeight());
+            setSizeandPosition(GameConstants.SUBMENU_SIZE.SMALL);
+
         }
 
 

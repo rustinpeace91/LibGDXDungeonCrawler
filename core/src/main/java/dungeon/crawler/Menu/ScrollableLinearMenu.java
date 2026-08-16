@@ -85,7 +85,11 @@ public abstract class ScrollableLinearMenu<T> extends BaseLinearMenu {
             if(pageStart == 0) {
                 currentButtonIndex = 0;
             } else if(pagePos == PagePosition.FORWARD){
-                currentButtonIndex = 1;
+                if(buttonList.size < 2){
+                    currentButtonIndex = 0;
+                } else {
+                    currentButtonIndex = 1;
+                }
             } else {
                 currentButtonIndex = MAX_ROWS - 1;
             }

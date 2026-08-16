@@ -397,7 +397,7 @@ public class CombatLogic {
         });
 
         Random roll = new Random();
-        int addGold = roll.nextInt(20) + 1;
+        int addGold = roll.nextInt(100) + 1;
         this.game.gameState.gold = this.game.gameState.gold + addGold;
         eventScreen.addMessages(new String[] {
                 StringUtils.format(

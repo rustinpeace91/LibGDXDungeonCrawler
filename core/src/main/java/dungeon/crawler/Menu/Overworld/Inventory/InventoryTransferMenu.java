@@ -6,7 +6,9 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import dungeon.crawler.GameConstants;
 import dungeon.crawler.GameSystem.Character.Combatant;
+import dungeon.crawler.GameSystem.Character.Inventory;
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.GameSystem.Combat.CombatUtils;
 import dungeon.crawler.GameSystem.GameState.GameState;
@@ -22,7 +24,7 @@ import java.util.Map;
 
 public class InventoryTransferMenu extends BaseLinearMenu implements OverworldSubMenu {
     private final GameState gameState;
-    private final PartyCharacter currentCombatant;
+    private final Inventory currentCombatant;
     private final Item selectedItem;
 
 
@@ -30,7 +32,7 @@ public class InventoryTransferMenu extends BaseLinearMenu implements OverworldSu
     public InventoryTransferMenu(
         Skin skin,
         GameState gameState,
-        PartyCharacter currentCombatant,
+        Inventory currentCombatant,
         Item selectedItem
     ){
         super(skin);
@@ -60,7 +62,7 @@ public class InventoryTransferMenu extends BaseLinearMenu implements OverworldSu
                     new ChangeListener() {
                         @Override
                         public void changed(ChangeEvent event, Actor actor) {
-                            if(c.inventory.enoughSpace()){
+                            if(c.enoughSpace()){
                                 ItemUtils.transferItem(currentCombatant, c, selectedItem);
                                 showPopup("Successfully transferred item", 1f);
                             } else {
@@ -70,12 +72,35 @@ public class InventoryTransferMenu extends BaseLinearMenu implements OverworldSu
                                 ), 1f);
                             }
                             // TODO! go back to Inventory Menu
-                            finishItemOption();
+                            FinishMenuComplete();
 //                            itemMenu.handleUseAction(selectedItem, id);
                         }
                     }
                 );
             }
+
+        }
+
+        if(currentCombatant.getName() != "Bag"){
+            this.addButton(gameState.partyBag.getName(),
+                new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        if(gameState.partyBag.enoughSpace()){
+                            ItemUtils.transferItem(currentCombatant, gameState.partyBag, selectedItem);
+                            showPopup("Successfully transferred item", 1f);
+                        } else {
+                            showPopup(StringUtils.format(
+                                "%s inventory is full",
+                                gameState.partyBag.getName()
+                            ), 1f);
+                        }
+                        // TODO! go back to Inventory Menu
+                        FinishMenuComplete();
+//                            itemMenu.handleUseAction(selectedItem, id);
+                    }
+                }
+            );
         }
 
 //        if(selectedItem.returnItemType() == Item)
@@ -96,10 +121,11 @@ public class InventoryTransferMenu extends BaseLinearMenu implements OverworldSu
 
     }
 
-    protected void finishItemOption(){
-        InventoryOptions inventoryMenu = (InventoryOptions)parentMenu;
+    @Override
+    public void FinishMenuComplete(){
+        OverworldSubMenu inventoryMenu = (OverworldSubMenu)parentMenu;
         returnToParentMenu();
-        inventoryMenu.finishItemOption();
+        inventoryMenu.FinishMenuComplete();
     }
 
     @Override
@@ -111,7 +137,7 @@ public class InventoryTransferMenu extends BaseLinearMenu implements OverworldSu
 //            float wif = this.getWidth();
 
 //            combatMenu = (CombatMenu)parentMenu;
-            setSizeandPosition();
+            setSizeandPosition(GameConstants.SUBMENU_SIZE.TALL);
         }
 
         if (stage != null) {

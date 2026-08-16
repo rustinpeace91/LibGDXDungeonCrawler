@@ -1,19 +1,18 @@
-package dungeon.crawler.Menu.Overworld.Inventory;
+package dungeon.crawler.Menu.Shop;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
-import dungeon.crawler.Menu.BaseLinearMenu;
 import dungeon.crawler.Menu.Observers.StatusMenu;
 import dungeon.crawler.Menu.StandardStatusMenu;
 import dungeon.crawler.Utils.ItemUtils;
 import dungeon.crawler.Utils.StringUtils;
 
-public class InventoryStatusMenu extends StandardStatusMenu
+public class ItemStatusMenu extends StandardStatusMenu
     implements StatusMenu
 {
     private PartyCharacter character;
 
-    public InventoryStatusMenu (
+    public ItemStatusMenu (
         Skin skin,
         PartyCharacter character
     ){
@@ -27,16 +26,16 @@ public class InventoryStatusMenu extends StandardStatusMenu
     public void displayCharacter(){
         String text = StringUtils.format(
             "%s's equpment. \n" +
-            "Main Hand: %s \n" +
-            "Off Hand: %s \n" +
-            "Helment: %s \n" +
-            "Armor: %s \n" +
-            "Feet: %s \n\n" +
-            "HP: %s\n" +
-            "MP: %s\n"  +
-            "Total Armor: %s \n" +
-            "To Hit: %s \n" +
-            "Damage: %s \n",
+                "Main Hand: %s \n" +
+                "Off Hand: %s \n" +
+                "Helment: %s \n" +
+                "Armor: %s \n" +
+                "Feet: %s \n\n" +
+                "HP: %s\n" +
+                "MP: %s\n"  +
+                "Total Armor: %s \n" +
+                "To Hit: %s \n" +
+                "Damage: %s \n",
 
             character.name,
             ItemUtils.getItemName(character.equipment.getRightHand()),

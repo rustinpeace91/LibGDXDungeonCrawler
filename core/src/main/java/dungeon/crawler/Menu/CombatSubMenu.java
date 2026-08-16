@@ -10,7 +10,7 @@ public interface CombatSubMenu {
        way I've gotten the menus to work is to do:
        - setDefaults();
        - Whatever the menu does to construct the buttons (varies heavily by menu)
-       - setSizeandPosition();
+       - setSizeandPosition(GameConstants.SUBMENU_SIZE.TALL);
        so it's not as modular as I would like, but it will work for the scope of this game.
     */
     BaseLinearMenu asCombatMenu();
@@ -33,7 +33,7 @@ public interface CombatSubMenu {
         ).pad(5f);
     }
 
-    default void setSizeandPosition(){
+    default void setSizeandPosition(GameConstants.SUBMENU_SIZE size){
         /* Honestly....I have no idea how tf this works and I don't care anymore.  The main point
         is it's modular, and can be edited from the constants file if we want to change the font size later
          */
@@ -68,7 +68,7 @@ public interface CombatSubMenu {
 //
 //            this.clearChildren();
 //            this.attackButtons();
-//            setSizeandPosition();
+//            setSizeandPosition(GameConstants.SUBMENU_SIZE.TALL);
 //
 //
 //        if (stage != null) {

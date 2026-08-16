@@ -1,91 +1,102 @@
-package dungeon.crawler.Menu.Overworld;
-import java.util.ArrayList;
-import java.util.List;
+package dungeon.crawler.Menu.Church;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-
 import dungeon.crawler.GameConstants;
 import dungeon.crawler.GameSystem.GameState.GameState;
+import dungeon.crawler.GameSystem.Inventory.Item;
 import dungeon.crawler.Menu.BaseLinearMenu;
 import dungeon.crawler.Menu.Observers.StatusMenuObserver;
 import dungeon.crawler.Menu.Overworld.Inventory.InventoryCharSelectMenu;
-import dungeon.crawler.Menu.Overworld.Inventory.InventoryStatusMenu;
-import dungeon.crawler.Menu.Toggleable;
+import dungeon.crawler.Menu.Shop.ShopCharSelectMenu;
 import dungeon.crawler.Observers.MenuInputObserver;
 import dungeon.crawler.Observers.ScreenChangeObserver;
+import dungeon.crawler.Screens.ChurchScreen;
 
-public class OverworldMenu extends BaseLinearMenu implements Toggleable {
+import java.util.ArrayList;
+import java.util.List;
+
+public class ChurchMainMenu extends BaseLinearMenu{
     private final List<MenuInputObserver> listeners = new ArrayList<>();
     protected final GameState gameState;
     private final StatusMenuObserver statusMenuObserver;
-
-    public OverworldMenu (
+    private final int shopIndex;
+    private final ChurchScreen shopscreen;
+    public ChurchMainMenu(
         Skin skin,
-        GameState gameState
+        ChurchScreen shopscreen,
+        GameState gameState,
+        int shopIndex
     ) {
         super(
             skin
         );
         this.gameState = gameState;
         this.statusMenuObserver = new StatusMenuObserver();
-        setToggleable(true);
-        this.addButton("Inventory", new ChangeListener() {
+        this.shopIndex = shopIndex;
+        this.shopscreen = shopscreen;
+        this.addButton("Resurrection", new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor){
-                InventoryCharSelectMenu newMenu = new InventoryCharSelectMenu(
+                int price = 500 * (shopIndex + 1);
+                ChurchServiceMenu newMenu = new ChurchServiceMenu(
                     skin,
                     gameState,
-                    true
+                    "Resurrection",
+                    price
                 );
                 setSubMenu(newMenu);
                 openSubMenu(newMenu);
             }
         });
-
-        this.addButton("Status", new ChangeListener() {
+        this.addButton("Cure Ailments", new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor){
-                StatusSelectionMenu newMenu = new StatusSelectionMenu(
+                int price = 100 * (shopIndex + 1);
+                ChurchServiceMenu newMenu = new ChurchServiceMenu(
                     skin,
-                    gameState
+                    gameState,
+                    "Cure Ailments",
+                    price
                 );
                 setSubMenu(newMenu);
                 openSubMenu(newMenu);
-
             }
         });
 
-        this.addButton("Options", new ChangeListener() {
+        this.addButton("Leave", new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor){
-                OptionsMenu newMenu = new OptionsMenu(
-                    skin,
-                    gameState
-                );
-                setSubMenu(newMenu);
-                openSubMenu(newMenu);
+//                InventoryCharSelectMenu newMenu = new InventoryCharSelectMenu(
+//                    skin,
+//                    gameState,
+//                    false
+//                );
+//                setSubMenu(newMenu);
+//                openSubMenu(newMenu);
+                shopscreen.exitShop();
+
             }
         });
+
 
         this.pack();
         this.addFocusListeners();
-        this.setPosition(50, Gdx.graphics.getHeight() - this.getHeight() - 50);
+        this.setPosition(10, Gdx.graphics.getHeight() - this.getHeight() - 50);
 
         // addMenuListeners(partyButton, searchButton, testNewMenu);
     }
 
     @Override
     protected void setStage(Stage stage) {
-        // TODO: Move this logic OUTTA here. This runs when the menu closes too
         super.setStage(stage);
-        if(stage == null) return;
-        unFocus();
-        setVisible(false);
-        this.addFocusListeners();
+
+        if (stage != null) {
+            refreshAndSetActive();
+        }
     }
 
     @Override
@@ -112,11 +123,7 @@ public class OverworldMenu extends BaseLinearMenu implements Toggleable {
         }
     }
 
-    public void notifyOnMenuToggled(boolean showMenu) {
-        for (MenuInputObserver listener : listeners) {
-            listener.onMenuToggled(showMenu);
-        }
-    }
+
 
     @Override
     public void openSubMenu(BaseLinearMenu nextMenu){

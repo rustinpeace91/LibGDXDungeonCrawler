@@ -1,5 +1,6 @@
 package dungeon.crawler.GameSystem.Inventory;
 
+import dungeon.crawler.GameConstants;
 import dungeon.crawler.GameSystem.Character.Combatant;
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.GameSystem.Character.Class.ClassLogic;
@@ -34,6 +35,16 @@ public class Item implements ItemLogic {
     @Override
     public String getName() {
         return name;
+    }
+
+    public int getPurchaseValue(){
+        float subTotal = value * GameConstants.SHOP_MARKUP;
+        int finalPrice = (int) Math.round(subTotal);
+        return finalPrice;
+    }
+
+    public int getValue() {
+        return value;
     }
 
     @Override

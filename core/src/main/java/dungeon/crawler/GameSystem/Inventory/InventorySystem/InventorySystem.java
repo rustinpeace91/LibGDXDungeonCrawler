@@ -11,13 +11,18 @@ import dungeon.crawler.GameSystem.Inventory.Item;
 public class InventorySystem{
     //
     public ArrayList<Item> inventoryList;
+    private final int maxRoom;
 
-    public InventorySystem(ArrayList<Item> inventoryList) {
+    public InventorySystem(
+        ArrayList<Item> inventoryList,
+        int maxRoom
+    ) {
         this.inventoryList = inventoryList;
+        this.maxRoom = maxRoom;
     }
 
     public boolean enoughSpace(){
-        if(inventoryList.size() >= GameConstants.MAX_PLAYER_INVENTORY_SPACE) {
+        if(inventoryList.size() >= maxRoom) {
             return false;
         }
         return true;

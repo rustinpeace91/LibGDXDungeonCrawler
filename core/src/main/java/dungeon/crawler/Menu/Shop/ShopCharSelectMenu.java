@@ -1,4 +1,4 @@
-package dungeon.crawler.Menu.Overworld.Inventory;
+package dungeon.crawler.Menu.Shop;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -14,6 +14,9 @@ import dungeon.crawler.GameSystem.Inventory.Item;
 import dungeon.crawler.Menu.BaseLinearMenu;
 import dungeon.crawler.Menu.Misc.PopUpUtils;
 import dungeon.crawler.Menu.Observers.StatusMenuObserver;
+import dungeon.crawler.Menu.Overworld.Inventory.InventoryBagMenu;
+import dungeon.crawler.Menu.Overworld.Inventory.InventoryMenu;
+import dungeon.crawler.Menu.Overworld.Inventory.InventoryStatusMenu;
 import dungeon.crawler.Menu.Overworld.PartyCharacterStatusMenu;
 import dungeon.crawler.Menu.OverworldSubMenu;
 import dungeon.crawler.Utils.StringUtils;
@@ -21,19 +24,20 @@ import dungeon.crawler.Utils.StringUtils;
 import java.util.ArrayList;
 // TODO: refactor this and statusselectionmenu
 
-public class InventoryCharSelectMenu extends BaseLinearMenu implements OverworldSubMenu
+public class ShopCharSelectMenu extends BaseLinearMenu implements OverworldSubMenu
 {
 
+    private final ArrayList<Item> shopInventory;
     private GameState gameState;
     private InventoryStatusMenu partyStatusMenu;
     protected boolean canSellItems;
 
     public StatusMenuObserver statusMenuObserver = new StatusMenuObserver();
     public BaseLinearMenu asCombatMenu(){return this;}
-    public InventoryCharSelectMenu(
+    public ShopCharSelectMenu(
         Skin skin,
         GameState gameState,
-        boolean isTogglebale
+        ArrayList<Item> shopInventory
     ){
         super(skin);
         this.canSellItems = false;
@@ -45,7 +49,8 @@ public class InventoryCharSelectMenu extends BaseLinearMenu implements Overworld
 //
         this.subStatusMenu = partyStatusMenu;
         statusMenuObserver.addObserver(this.partyStatusMenu);
-        this.isToggleable = isTogglebale;
+        this.isToggleable = false;
+        this.shopInventory = shopInventory;
     }
 
 
@@ -100,7 +105,7 @@ public class InventoryCharSelectMenu extends BaseLinearMenu implements Overworld
 
     private void addPartyButtons(){
         this.clearChildren();
-        setTitle(StringUtils.format("Select Character"));
+        setTitle(StringUtils.format("Purchase for Who?"));
         this.initializeArrow();
         if(gameState.party != null){
             gameState.party.forEach(
@@ -108,23 +113,17 @@ public class InventoryCharSelectMenu extends BaseLinearMenu implements Overworld
                     addButton(
                         character.name,
                         new ChangeListener(){
-                            ArrayList<Item> availableItems = character.inventory.getInventoryList();
                             @Override
                             public void changed(ChangeEvent event, Actor actor){
-                                if(!availableItems.isEmpty()){
-                                    BaseLinearMenu nextMenu = new InventoryMenu(
-                                        skin,
-                                        gameState,
-                                        character,
-                                        availableItems,
-                                        statusMenuObserver,
-                                        canSellItems
-                                    );
-                                    setSubMenu(nextMenu);
-                                    openSubMenu(nextMenu);
-                                } else {
-                                    showPopup("No Items in Inventory", 1f);
-                                }
+                                BaseLinearMenu nextMenu = new ShopItemCategoryMenu(
+                                    skin,
+                                    gameState,
+                                    shopInventory,
+                                    character
+                                );
+                                setSubMenu(nextMenu);
+                                openSubMenu(nextMenu);
+
                                 // else display a small popup
 
                             }
@@ -133,34 +132,6 @@ public class InventoryCharSelectMenu extends BaseLinearMenu implements Overworld
                     );
                 }
             );
-
-            addButton(
-                "Bag",
-                new ChangeListener(){
-                    ArrayList<Item> availableItems = gameState.partyBag.inventory.getInventoryList();
-                    @Override
-                    public void changed(ChangeEvent event, Actor actor){
-                        if(!availableItems.isEmpty()){
-                            BaseLinearMenu nextMenu = new InventoryBagMenu(
-                                skin,
-                                gameState,
-                                gameState.partyBag,
-                                availableItems,
-                                statusMenuObserver
-                            );
-                            setSubMenu(nextMenu);
-                            openSubMenu(nextMenu);
-                        } else {
-                            showPopup("No Items in Inventory", 1f);
-                        }
-                        // else display a small popup
-
-                    }
-                },
-                // just show the hero. whatever
-                gameState.player
-            );
-
         }
         this.pack();
         setSizeandPosition(GameConstants.SUBMENU_SIZE.MEDIUM);

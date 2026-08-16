@@ -1,12 +1,16 @@
 package dungeon.crawler.Utils;
 
 import dungeon.crawler.GameConstants;
+import dungeon.crawler.GameSystem.Character.Bag;
+import dungeon.crawler.GameSystem.Character.Inventory;
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
+import dungeon.crawler.GameSystem.GameState.GameState;
 import dungeon.crawler.GameSystem.Inventory.Armor;
 import dungeon.crawler.GameSystem.Inventory.Item;
 import dungeon.crawler.GameSystem.Inventory.ItemTypes.ItemType;
 import dungeon.crawler.GameSystem.Inventory.Weapon;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ItemUtils {
@@ -21,13 +25,34 @@ public class ItemUtils {
         return reciever.inventory.enoughSpace();
     }
 
-    public static void transferItem(PartyCharacter sender, PartyCharacter reciever, Item item){
-        sender.removeFromInventory(item);
-        if(sender.equipment.isEquipped(
-           item
-        )){
-            sender.unEquip(item);
+    public static boolean anySpace(PartyCharacter sender, Bag bag){
+        if(sender.inventory.enoughSpace() || bag.enoughSpace()){
+            return true;
         }
+        return false;
+    }
+
+
+    public static boolean enoughGold(GameState gamestate, Item selectedItem){
+        if(gamestate.gold < Math.round(selectedItem.value * GameConstants.SHOP_MARKUP)){
+            return false;
+        };
+        return true;
+    }
+
+    public static int getStorePrice(Item selectedItem){
+        return Math.round(selectedItem.value * GameConstants.SHOP_MARKUP);
+    }
+
+    public static void buyItem(GameState gamestate, Item selectedItem){
+        int price = Math.round(selectedItem.value * GameConstants.SHOP_MARKUP);
+        if(gamestate.gold > price){
+            gamestate.removeGold(price);
+        };
+    }
+
+    public static void transferItem(Inventory sender, Inventory reciever, Item item){
+        sender.removeFromInventory(item);
         reciever.addToInventory(item);
     }
 
@@ -37,6 +62,7 @@ public class ItemUtils {
         // TODO: handle strings and other stuff here
     }
 
+
     public static void equipItem(PartyCharacter user, Item item){
         item.use(user);
         user.equip(item);
@@ -45,6 +71,16 @@ public class ItemUtils {
     public static void unEquipItem(PartyCharacter user, Item item){
         item.use(user);
         user.unEquip(item);
+    }
+
+    public static ArrayList<Item>  returnItemsByType(ArrayList<Item> items, ItemType type){
+        ArrayList<Item> storeItems = new ArrayList<Item>();
+        for(Item item: items){
+            if(item.returnItemType() == type){
+                storeItems.add(item);
+            }
+        }
+        return storeItems;
     }
 
 

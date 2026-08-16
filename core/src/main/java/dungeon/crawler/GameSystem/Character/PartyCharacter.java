@@ -20,7 +20,7 @@ import dungeon.crawler.GameSystem.Inventory.ItemTypes.Handed;
 import dungeon.crawler.GameSystem.Inventory.ItemTypes.WeaponTypes;
 import dungeon.crawler.Utils.StringUtils;
 
-public class PartyCharacter extends Character implements Combatant{
+public class PartyCharacter extends Character implements Combatant, Inventory{
     // TODO: make these private!
     public int level;
     public int xp;
@@ -82,7 +82,10 @@ public class PartyCharacter extends Character implements Combatant{
         );
         this.charClass = charClass;
         this.equipment = new EquipmentSystem();
-        this.inventory = new InventorySystem(new ArrayList<Item>());
+        this.inventory = new InventorySystem(
+            new ArrayList<Item>(),
+            GameConstants.MAX_PLAYER_INVENTORY_SPACE
+        );
     }
 
     public int calculateToHit(){
@@ -176,6 +179,8 @@ public class PartyCharacter extends Character implements Combatant{
         return x;
     }
 
+
+    @Override
     public String addToInventory(Item item){
         if(inventory.enoughSpace()){
             inventory.addToInventory(item);
@@ -184,14 +189,19 @@ public class PartyCharacter extends Character implements Combatant{
         return StringUtils.format("inventory full!");
     }
 
+    @Override
     public String removeFromInventory(Item item){
         inventory.removeFromInventory(item);
         if(equipment.isEquipped(item)){
-
+            equipment.unEquipItem(item);
         }
         return StringUtils.format("%s removed", item.name);
     }
 
+    @Override
+    public boolean enoughSpace() {
+        return inventory.enoughSpace();
+    }
     public ArrayList<String> LevelUp(int newLevel) {
         ArrayList<String> messages = new ArrayList();
         level = newLevel;
@@ -261,7 +271,14 @@ public class PartyCharacter extends Character implements Combatant{
             this.hp = maxHp;
             this.mp = maxMP;
         }
-    }@Override
+    }
+
+    @Override
+    public void removeAllStatuses() {
+        conditions = new ArrayList<>();
+    }
+
+    @Override
     public Stance getStance() {
         return stance;
     }
