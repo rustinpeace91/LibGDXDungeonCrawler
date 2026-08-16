@@ -13,13 +13,11 @@ import dungeon.crawler.GameSystem.GameState.GameState;
 import dungeon.crawler.GameSystem.Inventory.Item;
 import dungeon.crawler.GameSystem.Inventory.ShopItemSpawner;
 import dungeon.crawler.GameSystem.TestData.EnemyFactory;
+import dungeon.crawler.Menu.MainMenu.MainMenu;
 import dungeon.crawler.Menu.TestMenus.MenuTestScreen;
 import dungeon.crawler.Observers.CombatScreenObserver;
 import dungeon.crawler.Observers.ScreenChangeObserver;
-import dungeon.crawler.Screens.ChurchScreen;
-import dungeon.crawler.Screens.CombatScreen;
-import dungeon.crawler.Screens.InnScreen;
-import dungeon.crawler.Screens.ShopScreen;
+import dungeon.crawler.Screens.*;
 
 import java.util.ArrayList;
 
@@ -33,16 +31,34 @@ public class MainGame extends Game implements ScreenChangeObserver,
     @Override
     public void create() {
         gameState = new GameState();
-        String mapFile = GameConstants.TEST_MAP;
-        gameState.updateWorldMap(mapFile);
+
         spriteBatch = new SpriteBatch();
         gameState.updateScreenID(1);
         this.debugConsoleHandler = new DebugConsoleWrapper(gameState);
         assets = new Assets();
         assets.load();
         assets.finishLoading();
+        setScreen(new MainMenuScreen(
+            this
+        ));
 
+//        setScreen(new WorldScreenRefactor(
+//            this,
+//            spriteBatch,
+//            13f,
+//            12f,
+//            mapFile,
+//            GameConstants.GAME_SCREEN.WALK_TOWN
+//        ));
 
+        // setScreen(new CombatScreen(this));
+
+        //    setScreen(new MenuScreen());
+    }
+
+    public void startGame(){
+        String mapFile = GameConstants.TEST_MAP;
+        gameState.updateWorldMap(mapFile);
         setScreen(new WorldScreenRefactor(
             this,
             spriteBatch,
@@ -51,10 +67,6 @@ public class MainGame extends Game implements ScreenChangeObserver,
             mapFile,
             GameConstants.GAME_SCREEN.WALK_TOWN
         ));
-
-        // setScreen(new CombatScreen(this));
-
-        //    setScreen(new MenuScreen());
     }
 
     @Override

@@ -27,7 +27,7 @@ public class WizardClass implements ClassLogic{
     private MagicSystem magicSystem;
 
     public WizardClass(){
-        this.name = "wizard";
+        this.name = "Wizard";
         this.magicSystem = new MagicSystem();
     }
 
@@ -93,7 +93,7 @@ public class WizardClass implements ClassLogic{
     @Override
     public int getBaseHP() {
         // TODO Auto-generated method stub
-        return 30;
+        return 20;
     }
 
     @Override

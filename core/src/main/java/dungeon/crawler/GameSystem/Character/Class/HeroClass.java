@@ -24,7 +24,7 @@ public class HeroClass implements ClassLogic{
     private MagicSystem magicSystem;
     public HeroClass(){
 
-        this.name = "hero";
+        this.name = "Hero";
         this.magicSystem = new MagicSystem();
     }
 
