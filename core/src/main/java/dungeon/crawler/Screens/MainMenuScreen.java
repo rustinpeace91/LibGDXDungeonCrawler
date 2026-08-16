@@ -134,6 +134,12 @@ public class MainMenuScreen extends ScreenAdapter  implements MenuInputObserver 
     }
 
     public void startGame(){
+        game.gameState.SetUpClassDataFromString(partySelection);
+        game.startGame();
+    }
+
+    public void startGamePreset(){
+        game.gameState.setUpTestData();
         game.startGame();
     }
 }

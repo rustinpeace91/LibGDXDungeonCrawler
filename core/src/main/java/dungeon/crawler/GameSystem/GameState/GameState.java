@@ -24,9 +24,8 @@ public class GameState {
 
     public GameState(){
         // TODO: make an actual constructor
-        setUpTestData();
     }
-
+    // TODO: Refactor this shit so we're not repeating
     public void setUpTestData(){
         player = PlayerFactory.generate();
         PartyCharacter fighter = PlayerFactory.generatePartyMember();

@@ -167,7 +167,9 @@ public class PlayerFactory{
             tc,
             false
         );
-        pc.equip(items.createWeaponFromID("wooden_bow"));
+        Weapon bow = items.createWeaponFromID("wooden_bow");
+        pc.addToInventory(bow);
+        pc.equip(bow);
         return pc;
 
     }

@@ -27,6 +27,7 @@ public class GameConstants {
         SMALL,
         MEDIUM,
         TALL,
+        WIDE,
         DYNAMIC
     }
 

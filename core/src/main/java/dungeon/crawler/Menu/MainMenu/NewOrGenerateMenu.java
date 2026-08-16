@@ -51,7 +51,7 @@ public class NewOrGenerateMenu extends BaseLinearMenu{
         this.addButton("Preset Party", new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor){
-                main.startGame();
+                main.startGamePreset();
             }
         }, "Generate");
 

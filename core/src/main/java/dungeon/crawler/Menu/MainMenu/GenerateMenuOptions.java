@@ -42,19 +42,21 @@ public class GenerateMenuOptions extends BaseLinearMenu {
         this.addButton("Add Party Member", new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor){
-                //                ShopCharSelectMenu newMenu = new ShopCharSelectMenu(
-                //                    skin,
-                //                    gameState,
-                //                    shopInventory
-                //                );
-                //                setSubMenu(newMenu);
-                //                openSubMenu(newMenu);
+                GenerateMenuCharacterSelect newMenu = new GenerateMenuCharacterSelect(
+                skin,
+                gameState,
+                    GenerateMenuOptions.this,
+                main
+            );
+            setSubMenu(newMenu);
+            openSubMenu(newMenu);
             }
         });
         this.addButton("Remove Party Member", new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor){
                 main.removeLastClassString();
+                updatePartyMenu();
             }
         });
 
@@ -66,7 +68,7 @@ public class GenerateMenuOptions extends BaseLinearMenu {
             }
         });
 
-        this.addButton("Done", new ChangeListener() {
+        this.addButton("Start Adventure!", new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor){
                 main.startGame();
@@ -91,10 +93,12 @@ public class GenerateMenuOptions extends BaseLinearMenu {
 
 
         partyCompStatusMenu.setPosition(
-            (Gdx.graphics.getWidth() - partyCompStatusMenu.getWidth()),
+            (Gdx.graphics.getWidth() - partyCompStatusMenu.getWidth() - 30),
             (Gdx.graphics.getHeight() - this.getHeight() - 20)
         );
         stage.addActor(partyCompStatusMenu);
+        partyCompStatusMenu.setHeight(partyCompStatusMenu.getHeight() + 20);
+
     }
 
 
@@ -131,10 +135,24 @@ public class GenerateMenuOptions extends BaseLinearMenu {
     }
 
 
+    public void updatePartyMenu(){
+        partyCompStatusMenu.setVisible(true);
+        partyCompStatusMenu.showParty(main.getPartySelection());
+    }
+
     @Override
     public void openSubMenu(BaseLinearMenu nextMenu){
         super.openSubMenu(nextMenu);
-        this.setVisible(false);
+        this.setVisible(true);
+    }
+
+    @Override
+    public void returnToParentMenu(){
+        super.returnToParentMenu();
+        if(this.partyCompStatusMenu != null){
+            this.partyCompStatusMenu.setVisible(false);
+            this.partyCompStatusMenu.remove();
+        }
     }
 
 //    @Override
