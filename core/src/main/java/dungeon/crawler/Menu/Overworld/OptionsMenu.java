@@ -7,11 +7,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import dungeon.crawler.GameSystem.GameState.GameState;
+import dungeon.crawler.GameSystem.SaveGame.SaveGame;
 import dungeon.crawler.Menu.BaseLinearMenu;
 
 public class OptionsMenu extends BaseLinearMenu{
     private GameState gameState;
-
+    private String saveGame;
+    // bad. Do not keep this here
+    private SaveGame saveSystem;
     public OptionsMenu(
         Skin skin,
         GameState gameState
@@ -19,6 +22,8 @@ public class OptionsMenu extends BaseLinearMenu{
         super(skin);
         this.gameState = gameState;
         this.isToggleable = true;
+        this.saveSystem = new SaveGame();
+
     }
     @Override
     protected void setStage(Stage stage){
@@ -70,7 +75,11 @@ public class OptionsMenu extends BaseLinearMenu{
             new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    // nothing for now. This is for hovering
+                    String s = saveSystem.saveGameState(gameState);
+                    Gdx.app.log("yo", "yoyoyoyoy");
+                    GameState loadedGameState = saveSystem.loadGameState(s);
+                    Gdx.app.log("yo", "yoyoyoyoy");
+
                 }
             }
         );

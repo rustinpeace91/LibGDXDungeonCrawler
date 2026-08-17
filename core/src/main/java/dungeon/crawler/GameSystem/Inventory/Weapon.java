@@ -22,6 +22,7 @@ public class Weapon extends Item{
     public Elemental elemental;
     public WeaponTypes weaponType;
     public Handed handed;
+    public Weapon(){};
     public Weapon(
         String name,
         String id,

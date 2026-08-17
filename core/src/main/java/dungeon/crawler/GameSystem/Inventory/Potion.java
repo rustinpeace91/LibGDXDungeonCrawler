@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class Potion extends Item{
     public int level;
     public Condition cureStatus;
-
+    public Potion(){};
     public Potion(
         String name,
         int value,

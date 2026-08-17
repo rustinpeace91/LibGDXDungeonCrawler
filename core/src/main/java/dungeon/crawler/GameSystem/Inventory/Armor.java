@@ -10,6 +10,7 @@ public class Armor extends Item{
     public int defenseBonus;
     public EquipmentSlot slot;
     public ArmorTypes armorType;
+    public Armor(){};
     public Armor(
         String name,
         int defenseBonus,

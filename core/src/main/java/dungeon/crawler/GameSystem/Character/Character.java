@@ -16,6 +16,7 @@ public class Character {
 
     public boolean isDead;
 
+    public Character(){};
     public Character(
         String name,
         int maxHp,

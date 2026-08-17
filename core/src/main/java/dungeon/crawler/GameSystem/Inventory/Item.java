@@ -13,6 +13,10 @@ public class Item implements ItemLogic {
     private final ItemType itemType;
     public String name;
     public int value;
+
+    public Item(){
+        itemType = ItemType.QUEST_ITEM;
+    };
     public Item(
         String name,
         int value,

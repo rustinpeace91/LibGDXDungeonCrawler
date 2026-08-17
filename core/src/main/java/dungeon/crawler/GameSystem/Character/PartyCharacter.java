@@ -36,7 +36,9 @@ public class PartyCharacter extends Character implements Combatant, Inventory{
 
     public InventorySystem inventory;
     public EquipmentSystem equipment;
-
+    public PartyCharacter() {
+        super();
+    }
     public PartyCharacter(
         String name,
         int maxHp,
