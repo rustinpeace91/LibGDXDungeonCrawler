@@ -16,6 +16,7 @@ import dungeon.crawler.Data.Spells.SpellRegistry;
 import dungeon.crawler.Data.Spells.SpellType;
 import dungeon.crawler.GameConstants;
 import dungeon.crawler.GameSystem.Character.Combatant;
+import dungeon.crawler.GameSystem.Combat.CombatStateManager;
 import dungeon.crawler.GameSystem.Combat.CombatUtils;
 import dungeon.crawler.GameSystem.GameState.GameState;
 import dungeon.crawler.Menu.BaseLinearMenu;
@@ -25,6 +26,7 @@ import dungeon.crawler.Menu.ScrollableLinearMenu;
 
 public class SpellSelectMenu extends ScrollableLinearMenu<SpellNames> implements CombatSubMenu {
 
+    private CombatStateManager combatState;
     private GameState gameState;
     private CombatMenu combatMenu;
     private Combatant currentCombatant;
@@ -34,13 +36,16 @@ public class SpellSelectMenu extends ScrollableLinearMenu<SpellNames> implements
         Skin skin,
         GameState gameState,
         Combatant currentCombatant,
-        ArrayList<SpellNames> spellList
+        ArrayList<SpellNames> spellList,
+        CombatStateManager combatState
 
     ){
         super(skin);
         this.gameState = gameState;
         this.currentCombatant = currentCombatant;
         this.spellList = spellList;
+        this.combatState = combatState;
+
         this.initializeButtons();
 
 
@@ -54,7 +59,7 @@ public class SpellSelectMenu extends ScrollableLinearMenu<SpellNames> implements
         scrollableResetDefaults();
         addScrollArrowUp();
         Map<Integer, Combatant> availableCombatants = CombatUtils.returnAliveCombatants(
-            this.gameState.currentEnemyRoster
+            this.combatState.getCurrentEnemyRoster()
         );
         SpellRegistry spellRegistry = SpellRegistry.INSTANCE;
         for (int i=pageStart; i < pageEnd; i++) {
@@ -73,7 +78,8 @@ public class SpellSelectMenu extends ScrollableLinearMenu<SpellNames> implements
                                 skin,
                                 gameState,
                                 spell,
-                                SpellSelectMenu.this
+                                SpellSelectMenu.this,
+                                combatState
                             );
                             setSubMenu(nextMenu);
                             openSubMenu(nextMenu);

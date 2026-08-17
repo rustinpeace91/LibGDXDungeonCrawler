@@ -12,6 +12,7 @@ import dungeon.crawler.Data.Spells.SpellNames;
 import dungeon.crawler.GameSystem.Character.Combatant;
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.GameSystem.Combat.CombatAction;
+import dungeon.crawler.GameSystem.Combat.CombatStateManager;
 import dungeon.crawler.GameSystem.Combat.CombatUtils;
 import dungeon.crawler.GameSystem.Combat.PartyActionTracker;
 import dungeon.crawler.GameSystem.GameState.CombatActionState;
@@ -25,6 +26,7 @@ import dungeon.crawler.Observers.ActionSelectObserver;
 
 public class CombatMenu extends BaseLinearMenu {
     private final List<ActionSelectObserver> actionSelectObservers = new ArrayList<>();
+    private final CombatStateManager combatState;
     private GameState gameState;
     private PartyActionTracker turnTracker;
     private boolean readingMessages;
@@ -34,11 +36,13 @@ public class CombatMenu extends BaseLinearMenu {
     public CombatMenu (
         Skin skin,
         GameState gameState,
+        CombatStateManager combatState,
         PartyActionTracker turnTracker
     ) {
         super(skin);
         this.gameState = gameState;
         this.turnTracker = turnTracker;
+        this.combatState = combatState;
         setToggleable(false);
         this.initializeVisualMenu();
         // list of map IDS of all alive combatants
@@ -54,7 +58,8 @@ public class CombatMenu extends BaseLinearMenu {
             public void changed(ChangeEvent event, Actor actor){
                 BaseLinearMenu nextMenu = new AttackSubMenu(
                     skin,
-                    gameState
+                    gameState,
+                    combatState
                 );
                 setSubMenu(nextMenu);
                 openSubMenu(nextMenu);
@@ -87,9 +92,9 @@ public class CombatMenu extends BaseLinearMenu {
                     BaseLinearMenu nextMenu = new SpellSelectMenu(
                         skin,
                         gameState,
-
                         currentCombatant,
-                        spellList
+                        spellList,
+                        combatState
                     );
                     setSubMenu(nextMenu);
                     openSubMenu(nextMenu);

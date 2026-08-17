@@ -23,6 +23,7 @@ import java.util.Set;
 
 public class EnemyRenderer {
 
+    private final CombatStateManager combatState;
     private float worldHeight;
     private float worldWidth;
     private GameState gameState;
@@ -34,10 +35,12 @@ public class EnemyRenderer {
     private Animation<TextureRegion> explosionAnimation;
     public EnemyRenderer(
         GameState gameState,
+        CombatStateManager combatState,
         Stage enemyStage
     ) {
         this.gameState = gameState;
         this.enemyStage = enemyStage;
+        this.combatState = combatState;
         this.enemySpriteRegistry = new EnemySpriteRegistry();
         this.explosionAnimationFactory = new ExplosionAnimationFactory();
         this.explosionAnimation = explosionAnimationFactory.create();
@@ -54,7 +57,7 @@ public class EnemyRenderer {
         float spacer = 80f;
         float totalWidth = 0f;
         // spawn sprites, track width
-        for (Map.Entry<Integer, EnemyCombatant> enemyEntry: gameState.currentEnemyRoster.entrySet()){
+        for (Map.Entry<Integer, EnemyCombatant> enemyEntry: combatState.getCurrentEnemyRoster().entrySet()){
             EnemyCombatant enemy = enemyEntry.getValue();
             EnemyAnimatedSprite newSprite = enemySpriteFactory.create(
                 enemy.identifier,
@@ -62,7 +65,7 @@ public class EnemyRenderer {
                 0f
             );
             // if not first sprite, add spacer
-            if(gameState.currentEnemyRoster.containsKey(enemyEntry.getKey() - 1)){
+            if(combatState.getCurrentEnemyRoster().containsKey(enemyEntry.getKey() - 1)){
                 totalWidth = totalWidth + spacer;
             }
             totalWidth = totalWidth + newSprite.getSprite().getWidth();
@@ -113,7 +116,7 @@ public class EnemyRenderer {
         // use returnAliveCombatants from EnemyRoster to check for sprites that do not have
         // an alive enemy and remove them. Trigger animation?
         Set<Integer> keys = enemySpriteRoster.keySet();
-        Map<Integer, Combatant> aliveEnemies = CombatUtils.returnAliveCombatants(gameState.currentEnemyRoster);
+        Map<Integer, Combatant> aliveEnemies = CombatUtils.returnAliveCombatants(combatState.getCurrentEnemyRoster());
 
         Iterator<Map.Entry<Integer, EnemyAnimatedSprite>> it = enemySpriteRoster.entrySet().iterator();
 

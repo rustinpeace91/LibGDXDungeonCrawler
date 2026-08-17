@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import dungeon.crawler.GameConstants;
 import dungeon.crawler.GameSystem.Character.Combatant;
+import dungeon.crawler.GameSystem.Combat.CombatStateManager;
 import dungeon.crawler.GameSystem.Combat.CombatUtils;
 import dungeon.crawler.GameSystem.GameState.GameState;
 import dungeon.crawler.Menu.BaseLinearMenu;
@@ -18,16 +19,18 @@ import dungeon.crawler.Menu.CombatSubMenu;
 
 public class AttackSubMenu extends BaseLinearMenu implements CombatSubMenu {
 
+    private final CombatStateManager combatState;
     private GameState gameState;
     private CombatMenu combatMenu;
     public AttackSubMenu(
         Skin skin,
-        GameState gameState
+        GameState gameState,
+        CombatStateManager combatState
 
     ){
         super(skin);
         this.gameState = gameState;
-
+        this.combatState = combatState;
     }
 
     @Override
@@ -37,7 +40,7 @@ public class AttackSubMenu extends BaseLinearMenu implements CombatSubMenu {
 
         // redundant for loops here are fine. There won't be more than 5 enemies max
         Map<Integer, Combatant> availableCombatants = CombatUtils.returnAliveCombatants(
-            this.gameState.currentEnemyRoster
+            this.combatState.getCurrentEnemyRoster()
         );
 
         for (Map.Entry<Integer, Combatant> entry : availableCombatants.entrySet()) {

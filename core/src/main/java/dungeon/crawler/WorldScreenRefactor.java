@@ -10,6 +10,7 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
@@ -21,6 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import dungeon.crawler.GameSystem.Combat.CombatStateManager;
 import dungeon.crawler.GameSystem.Enemies.EnemySpawner;
 import dungeon.crawler.Menu.InputHandlers.MenuInputHandler;
 import dungeon.crawler.Menu.Overworld.OverworldMenu;
@@ -271,11 +273,19 @@ PlayerPositionObserver {
     public void onEnteredNewTile(Cell tileCell){
         Vector2 newCoords = new Vector2(playerPosition.tileX, playerPosition.tileY);
         this.game.gameState.updateWorldCoordinates(newCoords);
+        /* Weird pattern I know, but we never figured out a good way to transfer data between screens and
+        the gamestate is now used for saving data, and enemies should not be saved
+         */
+        MapProperties props = tileCell.getTile().getProperties();
+        if(!props.containsKey("tile_difficulty")){
+            game.gameState.setTileDifficulty(0);
+        } else {
+            game.gameState.setTileDifficulty(props.get("tile_difficulty", Integer.class));
+        }
         // this.game.gameState.screenID = this.screenID;
         if(overWorld){
             float roll = MathUtils.random();
-            if ( roll < 0.16f) {
-                this.game.gameState.currentEnemyRoster = EnemySpawner.spawnEnemies(this.game.gameState, tileCell);
+            if ( roll < 0.10f) {
                 notifyScreenChange(GameConstants.GAME_SCREEN.COMBAT);
             }
         }

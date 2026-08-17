@@ -65,29 +65,6 @@ public class PlayerFactory{
         pc.addToInventory(sword);
         pc.equip(sword);
         pc.addToInventory(items.createPotionFromID("small_health_potion"));
-        pc.addToInventory(items.createWeaponFromID("iron_sword"));
-        pc.addToInventory(items.createPotionFromID("small_health_potion"));
-        pc.addToInventory(items.createWeaponFromID("iron_sword"));
-        pc.addToInventory(items.createPotionFromID("small_health_potion"));
-        pc.addToInventory(items.createWeaponFromID("iron_sword"));
-        pc.addToInventory(items.createPotionFromID("small_health_potion"));
-        pc.addToInventory(items.createPotionFromID("small_health_potion"));
-        pc.addToInventory(items.createPotionFromID("small_health_potion"));
-        pc.addToInventory(items.createPotionFromID("small_health_potion"));
-        pc.addToInventory(items.createWeaponFromID("iron_sword"));
-        pc.addToInventory(items.createWeaponFromID("iron_sword"));
-        pc.addToInventory(items.createWeaponFromID("iron_sword"));
-        pc.addToInventory(items.createWeaponFromID("iron_sword"));
-        pc.addToInventory(items.createWeaponFromID("iron_sword"));
-
-        pc.addToInventory(items.createPotionFromID("small_health_potion"));
-        pc.addToInventory(items.createWeaponFromID("iron_sword"));
-        pc.addToInventory(items.createWeaponFromID("iron_sword"));
-        pc.addToInventory(items.createWeaponFromID("iron_sword"));
-
-        pc.addToInventory(items.createWeaponFromID("iron_sword"));
-        pc.addToInventory(items.createWeaponFromID("iron_sword"));
-
 
         pc.charClass.fillSpells(1);
         return pc;
@@ -102,7 +79,7 @@ public class PlayerFactory{
             "Fighter",
             45,
             0,
-            -5,
+            45,
             10,
             0,
             Stance.STANDING,
@@ -128,7 +105,7 @@ public class PlayerFactory{
             "Wizard",
             15,
             0,
-            -15,
+            15,
             20,
             0,
             Stance.STANDING,

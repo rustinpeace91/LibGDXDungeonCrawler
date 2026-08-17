@@ -16,11 +16,10 @@ public class GameState {
     public Vector2 overWorldCoordinates;
 
     public transient Map<Integer, PartyCharacter> party;
-    public transient Map<Integer, EnemyCombatant> currentEnemyRoster;
 
     // Prevents JSON issues
     public ArrayList<PartyCharacter> partySaveData = new ArrayList<>();
-    public ArrayList<EnemyCombatant> enemyRosterSaveData = new ArrayList<>();
+
 
 
     public int gold;
@@ -28,6 +27,8 @@ public class GameState {
     public String currentMap;
     public int screenID;
     public Bag partyBag;
+    // used for enemy encounters, shop stuff?
+    private transient int tileDifficulty = 0;
 
     public GameState(){
         // TODO: make an actual constructor
@@ -45,8 +46,7 @@ public class GameState {
         initializeRuntimeParty();
         partyBag = new Bag();
         overWorldCoordinates = new Vector2(0,0);
-        currentEnemyRoster = new HashMap<>();
-        gold = 600;
+        gold = 100;
         isPlayerDead = false;
         currentMap = "";
         screenID = 1;
@@ -64,8 +64,7 @@ public class GameState {
 
         partyBag = new Bag();
         overWorldCoordinates = new Vector2(0,0);
-        currentEnemyRoster = new HashMap<>();
-        gold = 600;
+        gold = 100;
         isPlayerDead = false;
         currentMap = "";
         screenID = 1;
@@ -92,6 +91,12 @@ public class GameState {
         this.gold = gold - value;
     }
 
+    public void setTileDifficulty(int tileDifficulty) {
+        this.tileDifficulty = tileDifficulty;
+    }
+    public int getTileDifficulty() {
+        return tileDifficulty;
+    }
     public int getGold(){
         return gold;
     }
@@ -104,10 +109,7 @@ public class GameState {
             party.put(i, partySaveData.get(i));
         }
 
-        currentEnemyRoster = new HashMap<>();
-
-        for (int i = 0; i < enemyRosterSaveData.size(); i++) {
-            currentEnemyRoster.put(i, enemyRosterSaveData.get(i));
-        }
     }
+
+
 }
