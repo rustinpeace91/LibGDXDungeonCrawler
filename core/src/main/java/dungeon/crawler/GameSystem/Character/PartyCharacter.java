@@ -65,21 +65,6 @@ public class PartyCharacter extends Character implements Combatant, Inventory{
         this.isHero = isHero;
         this.xp = xp;
         this.toHit = calculateToHit();
-        this.fist = new Weapon(
-            "fist",
-            "first",
-            (PartyCharacter) this,
-            Math.round(agility / 10),
-            1,
-            10,
-            "punches",
-            false,
-            null,
-            null,
-            0,
-            WeaponTypes.STAFF,
-            Handed.ONE_HANDED
-        );
         this.charClass = charClass;
         this.equipment = new EquipmentSystem();
         this.inventory = new InventorySystem(
@@ -240,6 +225,24 @@ public class PartyCharacter extends Character implements Combatant, Inventory{
         } else {
             return fist;
         }
+    }
+
+    public void generateFist(){
+        int damageLow = Math.round(this.strength / 10);
+        this.fist = new Weapon(
+            "fist",
+            "fist",
+            Math.round(agility / 10),
+            damageLow,
+            this.strength,
+            "punches",
+            false,
+            null,
+            null,
+            0,
+            WeaponTypes.STAFF,
+            Handed.ONE_HANDED
+        );
     }
 
     @Override

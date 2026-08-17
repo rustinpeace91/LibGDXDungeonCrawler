@@ -60,6 +60,7 @@ public class PlayerFactory{
             hc,
             true
         );
+        pc.generateFist();
         Item sword = items.createWeaponFromID("iron_sword");
         pc.addToInventory(sword);
         pc.equip(sword);
@@ -115,6 +116,7 @@ public class PlayerFactory{
             fc,
             false
         );
+        pc.generateFist();
         pc.equip(items.createWeaponFromID("iron_sword"));
         return pc;
     }
@@ -140,6 +142,8 @@ public class PlayerFactory{
             fc,
             false
         );
+        pc.generateFist();
+
         pc.charClass.fillSpells(1);
         return pc;
 
@@ -167,6 +171,8 @@ public class PlayerFactory{
             tc,
             false
         );
+        pc.generateFist();
+
         Weapon bow = items.createWeaponFromID("wooden_bow");
         pc.addToInventory(bow);
         pc.equip(bow);
