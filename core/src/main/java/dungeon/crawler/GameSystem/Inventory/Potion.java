@@ -16,13 +16,12 @@ public class Potion extends Item{
 
     public Potion(
         String name,
-        PartyCharacter owner,
         int value,
         ItemType itemType,
         int level,
         Condition cureStatus
     ) {
-        super(name, owner, value, itemType);
+        super(name, value, itemType);
         this.level = level;
         this.cureStatus = cureStatus;
     }

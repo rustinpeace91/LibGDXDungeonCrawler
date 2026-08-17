@@ -25,7 +25,6 @@ public class Weapon extends Item{
     public Weapon(
         String name,
         String id,
-        PartyCharacter owner,
         int toHit,
         int damageLow,
         int damageHigh,
@@ -39,7 +38,6 @@ public class Weapon extends Item{
     ) {
         super(
             name,
-            owner,
             value,
             ItemType.WEAPON
         );

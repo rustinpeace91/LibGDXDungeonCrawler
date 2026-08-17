@@ -23,7 +23,6 @@ public class ItemFactory {
         return new Weapon(
             params.getName(),
             params.getId(),
-            null,
             params.getToHit(),
             params.getDamageLow(),
             params.getDamageHigh(),
@@ -41,7 +40,6 @@ public class ItemFactory {
         PotionParams params = potionRegistry.getById(id);
         return new Potion(
             params.getName(),
-            null,
             params.getValue(),
             params.getItemType(),
             params.getLevel(),
