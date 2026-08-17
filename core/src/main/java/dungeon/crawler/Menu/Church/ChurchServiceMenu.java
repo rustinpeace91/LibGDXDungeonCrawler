@@ -81,6 +81,7 @@ public class ChurchServiceMenu extends BaseLinearMenu implements OverworldSubMen
                 public void changed(ChangeEvent event, Actor actor) {
                     if(gameState.gold >= price){
                         PartyUtils.resurrectDeadPartyMembers(gameState.party);
+                        gameState.removeGold(price);
                         showPopup("Thou have risen from the dead!", 2f);
 
                     } else {
@@ -99,6 +100,7 @@ public class ChurchServiceMenu extends BaseLinearMenu implements OverworldSubMen
                 public void changed(ChangeEvent event, Actor actor) {
                     if(gameState.gold >= price){
                         PartyUtils.cureAllAilments(gameState.party);
+                        gameState.removeGold(price);
                         showPopup("Thou have been cured of all ailments!", 2f);
 
                     } else {

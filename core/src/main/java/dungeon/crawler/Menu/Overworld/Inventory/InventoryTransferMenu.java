@@ -51,9 +51,8 @@ public class InventoryTransferMenu extends BaseLinearMenu implements OverworldSu
         setTitle(StringUtils.format("%s's Inventory", currentCombatant.getName()));
         this.initializeArrow();
 
-        Map<Integer, Combatant> availableCombatants = CombatUtils.returnItemUseCombatants(gameState.party, selectedItem);
 
-        for (Map.Entry<Integer, Combatant> entry : availableCombatants.entrySet()) {
+        for (Map.Entry<Integer, PartyCharacter> entry : gameState.party.entrySet()) {
             Integer id = entry.getKey();
             // It's OK to typecast here since we control the input of the util function
             PartyCharacter c = (PartyCharacter) entry.getValue();
