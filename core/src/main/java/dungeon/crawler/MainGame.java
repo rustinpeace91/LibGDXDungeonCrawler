@@ -147,7 +147,7 @@ public class MainGame extends Game implements ScreenChangeObserver,
         ));
     }
 
-    private void backToOverworld(){
+    public void backToOverworld(){
         ScreenTransitionProperties worldScreenData = MapRegistry.WORLD_MAP_DATA.get(gameState.screenID);
         setScreen(new WorldScreenRefactor(
             this,
@@ -159,6 +159,11 @@ public class MainGame extends Game implements ScreenChangeObserver,
             worldScreenData.mapFile,
             worldScreenData.screen
         ));
+    }
+
+    public void loadGameState(GameState state){
+        state.initializeRuntimeParty();
+        this.gameState = state;
     }
 
     @Override

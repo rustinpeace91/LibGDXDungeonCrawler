@@ -13,9 +13,16 @@ import dungeon.crawler.GameSystem.TestData.PlayerFactory;
 
 public class GameState {
     public PartyCharacter player;
-    public Map<Integer, PartyCharacter> party;
     public Vector2 overWorldCoordinates;
-    public Map<Integer, EnemyCombatant> currentEnemyRoster;
+
+    public transient Map<Integer, PartyCharacter> party;
+    public transient Map<Integer, EnemyCombatant> currentEnemyRoster;
+
+    // Prevents JSON issues
+    public ArrayList<PartyCharacter> partySaveData = new ArrayList<>();
+    public ArrayList<EnemyCombatant> enemyRosterSaveData = new ArrayList<>();
+
+
     public int gold;
     public boolean isPlayerDead;
     public String currentMap;
@@ -31,11 +38,11 @@ public class GameState {
         PartyCharacter fighter = PlayerFactory.generatePartyMember();
         PartyCharacter wizard = PlayerFactory.generateWizard();
         PartyCharacter thief = PlayerFactory.generateThief();
-        party = new HashMap<>();
-        party.put(0, player);
-        party.put(1, fighter);
-        party.put(2, wizard);
-        party.put(3, thief);
+        partySaveData.add(player);
+        partySaveData.add(fighter);
+        partySaveData.add(wizard);
+        partySaveData.add(thief);
+        initializeRuntimeParty();
         partyBag = new Bag();
         overWorldCoordinates = new Vector2(0,0);
         currentEnemyRoster = new HashMap<>();
@@ -47,12 +54,14 @@ public class GameState {
 
     public void SetUpClassDataFromString(ArrayList<String> partyList){
         player = PlayerFactory.generate();
-        party = new HashMap<>();
+        partySaveData = new ArrayList<>();
         for(int i = 0; i < partyList.size(); i++){
             String className = partyList.get(i);
             PartyCharacter chr = PlayerFactory.generateClass(className);
-            party.put(i, chr);
+            partySaveData.add(chr);
         }
+        initializeRuntimeParty();
+
         partyBag = new Bag();
         overWorldCoordinates = new Vector2(0,0);
         currentEnemyRoster = new HashMap<>();
@@ -85,5 +94,20 @@ public class GameState {
 
     public int getGold(){
         return gold;
+    }
+
+    public void initializeRuntimeParty() {
+
+        party = new HashMap<>();
+
+        for (int i = 0; i < partySaveData.size(); i++) {
+            party.put(i, partySaveData.get(i));
+        }
+
+        currentEnemyRoster = new HashMap<>();
+
+        for (int i = 0; i < enemyRosterSaveData.size(); i++) {
+            currentEnemyRoster.put(i, enemyRosterSaveData.get(i));
+        }
     }
 }

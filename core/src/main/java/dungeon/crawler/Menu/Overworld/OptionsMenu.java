@@ -76,10 +76,7 @@ public class OptionsMenu extends BaseLinearMenu{
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
                     String s = saveSystem.saveGameState(gameState);
-                    Gdx.app.log("yo", "yoyoyoyoy");
-                    GameState loadedGameState = saveSystem.loadGameState(s);
-                    Gdx.app.log("yo", "yoyoyoyoy");
-
+                    showPopup("Game Saved", 2f);
                 }
             }
         );

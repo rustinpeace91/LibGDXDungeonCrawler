@@ -48,10 +48,11 @@ public class MainMenu extends BaseLinearMenu{
                 openSubMenu(newMenu);
             }
         });
-        this.addButton("Load (coming soon)", new ChangeListener() {
+        this.addButton("Load", new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor){
-
+                String message = main.loadGame();
+                showPopup(message, 2f);
             }
         });
 
