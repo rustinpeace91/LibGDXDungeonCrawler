@@ -31,7 +31,7 @@ public class InnScreen extends SplashScreen{
             for (Map.Entry<Integer, PartyCharacter> combatant : this.game.gameState.party.entrySet()) {
                 if (!combatant.getValue().checkDeath()) {
                     PartyCharacter character = combatant.getValue();
-                    character.heal(character.maxHp);
+                    character.longRest();
                 }
             }
         } else {
