@@ -11,20 +11,12 @@ import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerListener;
 import com.badlogic.gdx.controllers.Controllers;
 
-public class GameInputHandler  extends InputAdapter implements ControllerListener {
+public class GameInputHandler  extends InputAdapter {
 
-    public static final int PS5_D_PAD_UP = 11;
-    public static final int PS5_D_PAD_DOWN = 12;
-    public static final int PS5_D_PAD_LEFT = 13;
-    public static final int PS5_D_PAD_RIGHT = 14;
 
-    public static final int PS5_X_BUTTON = 0;
-    public static final int PS5_O_BUTTON = 1;
-    public static final int PS5_SQ_BUTTON = 2;
 
     public GameInputHandler() {
-        // TODO: We need to only implement this on desktop 
-        Controllers.addListener(this);
+        // TODO: We need to only implement this on desktop
     }
 
     private final ArrayList<GameInputObserver> listeners =
@@ -115,7 +107,7 @@ public class GameInputHandler  extends InputAdapter implements ControllerListene
         }
     }
 
-    private void notifyAction(GameKey action) {
+    public void notifyAction(GameKey action) {
         for (GameInputObserver listener : listeners) {
             Gdx.app.log("Button", "BTTTN " + action + " pressed");
             listener.onAction(action);
@@ -123,69 +115,5 @@ public class GameInputHandler  extends InputAdapter implements ControllerListene
     }
 
 
-    @Override
-    public boolean buttonDown(Controller controller, int buttonCode) {
-        Gdx.app.log("Controller",
-            controller.getName() + " button down: " + buttonCode);
 
-        switch (buttonCode) {
-            case PS5_D_PAD_UP:
-                notifyAction(GameKey.UP);
-                break;
-
-            case PS5_D_PAD_DOWN:
-                notifyAction(GameKey.DOWN);
-                break;
-
-            case PS5_D_PAD_LEFT:
-                notifyAction(GameKey.LEFT);
-                break;
-
-            case PS5_D_PAD_RIGHT:
-                notifyAction(GameKey.RIGHT);
-                break;
-
-            case PS5_X_BUTTON:
-                notifyAction(GameKey.CONFIRM);
-                break;
-
-            case PS5_O_BUTTON:
-                notifyAction(GameKey.CANCEL);
-                break;
-
-            case PS5_SQ_BUTTON:
-                notifyAction(GameKey.MENU);
-                break;
-            default:
-                return false;
-
-        }
-        return true;
-    }
-
-    @Override
-    public boolean buttonUp(Controller controller, int buttonCode) {
-        Gdx.app.log("Controller",
-            controller.getName() + " button up: " + buttonCode);
-        return false;
-    }
-
-    @Override
-    public void connected(Controller controller) {
-        Gdx.app.log("Controller", "Connected: " + controller.getName());
-    }
-
-    @Override
-    public void disconnected(Controller controller) {
-        Gdx.app.log("Controller", "Disconnected: " + controller.getName());
-    }
-
-    @Override
-    public boolean axisMoved(
-        Controller controller,
-        int axisCode,
-        float value
-    ) {
-        return false;
-    }
 }
