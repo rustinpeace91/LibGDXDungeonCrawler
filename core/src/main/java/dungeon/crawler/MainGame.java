@@ -16,7 +16,7 @@ import dungeon.crawler.GameSystem.Inventory.Item;
 import dungeon.crawler.GameSystem.Inventory.ShopItemSpawner;
 import dungeon.crawler.GameSystem.TestData.EnemyFactory;
 import dungeon.crawler.Menu.MainMenu.MainMenu;
-import dungeon.crawler.Menu.TestMenus.MenuTestScreen;
+//import dungeon.crawler.Menu.TestMenus.MenuTestScreen;
 import dungeon.crawler.Observers.CombatScreenObserver;
 import dungeon.crawler.Observers.ScreenChangeObserver;
 import dungeon.crawler.Screens.*;
@@ -50,19 +50,7 @@ public class MainGame extends Game implements ScreenChangeObserver,
         setScreen(new MainMenuScreen(
             this
         ));
-
-//        setScreen(new WorldScreenRefactor(
-//            this,
-//            spriteBatch,
-//            13f,
-//            12f,
-//            mapFile,
-//            GameConstants.GAME_SCREEN.WALK_TOWN
-//        ));
-
-        // setScreen(new CombatScreen(this));
-
-        //    setScreen(new MenuScreen());
+        
     }
 
     public void startGame(){

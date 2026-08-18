@@ -4,20 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
+import dungeon.crawler.Controls.GameInputHandler;
+import dungeon.crawler.Controls.GameInputObserver;
+import dungeon.crawler.Controls.GameKey;
 import dungeon.crawler.Menu.BaseLinearMenu;
 import dungeon.crawler.Observers.MenuInputObserver;
 
-public class MenuInputHandler extends InputAdapter{
+public class MenuInputHandler extends InputAdapter implements GameInputObserver {
 public Stage uiStage;
 public BaseLinearMenu currentMenuTable;
 public BaseLinearMenu rootMenu;
+private GameInputHandler gameInputHanlder;
 public boolean showMenu = false;
 
 public int menuColumns = 0;
@@ -30,15 +33,27 @@ public TextButton currentButton;
 private boolean handlerDisabled;
 
 private final List<MenuInputObserver> listeners = new ArrayList<>();
-
     public MenuInputHandler(
         Stage uiStage,
         BaseLinearMenu currentMenuTable
+    ){
+        this.uiStage = uiStage;
+        this.currentMenuTable = currentMenuTable;
+        this.rootMenu = currentMenuTable;
+
+        handlerDisabled = false;
+    }
+
+    public MenuInputHandler (
+        Stage uiStage,
+        BaseLinearMenu currentMenuTable,
+        GameInputHandler gameInputHanlder
     ) {
         this.uiStage = uiStage;
         this.currentMenuTable = currentMenuTable;
         this.rootMenu = currentMenuTable;
-        
+        this.gameInputHanlder = gameInputHanlder;
+        this.gameInputHanlder.addListener(this);
         handlerDisabled = false;
     }
 
@@ -61,43 +76,41 @@ private final List<MenuInputObserver> listeners = new ArrayList<>();
     }
 
     @Override
-    public boolean keyDown(int keyCode) {
+    public void onAction(GameKey key) {
         if(handlerDisabled) {
-            return true;
+            return;
         }
         updateCurrentMenuFromFocus();
-        if(keyCode == Input.Keys.E && rootMenu.isToggleable) {
+        if(key == GameKey.MENU && rootMenu.isToggleable) {
             boolean rootVisible = rootMenu.isVisible();
-            
+
             if(rootVisible) {
-                currentMenuTable.closeMenuStack(); 
+                currentMenuTable.closeMenuStack();
             } else {
                 rootMenu.refreshAndSetActive();
             }
-            
+
             notifyOnMenuToggled(!rootVisible);
-            return true;
+            return;
         }
 
         if(menuFocusAvailable()) {
-            if(keyCode == Input.Keys.ENTER){
+            if(key == GameKey.CONFIRM){
                 Actor focused = uiStage.getKeyboardFocus();
                 if (focused instanceof Button) {
-                    Gdx.app.log("Button", "BTTTN clicked");
                     ((Button) focused).toggle(); // Toggles isChecked and fires the listener
                 }
             }
-            if(keyCode == Input.Keys.DOWN) {
+            if(key == GameKey.DOWN) {
                 currentMenuTable.advanceMenuSelection(1);
             }
-            if(keyCode == Input.Keys.UP) {
+            if(key == GameKey.UP) {
                 currentMenuTable.advanceMenuSelection(-1);
             }
-            if(keyCode == Input.Keys.BACKSPACE){
+            if(key == GameKey.CANCEL){
                 currentMenuTable.returnToParentMenu();
             }
         }
-        return false;
     }
     public void setCurrentMenuTable(BaseLinearMenu currentMenuTable) {
         this.currentMenuTable = currentMenuTable;
