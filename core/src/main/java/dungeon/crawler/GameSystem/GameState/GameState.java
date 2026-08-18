@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.math.Vector2;
 
 import dungeon.crawler.GameSystem.Character.Bag;
 import dungeon.crawler.GameSystem.Character.EnemyCombatant;
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
+import dungeon.crawler.GameSystem.GameBuild;
 import dungeon.crawler.GameSystem.TestData.PlayerFactory;
 
 public class GameState {
@@ -29,9 +31,15 @@ public class GameState {
     public Bag partyBag;
     // used for enemy encounters, shop stuff?
     private transient int tileDifficulty = 0;
+    private GameBuild build;
+
+    public GameState(GameBuild build){
+        this.build = build;
+        // TODO: make an actual constructor
+    }
 
     public GameState(){
-        // TODO: make an actual constructor
+
     }
     // TODO: Refactor this shit so we're not repeating
     public void setUpTestData(){
@@ -112,4 +120,11 @@ public class GameState {
     }
 
 
+    public GameBuild getBuild() {
+        return build;
+    }
+
+    public void setBuild(GameBuild build) {
+        this.build = build;
+    }
 }

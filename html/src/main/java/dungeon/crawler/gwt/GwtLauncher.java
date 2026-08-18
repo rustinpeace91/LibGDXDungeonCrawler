@@ -5,6 +5,7 @@ import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
 
 import dungeon.crawler.GameConstants;
+import dungeon.crawler.GameSystem.GameBuild;
 import dungeon.crawler.MainGame;
 
 /** Launches the GWT application. */
@@ -22,7 +23,7 @@ public class GwtLauncher extends GwtApplication {
         }
         @Override
         public ApplicationListener createApplicationListener () {
-            return new MainGame();
+            return new MainGame(GameBuild.BROWSER);
         }
 }
 
