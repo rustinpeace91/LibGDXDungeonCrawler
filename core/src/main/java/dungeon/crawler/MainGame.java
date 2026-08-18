@@ -50,7 +50,7 @@ public class MainGame extends Game implements ScreenChangeObserver,
         setScreen(new MainMenuScreen(
             this
         ));
-        
+
     }
 
     public void startGame(){
