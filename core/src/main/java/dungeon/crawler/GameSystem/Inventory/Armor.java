@@ -10,9 +10,9 @@ public class Armor extends Item{
     public int defenseBonus;
     public EquipmentSlot slot;
     public ArmorTypes armorType;
+    public Armor(){};
     public Armor(
         String name,
-        PartyCharacter owner,
         int defenseBonus,
         int value,
         ArmorTypes armorType,
@@ -20,7 +20,6 @@ public class Armor extends Item{
     ) {
         super(
             name,
-            owner,
             value,
             ItemType.ARMOR
         );

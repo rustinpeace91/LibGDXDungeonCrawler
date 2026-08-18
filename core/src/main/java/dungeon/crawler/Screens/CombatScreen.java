@@ -19,6 +19,7 @@ import dungeon.crawler.Data.Spells.SpellNames;
 import dungeon.crawler.Data.Spells.SpellRegistry;
 import dungeon.crawler.GameConstants;
 import dungeon.crawler.GameSystem.Combat.CombatLogic;
+import dungeon.crawler.GameSystem.Combat.CombatStateManager;
 import dungeon.crawler.GameSystem.Combat.EnemyRenderer;
 import dungeon.crawler.GameSystem.Combat.PartyActionTracker;
 import dungeon.crawler.GameSystem.GameState.CombatActionState;
@@ -42,6 +43,7 @@ public class CombatScreen extends ScreenAdapter
     ActionSelectObserver,
     EventScreenObserver,
     CombatLogicObserver {
+    private CombatStateManager combatState;
     private MainGame game;
 
     private Stage uiStage;
@@ -68,17 +70,19 @@ public class CombatScreen extends ScreenAdapter
 
 
     public CombatScreen(
-        MainGame game
+        MainGame game,
+        CombatStateManager combatState
     ) {
         this.game = game;
         this.addListener(game);
+        this.combatState = combatState;
         this.turnTracker = new PartyActionTracker(this.game.gameState);
 
         // 1. Setup Stage and Table
         // this.uiStage = new Stage(new ScreenViewport());
         this.uiStage = new Stage(new FitViewport(GameConstants.RESOLUTION_WIDTH, GameConstants.RESOLUTION_HEIGHT));
         this.enemyStage = new Stage(new FitViewport(GameConstants.RESOLUTION_WIDTH, GameConstants.RESOLUTION_HEIGHT));
-        this.enemyRenderer = new EnemyRenderer(this.game.gameState, this.enemyStage);
+        this.enemyRenderer = new EnemyRenderer(this.game.gameState, combatState, this.enemyStage);
         // 2. Load your Skin (ensure path is correct)
         this.skin = new Skin(Gdx.files.internal(GameConstants.MENU_SKIN));
 
@@ -119,7 +123,7 @@ public class CombatScreen extends ScreenAdapter
     public void render(float delta) {
 
         // RAT COUNT LOGIC. REMOVE LATER
-        int enemyCount = this.game.gameState.currentEnemyRoster.size();
+        int enemyCount = this.combatState.getCurrentEnemyRoster().size();
 
         String ratText = StringUtils.format("%s Rats", String.valueOf(enemyCount));
         if(enemyCount == 1){
@@ -171,7 +175,7 @@ public class CombatScreen extends ScreenAdapter
         };
         eventScreen.addMessages(introText);
         this.uiStage.setKeyboardFocus(eventScreen);
-        this.logicHandler = new CombatLogic(eventScreen, game, turnTracker);
+        this.logicHandler = new CombatLogic(eventScreen, game, turnTracker, combatState);
         this.logicHandler.addListener(this);
         this.enemyRenderer.intializeEnemySprites();
         this.logicHandler.advanceState(CombatPhase.INTRO);
@@ -183,6 +187,7 @@ public class CombatScreen extends ScreenAdapter
         combatMenu = new CombatMenu(
             skin,
             game.gameState,
+            combatState,
             turnTracker
         );
 

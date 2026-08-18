@@ -4,26 +4,42 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.math.Vector2;
 
 import dungeon.crawler.GameSystem.Character.Bag;
 import dungeon.crawler.GameSystem.Character.EnemyCombatant;
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
+import dungeon.crawler.GameSystem.GameBuild;
 import dungeon.crawler.GameSystem.TestData.PlayerFactory;
 
 public class GameState {
     public PartyCharacter player;
-    public Map<Integer, PartyCharacter> party;
     public Vector2 overWorldCoordinates;
-    public Map<Integer, EnemyCombatant> currentEnemyRoster;
+
+    public transient Map<Integer, PartyCharacter> party;
+
+    // Prevents JSON issues
+    public ArrayList<PartyCharacter> partySaveData = new ArrayList<>();
+
+
+
     public int gold;
     public boolean isPlayerDead;
     public String currentMap;
     public int screenID;
     public Bag partyBag;
+    // used for enemy encounters, shop stuff?
+    private transient int tileDifficulty = 0;
+    private GameBuild build;
+
+    public GameState(GameBuild build){
+        this.build = build;
+        // TODO: make an actual constructor
+    }
 
     public GameState(){
-        // TODO: make an actual constructor
+
     }
     // TODO: Refactor this shit so we're not repeating
     public void setUpTestData(){
@@ -31,15 +47,14 @@ public class GameState {
         PartyCharacter fighter = PlayerFactory.generatePartyMember();
         PartyCharacter wizard = PlayerFactory.generateWizard();
         PartyCharacter thief = PlayerFactory.generateThief();
-        party = new HashMap<>();
-        party.put(0, player);
-        party.put(1, fighter);
-        party.put(2, wizard);
-        party.put(3, thief);
+        partySaveData.add(player);
+        partySaveData.add(fighter);
+        partySaveData.add(wizard);
+        partySaveData.add(thief);
+        initializeRuntimeParty();
         partyBag = new Bag();
         overWorldCoordinates = new Vector2(0,0);
-        currentEnemyRoster = new HashMap<>();
-        gold = 600;
+        gold = 100;
         isPlayerDead = false;
         currentMap = "";
         screenID = 1;
@@ -47,16 +62,17 @@ public class GameState {
 
     public void SetUpClassDataFromString(ArrayList<String> partyList){
         player = PlayerFactory.generate();
-        party = new HashMap<>();
+        partySaveData = new ArrayList<>();
         for(int i = 0; i < partyList.size(); i++){
             String className = partyList.get(i);
             PartyCharacter chr = PlayerFactory.generateClass(className);
-            party.put(i, chr);
+            partySaveData.add(chr);
         }
+        initializeRuntimeParty();
+
         partyBag = new Bag();
         overWorldCoordinates = new Vector2(0,0);
-        currentEnemyRoster = new HashMap<>();
-        gold = 600;
+        gold = 100;
         isPlayerDead = false;
         currentMap = "";
         screenID = 1;
@@ -83,7 +99,32 @@ public class GameState {
         this.gold = gold - value;
     }
 
+    public void setTileDifficulty(int tileDifficulty) {
+        this.tileDifficulty = tileDifficulty;
+    }
+    public int getTileDifficulty() {
+        return tileDifficulty;
+    }
     public int getGold(){
         return gold;
+    }
+
+    public void initializeRuntimeParty() {
+
+        party = new HashMap<>();
+
+        for (int i = 0; i < partySaveData.size(); i++) {
+            party.put(i, partySaveData.get(i));
+        }
+
+    }
+
+
+    public GameBuild getBuild() {
+        return build;
+    }
+
+    public void setBuild(GameBuild build) {
+        this.build = build;
     }
 }

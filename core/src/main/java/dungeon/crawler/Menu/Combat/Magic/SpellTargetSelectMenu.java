@@ -13,6 +13,7 @@ import dungeon.crawler.Data.Spells.Spell;
 import dungeon.crawler.Data.Spells.SpellType;
 import dungeon.crawler.GameConstants;
 import dungeon.crawler.GameSystem.Character.Combatant;
+import dungeon.crawler.GameSystem.Combat.CombatStateManager;
 import dungeon.crawler.GameSystem.Combat.CombatUtils;
 import dungeon.crawler.GameSystem.GameState.GameState;
 import dungeon.crawler.Menu.BaseLinearMenu;
@@ -21,6 +22,7 @@ import dungeon.crawler.Menu.CombatSubMenu;
 
 public class SpellTargetSelectMenu extends BaseLinearMenu implements CombatSubMenu {
 
+    private final CombatStateManager combatState;
     private GameState gameState;
     private SpellSelectMenu spellMenu;
     private Spell selectedSpell;
@@ -28,13 +30,15 @@ public class SpellTargetSelectMenu extends BaseLinearMenu implements CombatSubMe
         Skin skin,
         GameState gameState,
         Spell spell,
-        SpellSelectMenu spellMenu
+        SpellSelectMenu spellMenu,
+        CombatStateManager combatState
     ){
         super(skin);
         this.gameState = gameState;
         this.selectedSpell = spell;
-        this.attackButtons();
         this.spellMenu = spellMenu;
+        this.combatState = combatState;
+        this.attackButtons();
 
     }
 
@@ -47,8 +51,9 @@ public class SpellTargetSelectMenu extends BaseLinearMenu implements CombatSubMe
         if(
             selectedSpell.getType() == SpellType.SINGLE_OFFENSE
         ){
+
             availableCombatants = CombatUtils.returnAliveCombatants(
-                this.gameState.currentEnemyRoster
+                combatState.getCurrentEnemyRoster()
             );
         } else if(
             selectedSpell.getType() == SpellType.RESURRECTION

@@ -15,7 +15,9 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import dungeon.crawler.GameConstants;
+import dungeon.crawler.GameSystem.GameState.GameState;
 import dungeon.crawler.GameSystem.Inventory.Item;
+import dungeon.crawler.GameSystem.SaveGame.SaveGame;
 import dungeon.crawler.MainGame;
 import dungeon.crawler.Menu.InputHandlers.MenuInputHandler;
 import dungeon.crawler.Menu.MainMenu.MainMenu;
@@ -142,6 +144,18 @@ public class MainMenuScreen extends ScreenAdapter  implements MenuInputObserver 
     public void startGamePreset(){
         game.gameState.setUpTestData();
         game.startGame();
+    }
+
+    public String loadGame(){
+        SaveGame saveSystem = new SaveGame();
+        GameState newState = saveSystem.loadGameState();
+        if(newState == null){
+            return "No valid save file present";
+        }
+
+        game.loadGameState(newState);
+        game.backToOverworld();
+        return "Game loaded";
     }
 
     @Override

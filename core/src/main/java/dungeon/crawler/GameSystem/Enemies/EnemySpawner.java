@@ -9,16 +9,13 @@ import dungeon.crawler.GameSystem.TestData.EnemyFactory;
 import java.util.*;
 
 public class EnemySpawner {
-    public static Map<Integer, EnemyCombatant> spawnEnemies(GameState gameState, TiledMapTileLayer.Cell tileCell) {
-        MapProperties props = tileCell.getTile().getProperties();
+    public static Map<Integer, EnemyCombatant> spawnEnemies(GameState gameState) {
         Map<Integer, EnemyCombatant> enemies = new HashMap<>();
         Random diceRoller = new Random();
         EnemyFactory factory = new EnemyFactory();
-//        if(!props.containsKey("tile_difficulty")){
-//
-//        }
+        int tileDiffuclty = gameState.getTileDifficulty();
         int numberOfEnemies = diceRoller.nextInt(3) + 1;
-        ArrayList<String> enemySelection = difficultyCurve(0);
+        ArrayList<String> enemySelection = difficultyCurve(tileDiffuclty);
         for(int i = 0; i < numberOfEnemies; i++){
             Collections.shuffle(enemySelection);
             enemies.put(i, factory.createEnemyFromID(enemySelection.get(0)));

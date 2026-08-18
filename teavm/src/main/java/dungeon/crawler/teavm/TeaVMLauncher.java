@@ -2,6 +2,7 @@ package dungeon.crawler.teavm;
 
 import com.github.xpenatan.gdx.teavm.backends.web.WebApplicationConfiguration;
 import com.github.xpenatan.gdx.teavm.backends.web.WebApplication;
+import dungeon.crawler.GameSystem.GameBuild;
 import dungeon.crawler.MainGame;
 
 /**
@@ -16,6 +17,6 @@ public class TeaVMLauncher {
         //// If width and height are both 0, then the app will use all available space.
         config.width = 960;
         config.height = 720;
-        new WebApplication(new MainGame(), config);
+        new WebApplication(new MainGame(GameBuild.BROWSER), config);
     }
 }

@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import dungeon.crawler.GameConstants;
+import dungeon.crawler.GameSystem.GameBuild;
 import dungeon.crawler.GameSystem.GameState.GameState;
 import dungeon.crawler.GameSystem.Inventory.Item;
 import dungeon.crawler.Menu.BaseLinearMenu;
@@ -48,9 +49,16 @@ public class MainMenu extends BaseLinearMenu{
                 openSubMenu(newMenu);
             }
         });
-        this.addButton("Load (coming soon)", new ChangeListener() {
+        this.addButton("Load", new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor){
+                if(gameState.getBuild() == GameBuild.DESKTOP){
+                    String message = main.loadGame();
+                    showPopup(message, 2f);
+                } else {
+                    showPopup("Load works in Desktop Mode only", 2f);
+                }
+
 
             }
         });

@@ -12,17 +12,17 @@ import java.util.ArrayList;
 public class Item implements ItemLogic {
     private final ItemType itemType;
     public String name;
-    public PartyCharacter owner;
     public int value;
+
+    public Item(){
+        itemType = ItemType.QUEST_ITEM;
+    };
     public Item(
         String name,
-        PartyCharacter owner,
         int value,
         ItemType itemType
     ) {
         this.name = name;
-        this.owner = owner;
-        // the original value of the item for sale, shopowners will  add their own tax to this value
         this.value = value;
         this.itemType = itemType;
     }

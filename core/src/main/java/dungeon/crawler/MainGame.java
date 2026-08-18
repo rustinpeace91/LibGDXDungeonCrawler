@@ -8,6 +8,9 @@ import dungeon.crawler.AssetManager.Assets;
 import dungeon.crawler.Data.Maps.MapRegistry;
 import dungeon.crawler.Data.Maps.ScreenTransitionProperties;
 import dungeon.crawler.GameSystem.Character.EnemyCombatant;
+import dungeon.crawler.GameSystem.Combat.CombatStateManager;
+import dungeon.crawler.GameSystem.Enemies.EnemySpawner;
+import dungeon.crawler.GameSystem.GameBuild;
 import dungeon.crawler.GameSystem.GameState.GameState;
 import dungeon.crawler.GameSystem.Inventory.Item;
 import dungeon.crawler.GameSystem.Inventory.ShopItemSpawner;
@@ -25,10 +28,19 @@ public class MainGame extends Game implements ScreenChangeObserver,
     SpriteBatch spriteBatch;
     public GameState gameState;
     public Assets assets;
+    private GameBuild build;
+
+    public MainGame(GameBuild gameBuild) {
+        this.build = gameBuild;
+    }
+
+    public MainGame(){
+
+    }
 
     @Override
     public void create() {
-        gameState = new GameState();
+        gameState = new GameState(build);
 
         spriteBatch = new SpriteBatch();
         gameState.updateScreenID(1);
@@ -79,7 +91,8 @@ public class MainGame extends Game implements ScreenChangeObserver,
             backToOverworld();
         }
         else if(screen == GameConstants.GAME_SCREEN.COMBAT){
-            CombatScreen combatScreen = new CombatScreen(this);
+            CombatStateManager combatState = new CombatStateManager(EnemySpawner.spawnEnemies(gameState));
+            CombatScreen combatScreen = new CombatScreen(this, combatState);
             setScreen(combatScreen);
         } else if(screen == GameConstants.GAME_SCREEN.SHOP_SCREEN){
             ScreenTransitionProperties worldScreenData = MapRegistry.WORLD_MAP_DATA.get(gameState.screenID);
@@ -147,7 +160,7 @@ public class MainGame extends Game implements ScreenChangeObserver,
         ));
     }
 
-    private void backToOverworld(){
+    public void backToOverworld(){
         ScreenTransitionProperties worldScreenData = MapRegistry.WORLD_MAP_DATA.get(gameState.screenID);
         setScreen(new WorldScreenRefactor(
             this,
@@ -159,6 +172,11 @@ public class MainGame extends Game implements ScreenChangeObserver,
             worldScreenData.mapFile,
             worldScreenData.screen
         ));
+    }
+
+    public void loadGameState(GameState state){
+        state.initializeRuntimeParty();
+        this.gameState = state;
     }
 
     @Override

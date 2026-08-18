@@ -25,6 +25,7 @@ import dungeon.crawler.Observers.CombatLogicObserver;
 import dungeon.crawler.Utils.StringUtils;
 
 public class CombatLogic {
+    private final CombatStateManager combatState;
     public CombatPhase phase;
     public LinkedList<CombatAction> actionQueue;
     public CombatEventScreen eventScreen;
@@ -39,17 +40,19 @@ public class CombatLogic {
     public CombatLogic(
         CombatEventScreen eventScreen,
         MainGame game,
-        PartyActionTracker turnTracker
+        PartyActionTracker turnTracker,
+        CombatStateManager combatState
     ){
         this.eventScreen = eventScreen;
         this.combatLogicObservers = new ArrayList<CombatLogicObserver>();
         this.actionQueue = new LinkedList<>();
         this.game = game;
+        this.combatState = combatState;
         this.xpGained = 0;
         this.currentCombatantID = 0;
         this.returnFocus = false;
         this.turnTracker = turnTracker;
-        this.actionHandler = new CombatActionHandler(game.gameState.party, game.gameState.currentEnemyRoster);
+        this.actionHandler = new CombatActionHandler(game.gameState.party, combatState.getCurrentEnemyRoster());
     }
     public void advanceCombat(){
         /* this is run every frame and is for actions that require to wait until messages are done
@@ -185,7 +188,7 @@ public class CombatLogic {
 
         CombatAction newAction;
         if(actionState == CombatActionState.ATTACK) {
-            Combatant target = game.gameState.currentEnemyRoster.getOrDefault(targetId, null);
+            Combatant target = combatState.getCurrentEnemyRoster().getOrDefault(targetId, null);
             newAction = new CombatAction(
                 id,
                 initiative,
@@ -254,7 +257,7 @@ public class CombatLogic {
         } else if(
             spell.getType() == SpellType.SINGLE_OFFENSE
         ) {
-            target = game.gameState.currentEnemyRoster.getOrDefault(targetId, null);
+            target = combatState.getCurrentEnemyRoster().getOrDefault(targetId, null);
             if(target == null){
                 throw new IllegalArgumentException(StringUtils.format("%s is not a valid enemy key", String.valueOf(targetId)));
             }
@@ -352,16 +355,16 @@ public class CombatLogic {
             return;
         }
         // add XP
-        for(Enemy enemy: this.game.gameState.currentEnemyRoster.values()){
+        for(Enemy enemy: this.combatState.getCurrentEnemyRoster().values()){
             if(enemy.isDead){
                 this.xpGained += enemy.earnedXP;
             }
         }
         // Check for dead enemies and remove from board
         // TODO: Terrible. Do not remove from game state, move to combat state instead
-        this.game.gameState.currentEnemyRoster.values().removeIf(enemy -> enemy.checkDeath());
+        this.combatState.getCurrentEnemyRoster().values().removeIf(enemy -> enemy.checkDeath());
         // check for total enemy wipe
-        if(this.game.gameState.currentEnemyRoster.isEmpty()){
+        if(this.combatState.getCurrentEnemyRoster().isEmpty()){
             eventScreen.addMessages(new String[] {"All enemies have been vanquished!"});
 
             eventScreen.addMessages(new String[] {
@@ -460,9 +463,9 @@ public class CombatLogic {
     }
 
     private void decideEnemyActions(){
-        for (int enemyID: this.game.gameState.currentEnemyRoster.keySet()){
+        for (int enemyID: this.combatState.getCurrentEnemyRoster().keySet()){
             actionQueue.add(EnemyAttackLogic.decideAction(
-                this.game.gameState.currentEnemyRoster.get(enemyID),
+                this.combatState.getCurrentEnemyRoster().get(enemyID),
                 enemyID,
                 this.game.gameState
             ));

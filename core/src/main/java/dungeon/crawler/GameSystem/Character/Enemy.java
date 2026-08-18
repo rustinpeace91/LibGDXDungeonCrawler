@@ -7,7 +7,7 @@ public class Enemy extends Character {
     public String identifier;
 
     protected int defense;
-
+    public Enemy(){};
     public Enemy(
         String name,
         String identifier,

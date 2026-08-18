@@ -69,6 +69,7 @@ public class GameConstants {
 
 
 
+    public static final String SAVE_FILE_PATH = "savegame.json";
     public static final String TEST_MAP = "Maps/testmap.tmx";
     public static final String CURRENT_SPRITE = "Sprites/real_sheet.png";
     // public static final String MENU_SKIN = "skins/plainjames_modded/plainjames.json";

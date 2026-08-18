@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import dungeon.crawler.GameSystem.Character.Inventory;
 import dungeon.crawler.GameSystem.Inventory.Item;
 
 public class InventorySystem{
@@ -13,6 +14,9 @@ public class InventorySystem{
     public ArrayList<Item> inventoryList;
     private final int maxRoom;
 
+    public InventorySystem(){
+        this.maxRoom = GameConstants.MAX_PLAYER_INVENTORY_SPACE;
+    };
     public InventorySystem(
         ArrayList<Item> inventoryList,
         int maxRoom
