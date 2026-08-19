@@ -13,31 +13,46 @@ import com.badlogic.gdx.controllers.Controllers;
 
 public class GameInputHandler  extends InputAdapter {
 
-
-
-    public GameInputHandler() {
-        // TODO: We need to only implement this on desktop
-    }
-
+    private GameKey controllerHeld = null;
     private final ArrayList<GameInputObserver> listeners =
         new ArrayList<GameInputObserver>();
 
+    public GameInputHandler() {
+        // TODO: We need to only implement this on desktop
+
+    }
+
+
+
     public boolean held(GameKey key) {
+
+
         switch (key) {
             case UP:
-                return Gdx.input.isKeyPressed(Input.Keys.UP);
+                return Gdx.input.isKeyPressed(Input.Keys.UP)
+                    || controllerHeld == GameKey.UP;
+
             case DOWN:
-                return Gdx.input.isKeyPressed(Input.Keys.DOWN);
+                return Gdx.input.isKeyPressed(Input.Keys.DOWN)
+                    || controllerHeld == GameKey.DOWN;
+
             case LEFT:
-                return Gdx.input.isKeyPressed(Input.Keys.LEFT);
+                return Gdx.input.isKeyPressed(Input.Keys.LEFT)
+                    || controllerHeld == GameKey.LEFT;
+
             case RIGHT:
-                return Gdx.input.isKeyPressed(Input.Keys.RIGHT);
-            case CONFIRM:
-                return Gdx.input.isKeyPressed(Input.Keys.ENTER);
-            case CANCEL:
-                return Gdx.input.isKeyPressed(Input.Keys.BACKSPACE);
-            case MENU:
-                return Gdx.input.isKeyPressed(Input.Keys.E);
+                return Gdx.input.isKeyPressed(Input.Keys.RIGHT)
+                    || controllerHeld == GameKey.RIGHT;
+
+//            case CONFIRM:
+//                return Gdx.input.isKeyPressed(Input.Keys.ENTER);
+//
+//            case CANCEL:
+//                return Gdx.input.isKeyPressed(Input.Keys.BACKSPACE);
+//
+//            case MENU:
+//                return Gdx.input.isKeyPressed(Input.Keys.E);
+
             default:
                 return false;
         }
@@ -109,9 +124,16 @@ public class GameInputHandler  extends InputAdapter {
 
     public void notifyAction(GameKey action) {
         for (GameInputObserver listener : listeners) {
-            Gdx.app.log("Button", "BTTTN " + action + " pressed");
             listener.onAction(action);
         }
+    }
+
+    public void setControllerHeld(GameKey key) {
+        controllerHeld = key;
+    }
+
+    public void clearControllerHeld() {
+        controllerHeld = null;
     }
 
 

@@ -21,23 +21,25 @@ public class ControllerInputHandler implements ControllerListener  {
     }
     @Override
     public boolean buttonDown(Controller controller, int buttonCode) {
-        Gdx.app.log("Controller",
-            controller.getName() + " button down: " + buttonCode);
 
         switch (buttonCode) {
             case PS5_D_PAD_UP:
+                inputHandler.setControllerHeld(GameKey.UP);
                 inputHandler.notifyAction(GameKey.UP);
                 break;
 
             case PS5_D_PAD_DOWN:
+                inputHandler.setControllerHeld(GameKey.DOWN);
                 inputHandler.notifyAction(GameKey.DOWN);
                 break;
 
             case PS5_D_PAD_LEFT:
+                inputHandler.setControllerHeld(GameKey.LEFT);
                 inputHandler.notifyAction(GameKey.LEFT);
                 break;
 
             case PS5_D_PAD_RIGHT:
+                inputHandler.setControllerHeld(GameKey.RIGHT);
                 inputHandler.notifyAction(GameKey.RIGHT);
                 break;
 
@@ -62,8 +64,25 @@ public class ControllerInputHandler implements ControllerListener  {
 
     @Override
     public boolean buttonUp(Controller controller, int buttonCode) {
-        Gdx.app.log("Controller",
-            controller.getName() + " button up: " + buttonCode);
+        switch(buttonCode){
+            case PS5_D_PAD_UP:
+                inputHandler.clearControllerHeld();
+                break;
+
+            case PS5_D_PAD_DOWN:
+                inputHandler.clearControllerHeld();
+                break;
+
+            case PS5_D_PAD_LEFT:
+                inputHandler.clearControllerHeld();
+                break;
+
+            case PS5_D_PAD_RIGHT:
+                inputHandler.clearControllerHeld();
+                break;
+
+        }
+
         return false;
     }
 

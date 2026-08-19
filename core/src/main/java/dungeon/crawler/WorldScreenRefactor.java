@@ -22,6 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import dungeon.crawler.Controls.GameInputHandler;
 import dungeon.crawler.GameSystem.Combat.CombatStateManager;
 import dungeon.crawler.GameSystem.Enemies.EnemySpawner;
 import dungeon.crawler.Menu.InputHandlers.MenuInputHandler;
@@ -73,7 +74,7 @@ PlayerPositionObserver {
 
 // observers
     public ArrayList<ScreenChangeObserver> screenChangeObservers;
-
+    private GameInputHandler gameInputHandler;
 
 
     public WorldScreenRefactor(
@@ -103,8 +104,9 @@ PlayerPositionObserver {
 
         // build collision layers
         this.collisionLayer = (TiledMapTileLayer) map.getLayers().get("Ground");
+        gameInputHandler = new GameInputHandler();
         // Player stuff
-        this.playerInput = new PlayerInputHandler(PlayerDirection.DOWN);
+        this.playerInput = new PlayerInputHandler(PlayerDirection.DOWN, gameInputHandler);
 
         this.playerPosition = new PlayerPositionHandler(
             map,
@@ -144,6 +146,7 @@ PlayerPositionObserver {
 
     private void setUpMenu() {
         this.uiStage = new Stage(new ScreenViewport());
+
         OverworldMenu menu = new OverworldMenu(
             this.skin,
             game.gameState
@@ -153,9 +156,11 @@ PlayerPositionObserver {
         menu.setPosition(x, y);
         menu.addScreenChangeObserver(game);
         this.uiStage.addActor(menu);
+
         this.menuInputHanlder = new MenuInputHandler(
             uiStage,
-            menu
+            menu,
+            gameInputHandler
         );
         menuInputHanlder.addListener(this);
 
@@ -176,7 +181,7 @@ PlayerPositionObserver {
     public InputMultiplexer setUpInput() {
         InputMultiplexer multiplexer = new InputMultiplexer();
         // --- Configure the InputMultiplexer ---
-        multiplexer.addProcessor(menuInputHanlder);
+        multiplexer.addProcessor(gameInputHandler);
         // 6. Tell LibGDX to use the multiplexer for all input events
         return multiplexer;
     }
@@ -189,6 +194,7 @@ PlayerPositionObserver {
         Gdx.input.setCatchKey(Input.Keys.LEFT, true);
         Gdx.input.setCatchKey(Input.Keys.RIGHT, true);
         Gdx.input.setCatchKey(Input.Keys.SPACE, true);
+        game.getControllerAdapter().attach(gameInputHandler);
         playerPosition.addObserver(this);
     }
 

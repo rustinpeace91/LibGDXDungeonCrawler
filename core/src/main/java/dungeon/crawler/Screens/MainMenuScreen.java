@@ -164,9 +164,14 @@ public class MainMenuScreen extends ScreenAdapter  implements MenuInputObserver 
     }
 
     @Override
+    public void hide(){
+        game.getControllerAdapter().detach();
+
+    }
+    @Override
     public void dispose() {
         skin.dispose();
-        game.getControllerAdapter().detach();
+
         uiStage.dispose();
         this.backgroundTexture .dispose();
     }

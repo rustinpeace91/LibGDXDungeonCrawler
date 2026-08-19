@@ -22,7 +22,9 @@ public class DesktopControllerAdapter implements ControllerAdapter {
     public DesktopControllerAdapter(){};
     @Override
     public void attach(GameInputHandler inputHandler) {
+        Gdx.app.log("Controller", "ATTACH " + inputHandler);
         controllerInput =  new ControllerInputHandler(inputHandler);
+
         Controllers.addListener(
             controllerInput
         );
@@ -32,6 +34,8 @@ public class DesktopControllerAdapter implements ControllerAdapter {
     @Override
     public void detach() {
         if (controllerInput != null) {
+            Gdx.app.log("Controller", "DETACH " + controllerInput);
+
             Controllers.removeListener(controllerInput);
             controllerInput = null;
         }
