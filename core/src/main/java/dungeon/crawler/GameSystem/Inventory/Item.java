@@ -13,16 +13,19 @@ public class Item implements ItemLogic {
     private final ItemType itemType;
     public String name;
     public int value;
+    private String id;
 
     public Item(){
         itemType = ItemType.QUEST_ITEM;
     };
     public Item(
         String name,
+        String id,
         int value,
         ItemType itemType
     ) {
         this.name = name;
+        this.id = id;
         this.value = value;
         this.itemType = itemType;
     }
@@ -64,6 +67,13 @@ public class Item implements ItemLogic {
         return null;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 }
 
 // TODO: Item logic
