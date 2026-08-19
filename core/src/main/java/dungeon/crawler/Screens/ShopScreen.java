@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import dungeon.crawler.Controls.GameInputHandler;
 import dungeon.crawler.GameConstants;
 import dungeon.crawler.GameSystem.Inventory.Item;
 import dungeon.crawler.MainGame;
@@ -33,6 +34,7 @@ public class ShopScreen extends ScreenAdapter  implements MenuInputObserver {
     private Texture backgroundTexture;
     private ArrayList<Item> inventory;
     private Skin skin;
+    private GameInputHandler gameInputHandler;
 
     public ShopScreen(
         MainGame game,
@@ -65,6 +67,8 @@ public class ShopScreen extends ScreenAdapter  implements MenuInputObserver {
 
     @Override
     public void show(){
+        gameInputHandler = new GameInputHandler();
+        game.getControllerAdapter().attach(gameInputHandler);
 
         shopMenu = new ShopMainMenu(
             skin,
@@ -75,7 +79,8 @@ public class ShopScreen extends ScreenAdapter  implements MenuInputObserver {
         this.uiStage.addActor(shopMenu);
         this.menuInputHandler = new MenuInputHandler(
             uiStage,
-            shopMenu
+            shopMenu,
+            gameInputHandler
         );
         InputMultiplexer multiplexer = setUpInput();
         Gdx.input.setInputProcessor(multiplexer);
@@ -85,7 +90,7 @@ public class ShopScreen extends ScreenAdapter  implements MenuInputObserver {
         // --- Configure the InputMultiplexer ---
         this.menuInputHandler.addListener(this);
 
-        multiplexer.addProcessor(menuInputHandler);
+        multiplexer.addProcessor(gameInputHandler);
         multiplexer.addProcessor(uiStage);
         // 6. Tell LibGDX to use the multiplexer for all input events
         return multiplexer;
@@ -118,6 +123,12 @@ public class ShopScreen extends ScreenAdapter  implements MenuInputObserver {
         skin.dispose();
         uiStage.dispose();
         this.backgroundTexture .dispose();
+    }
+
+    @Override
+    public void hide(){
+        game.getControllerAdapter().detach();
+
     }
 
     public void exitShop(){

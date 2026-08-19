@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import dungeon.crawler.Controls.GameInputHandler;
 import dungeon.crawler.GameConstants;
 import dungeon.crawler.GameSystem.GameState.GameState;
 import dungeon.crawler.GameSystem.Inventory.Item;
@@ -33,6 +34,7 @@ public class MainMenuScreen extends ScreenAdapter  implements MenuInputObserver 
     private SpriteBatch batch;
     private Stage uiStage;
     private MenuInputHandler menuInputHandler;
+    private GameInputHandler gameInputHandler;
     private Skin skin;
 
     private Texture backgroundTexture;
@@ -68,6 +70,8 @@ public class MainMenuScreen extends ScreenAdapter  implements MenuInputObserver 
     @Override
     public void show(){
         skin = new Skin(Gdx.files.internal(GameConstants.MENU_SKIN));
+        gameInputHandler = new GameInputHandler();
+        game.getControllerAdapter().attach(gameInputHandler);
         mainMenu = new MainMenu(
             skin,
             game.gameState,
@@ -76,7 +80,8 @@ public class MainMenuScreen extends ScreenAdapter  implements MenuInputObserver 
         this.uiStage.addActor(mainMenu);
         this.menuInputHandler = new MenuInputHandler(
             uiStage,
-            mainMenu
+            mainMenu,
+            gameInputHandler
         );
         InputMultiplexer multiplexer = setUpInput();
         Gdx.input.setInputProcessor(multiplexer);
@@ -86,7 +91,7 @@ public class MainMenuScreen extends ScreenAdapter  implements MenuInputObserver 
         // --- Configure the InputMultiplexer ---
         this.menuInputHandler.addListener(this);
 
-        multiplexer.addProcessor(menuInputHandler);
+        multiplexer.addProcessor(gameInputHandler);
         multiplexer.addProcessor(uiStage);
         // 6. Tell LibGDX to use the multiplexer for all input events
         return multiplexer;
@@ -159,8 +164,14 @@ public class MainMenuScreen extends ScreenAdapter  implements MenuInputObserver 
     }
 
     @Override
+    public void hide(){
+        game.getControllerAdapter().detach();
+
+    }
+    @Override
     public void dispose() {
         skin.dispose();
+
         uiStage.dispose();
         this.backgroundTexture .dispose();
     }

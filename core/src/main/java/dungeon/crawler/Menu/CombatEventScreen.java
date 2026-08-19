@@ -12,19 +12,23 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
 
+import dungeon.crawler.Controls.GameInputHandler;
+import dungeon.crawler.Controls.GameInputObserver;
+import dungeon.crawler.Controls.GameKey;
 import dungeon.crawler.GameConstants;
 import dungeon.crawler.Observers.EventScreenObserver;
 
 // Extend Table directly
-public class CombatEventScreen extends Table {
+public class CombatEventScreen extends Table implements GameInputObserver {
+    private final GameInputHandler gameInputHandler;
     private Label messageLabel;
     private boolean isShowing;
     public LinkedList<String> messageQueue;
     private ArrayList<EventScreenObserver> observers;
 
-    public CombatEventScreen(Skin skin) {
+    public CombatEventScreen(Skin skin, GameInputHandler gameInputHandler) {
         super(skin); // Pass skin to parent Table
-        
+
         // Set the background and gray tint
         this.setBackground(skin.getDrawable(GameConstants.SKIN_BACKGROUND_DEFAULT));
         Color semiTransparentGray = new Color(0.2f, 0.2f, 0.2f, 0.8f);
@@ -33,22 +37,23 @@ public class CombatEventScreen extends Table {
         messageLabel = new Label("", skin);
         observers = new ArrayList<>();
         messageLabel.setWrap(true);
-        messageLabel.setAlignment(Align.center); 
+        messageLabel.setAlignment(Align.center);
+        this.gameInputHandler = gameInputHandler;
         // Add the label to 'this' table
         this.add(messageLabel).width(300f).pad(30f);
         this.messageQueue = new LinkedList<>();
         this.pack();
         // Listen for the Enter key
-        this.addListener(new InputListener() {
-            @Override
-            public boolean keyDown(InputEvent event, int keycode) {
-                if (keycode == Keys.ENTER) {
-                    showNextMessage();
-                    return true;
-                }
-                return false;
-            }
-        });
+//        this.addListener(new InputListener() {
+//            @Override
+//            public boolean keyDown(InputEvent event, int keycode) {
+//                if (keycode == Keys.ENTER) {
+//                    showNextMessage();
+//                    return true;
+//                }
+//                return false;
+//            }
+//        });
     }
 
     public void showNextMessage() {
@@ -96,5 +101,13 @@ public class CombatEventScreen extends Table {
     public boolean isShowingMessage() {
         return isShowing;
 
+    }
+
+    @Override
+    public void onAction(GameKey key) {
+
+        if (key == GameKey.CONFIRM) {
+            showNextMessage();
+        }
     }
 }

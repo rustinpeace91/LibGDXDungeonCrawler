@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 import dungeon.crawler.AssetManager.Assets;
+import dungeon.crawler.Controls.ControllerAdapter;
 import dungeon.crawler.Data.Maps.MapRegistry;
 import dungeon.crawler.Data.Maps.ScreenTransitionProperties;
 import dungeon.crawler.GameSystem.Character.EnemyCombatant;
@@ -16,7 +17,7 @@ import dungeon.crawler.GameSystem.Inventory.Item;
 import dungeon.crawler.GameSystem.Inventory.ShopItemSpawner;
 import dungeon.crawler.GameSystem.TestData.EnemyFactory;
 import dungeon.crawler.Menu.MainMenu.MainMenu;
-import dungeon.crawler.Menu.TestMenus.MenuTestScreen;
+//import dungeon.crawler.Menu.TestMenus.MenuTestScreen;
 import dungeon.crawler.Observers.CombatScreenObserver;
 import dungeon.crawler.Observers.ScreenChangeObserver;
 import dungeon.crawler.Screens.*;
@@ -29,9 +30,11 @@ public class MainGame extends Game implements ScreenChangeObserver,
     public GameState gameState;
     public Assets assets;
     private GameBuild build;
+    private ControllerAdapter controllerAdapter;
 
-    public MainGame(GameBuild gameBuild) {
+    public MainGame(GameBuild gameBuild, ControllerAdapter controllerAdapter) {
         this.build = gameBuild;
+        this.controllerAdapter = controllerAdapter;
     }
 
     public MainGame(){
@@ -51,18 +54,6 @@ public class MainGame extends Game implements ScreenChangeObserver,
             this
         ));
 
-//        setScreen(new WorldScreenRefactor(
-//            this,
-//            spriteBatch,
-//            13f,
-//            12f,
-//            mapFile,
-//            GameConstants.GAME_SCREEN.WALK_TOWN
-//        ));
-
-        // setScreen(new CombatScreen(this));
-
-        //    setScreen(new MenuScreen());
     }
 
     public void startGame(){
@@ -182,5 +173,9 @@ public class MainGame extends Game implements ScreenChangeObserver,
     @Override
     public void dispose(){
         assets.dispose();
+    }
+
+    public ControllerAdapter getControllerAdapter() {
+        return controllerAdapter;
     }
 }
