@@ -310,7 +310,11 @@ PlayerPositionObserver {
             observer.onScreenChange(screen);
         }
     };
+    @Override
+    public void hide(){
+        game.getControllerAdapter().detach();
 
+    }
     @Override
     public void onMapChange(int ScreenId){};
 }

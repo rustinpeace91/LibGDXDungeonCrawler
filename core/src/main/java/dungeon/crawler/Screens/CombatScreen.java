@@ -15,6 +15,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import dungeon.crawler.Controls.GameInputHandler;
 import dungeon.crawler.Data.Spells.SpellNames;
 import dungeon.crawler.Data.Spells.SpellRegistry;
 import dungeon.crawler.GameConstants;
@@ -67,6 +68,7 @@ public class CombatScreen extends ScreenAdapter
 
     private float worldWidth;
     private float worldHeight;
+    private GameInputHandler gameInputHandler;
 
 
     public CombatScreen(
@@ -183,6 +185,8 @@ public class CombatScreen extends ScreenAdapter
 
     private void setUpMenu() {
         // this.uiStage = new Stage(new ScreenViewport());
+        gameInputHandler = new GameInputHandler();
+        game.getControllerAdapter().attach(gameInputHandler);
 
         combatMenu = new CombatMenu(
             skin,
@@ -202,8 +206,8 @@ public class CombatScreen extends ScreenAdapter
         combatMenu.setPosition(x, y);
         this.uiStage.addActor(combatMenu);
 
-        eventScreen = new CombatEventScreen(this.skin);
-
+        eventScreen = new CombatEventScreen(this.skin, gameInputHandler);
+        gameInputHandler.addListener(eventScreen);
         eventScreen.setPosition(
             (uiStage.getWidth() - eventScreen.getWidth()) / 2f,
             10f
@@ -229,7 +233,8 @@ public class CombatScreen extends ScreenAdapter
 
         this.menuInputHanlder = new MenuInputHandler(
             uiStage,
-            combatMenu
+            combatMenu,
+            gameInputHandler
         );
         this.menuInputHanlder.addListener(this);
         combatMenu.setActive(false);
@@ -243,7 +248,7 @@ public class CombatScreen extends ScreenAdapter
         // --- Configure the InputMultiplexer ---
         this.menuInputHanlder.addListener(this);
         multiplexer.addProcessor(uiStage);
-        multiplexer.addProcessor(menuInputHanlder);
+        multiplexer.addProcessor(gameInputHandler);
         // 6. Tell LibGDX to use the multiplexer for all input events
         return multiplexer;
     }
@@ -398,6 +403,12 @@ public class CombatScreen extends ScreenAdapter
         enemyRenderer.dispose();
         backgroundTexture.dispose();
         // clean up mf
+    }
+
+    @Override
+    public void hide(){
+        game.getControllerAdapter().detach();
+
     }
 
 }

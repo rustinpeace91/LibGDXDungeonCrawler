@@ -120,6 +120,12 @@ public class ShopScreen extends ScreenAdapter  implements MenuInputObserver {
         this.backgroundTexture .dispose();
     }
 
+    @Override
+    public void hide(){
+        game.getControllerAdapter().detach();
+
+    }
+
     public void exitShop(){
         game.onScreenChange(GameConstants.GAME_SCREEN.WALK_TOWN);
     }

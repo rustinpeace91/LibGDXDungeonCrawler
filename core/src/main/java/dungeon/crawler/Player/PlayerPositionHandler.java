@@ -131,7 +131,7 @@ public class PlayerPositionHandler extends GameSubject<PlayerPositionObserver>{
             x = tileX * GameConstants.TILE_WIDTH;
             y = tileY * GameConstants.TILE_HEIGHT;
             this.movementProgress = 0f;
-            Cell tileCell = returnTileCell(tileX, tileX);
+            Cell tileCell = returnTileCell(tileX, tileY);
             onEnteredNewTile(tileCell);
         } else {
             // Apply smoothing: Interpolation.linear or Interpolation.smooth
