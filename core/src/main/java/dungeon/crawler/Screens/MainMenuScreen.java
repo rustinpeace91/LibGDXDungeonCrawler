@@ -71,6 +71,7 @@ public class MainMenuScreen extends ScreenAdapter  implements MenuInputObserver 
     public void show(){
         skin = new Skin(Gdx.files.internal(GameConstants.MENU_SKIN));
         gameInputHandler = new GameInputHandler();
+        game.getControllerAdapter().attach(gameInputHandler);
         mainMenu = new MainMenu(
             skin,
             game.gameState,
@@ -165,6 +166,7 @@ public class MainMenuScreen extends ScreenAdapter  implements MenuInputObserver 
     @Override
     public void dispose() {
         skin.dispose();
+        game.getControllerAdapter().detach();
         uiStage.dispose();
         this.backgroundTexture .dispose();
     }

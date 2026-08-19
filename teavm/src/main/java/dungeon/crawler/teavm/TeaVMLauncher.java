@@ -17,6 +17,6 @@ public class TeaVMLauncher {
         //// If width and height are both 0, then the app will use all available space.
         config.width = 960;
         config.height = 720;
-        new WebApplication(new MainGame(GameBuild.BROWSER), config);
+        new WebApplication(new MainGame(GameBuild.BROWSER, new BrowserControlerAdapter()), config);
     }
 }

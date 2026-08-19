@@ -1,14 +1,11 @@
-package dungeon.crawler.lwjgl3;
+package dungeon.crawler.Controls;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerListener;
-import com.badlogic.gdx.controllers.Controllers;
-import dungeon.crawler.Controls.GameInputHandler;
-import dungeon.crawler.Controls.GameKey;
 
-public class ControllerAdapter implements ControllerListener {
-    GameInputHandler inputHandler;
+public class ControllerInputHandler implements ControllerListener  {
+
     public static final int PS5_D_PAD_UP = 11;
     public static final int PS5_D_PAD_DOWN = 12;
     public static final int PS5_D_PAD_LEFT = 13;
@@ -17,13 +14,11 @@ public class ControllerAdapter implements ControllerListener {
     public static final int PS5_X_BUTTON = 0;
     public static final int PS5_O_BUTTON = 1;
     public static final int PS5_SQ_BUTTON = 2;
+    private final GameInputHandler inputHandler;
 
-    public ControllerAdapter(GameInputHandler inputHandler){
-        Controllers.addListener(this);
-        this.inputHandler = inputHandler;
+    public ControllerInputHandler(GameInputHandler input) {
+        this.inputHandler = input;
     }
-
-
     @Override
     public boolean buttonDown(Controller controller, int buttonCode) {
         Gdx.app.log("Controller",
@@ -90,5 +85,4 @@ public class ControllerAdapter implements ControllerListener {
     ) {
         return false;
     }
-
 }

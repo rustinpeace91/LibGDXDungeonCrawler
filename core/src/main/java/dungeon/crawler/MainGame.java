@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 import dungeon.crawler.AssetManager.Assets;
+import dungeon.crawler.Controls.ControllerAdapter;
 import dungeon.crawler.Data.Maps.MapRegistry;
 import dungeon.crawler.Data.Maps.ScreenTransitionProperties;
 import dungeon.crawler.GameSystem.Character.EnemyCombatant;
@@ -29,9 +30,11 @@ public class MainGame extends Game implements ScreenChangeObserver,
     public GameState gameState;
     public Assets assets;
     private GameBuild build;
+    private ControllerAdapter controllerAdapter;
 
-    public MainGame(GameBuild gameBuild) {
+    public MainGame(GameBuild gameBuild, ControllerAdapter controllerAdapter) {
         this.build = gameBuild;
+        this.controllerAdapter = controllerAdapter;
     }
 
     public MainGame(){
@@ -170,5 +173,9 @@ public class MainGame extends Game implements ScreenChangeObserver,
     @Override
     public void dispose(){
         assets.dispose();
+    }
+
+    public ControllerAdapter getControllerAdapter() {
+        return controllerAdapter;
     }
 }
