@@ -1,30 +1,37 @@
 package dungeon.crawler.GameSystem.SaveGame.Serialization;
 
+
+import dungeon.crawler.Data.Spells.SpellNames;
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.GameSystem.GameState.GameState;
 import dungeon.crawler.GameSystem.Inventory.Item;
+import dungeon.crawler.GameSystem.Inventory.ItemTypes.EquipmentSlot;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GameSerializer {
 
     public static GameSave serializeGameState(GameState gameState) {
 
-        GameSave saveState = new GameSave();
+        PartyCharacterSave player =
+            serializePartyCharacter(gameState.player);
 
-        saveState.overWorldCoordinatesX = (int) gameState.overWorldCoordinates.x;
-        saveState.overWorldCoordinatesY = (int) gameState.overWorldCoordinates.y;
-        saveState.gold = gameState.gold;
-
-        saveState.player = serializePartyCharacter(gameState.player);
-
-        saveState.party = new ArrayList<>();
+        ArrayList<PartyCharacterSave> party = new ArrayList<>();
 
         for (PartyCharacter character : gameState.party.values()) {
-            saveState.party.add(serializePartyCharacter(character));
+            party.add(serializePartyCharacter(character));
         }
 
-        return saveState;
+        return new GameSave(
+            player,
+            (int) gameState.overWorldCoordinates.x,
+            (int) gameState.overWorldCoordinates.y,
+            party,
+            gameState.gold
+        );
     }
 
 
@@ -32,48 +39,81 @@ public class GameSerializer {
         PartyCharacter character
     ) {
 
-        PartyCharacterSave save = new PartyCharacterSave();
+        return new PartyCharacterSave(
+            character.level,
+            character.xp,
 
-        // Basic character state
-        save.level = character.level;
-        save.xp = character.xp;
+            character.strength,
+            character.agility,
+            character.intelligence,
+            character.perception,
 
-        save.strength = character.strength;
-        save.agility = character.agility;
-        save.intelligence = character.intelligence;
-        save.perception = character.perception;
+            character.isHero,
+            character.toHit,
 
-        save.isHero = character.isHero;
-        save.toHit = character.toHit;
+            character.charClass.getName(),
 
-        // Character state inherited from Character
-        save.maxHp = character.maxHp;
-        save.maxMP = character.maxMP;
-        save.hp = character.hp;
-        save.mp = character.mp;
+            serializeEquipment(character),
 
-        save.stance = character.stance;
-        save.conditions = new ArrayList<>(character.conditions);
-        save.isDead = character.isDead;
+            character.maxHp,
+            character.maxMP,
+            character.hp,
+            character.mp,
 
-        // Class is represented by its name
-        save.charClass = character.charClass.getName();
+            character.stance,
+            new ArrayList<>(character.conditions),
+            character.isDead,
 
-        // Inventory is represented by item IDs
-        save.inventory = new ArrayList<>();
-
-//        for (Item item : character.inventory.inventoryList) {
-//            save.inventory.add(item.getID());
-//        }
-
-        // Spells are represented by IDs
-        save.spells = new ArrayList<>();
-
-        // Equipment
-        save.equipment = new java.util.HashMap<>();
-
-        // TODO: copy equipped items into save.equipment
-
-        return save;
+            serializeInventory(character),
+            serializeSpells(character)
+        );
     }
+
+    private static ArrayList<String> serializeInventory(
+        PartyCharacter character
+    ) {
+        ArrayList<String> inventory = new ArrayList<>();
+
+        for (Item item : character.inventory.inventoryList) {
+            inventory.add(item.getId());
+        }
+
+        return inventory;
+    }
+
+    private static HashMap<String, String> serializeEquipment(
+        PartyCharacter character
+    ) {
+        HashMap<String, String> equipment = new HashMap<>();
+
+        for (Map.Entry<EquipmentSlot, Item> entry :
+            character.equipment.getEquippedItemsMap().entrySet()) {
+
+            if (entry.getValue() != null) {
+                equipment.put(
+                    entry.getKey().name(),
+                    entry.getValue().getId()
+                );
+            }
+        }
+
+        return equipment;
+    }
+
+    private static ArrayList<String> serializeSpells(
+        PartyCharacter character
+    ) {
+        ArrayList<String> spells = new ArrayList<>();
+
+        if (character.charClass.isMagicUser()) {
+            for (SpellNames spell : character.charClass
+                .getMagicSystem().availableSpells) {
+
+                spells.add(spell.name());
+            }
+        }
+
+        return spells;
+    }
+
 }
