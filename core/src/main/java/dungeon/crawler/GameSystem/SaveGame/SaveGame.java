@@ -37,9 +37,6 @@ public class SaveGame {
         GameSave decodedData = GameSaveJson.decode(saveData);
         GameState loadedGameState = new GameState();
         loadedGameState.populateGameState(loadedGameState);
-        Gdx.app.log("[BROWSER LOAD]", "gold = " + decodedData.getGold());
-        Gdx.app.log("[BROWSER LOAD]", "player = " + decodedData.getPlayer());
-        Gdx.app.log("[BROWSER LOAD]", "party size = " + decodedData.getParty().size());
 
         return null;
     }

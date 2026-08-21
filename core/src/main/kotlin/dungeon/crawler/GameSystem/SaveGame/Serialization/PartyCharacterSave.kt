@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class PartyCharacterSave(
+    val name: String,
     val level: Int,
     val xp: Int,
     val strength: Int,
@@ -15,17 +16,14 @@ data class PartyCharacterSave(
     val isHero: Boolean,
     val toHit: Int,
     val charClass: String,
-
     val equipment: Map<String, String>,
-
     val maxHp: Int,
     val maxMP: Int,
     val hp: Int,
     val mp: Int,
     val stance: Stance,
-    val conditions: List<Condition>,
+    val conditions: ArrayList<Condition>,
     val isDead: Boolean,
-
-    val inventory: List<String>,
-    val spells: List<String>
+    val inventory: ArrayList<String>,
+    val spells: ArrayList<String>
 )

@@ -9,9 +9,9 @@ data class GameSave(
     val isPlayerDead: Boolean,
     val currentMap: String,
     val ScreenID: Int,
-    val Bag: List<String>,
+    val Bag: ArrayList<String>,
     val overWorldCoordinatesX: Int,
     val overWorldCoordinatesY: Int,
-    val party: List<PartyCharacterSave>,
+    val party: ArrayList<PartyCharacterSave>,
     val gold: Int
 )

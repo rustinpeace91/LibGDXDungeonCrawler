@@ -45,30 +45,24 @@ public class GameSerializer {
     ) {
 
         return new PartyCharacterSave(
+            character.name,
             character.level,
             character.xp,
-
             character.strength,
             character.agility,
             character.intelligence,
             character.perception,
-
             character.isHero,
             character.toHit,
-
             character.charClass.getName(),
-
             serializeEquipment(character),
-
             character.maxHp,
             character.maxMP,
             character.hp,
             character.mp,
-
             character.stance,
             new ArrayList<>(character.conditions),
             character.isDead,
-
             serializeInventory(character),
             serializeSpells(character)
         );
