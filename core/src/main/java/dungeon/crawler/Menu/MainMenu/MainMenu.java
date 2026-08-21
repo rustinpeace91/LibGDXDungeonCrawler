@@ -53,6 +53,7 @@ public class MainMenu extends BaseLinearMenu{
             @Override
             public void changed(ChangeEvent event, Actor actor){
                 String message = main.loadGame();
+
                 showPopup(message, 2f);
 //                if(gameState.getBuild() == GameBuild.DESKTOP){
 //                    String message = main.loadGame();

@@ -25,14 +25,20 @@ public class SaveGame {
 
     }
 
-    public GameState loadGameState(){
+    public GameState loadGameState() {
 
         if (!saveFile.exists()) {
             return null;
         }
-        Json json = new Json();
+
         String saveData = saveFile.readString();
-        Gdx.app.log("[BROWSER LOAD]", saveData);
+
+        GameSave decodedData = GameSaveJson.decode(saveData);
+
+        Gdx.app.log("[BROWSER LOAD]", "gold = " + decodedData.getGold());
+        Gdx.app.log("[BROWSER LOAD]", "player = " + decodedData.getPlayer());
+        Gdx.app.log("[BROWSER LOAD]", "party size = " + decodedData.getParty().size());
+
         return null;
     }
 }
