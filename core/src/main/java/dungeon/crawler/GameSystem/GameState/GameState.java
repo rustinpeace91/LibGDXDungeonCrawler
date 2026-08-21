@@ -1,5 +1,6 @@
 package dungeon.crawler.GameSystem.GameState;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 import com.badlogic.gdx.Game;
@@ -20,11 +21,6 @@ public class GameState {
 
     public transient Map<Integer, PartyCharacter> party;
 
-    // Prevents JSON issues
-    public ArrayList<PartyCharacter> partySaveData = new ArrayList<>();
-
-
-
     public int gold;
     public boolean isPlayerDead;
     public String currentMap;
@@ -36,41 +32,37 @@ public class GameState {
 
     public GameState(GameBuild build){
         this.build = build;
-        // TODO: make an actual constructor
     }
 
     public GameState(){
 
     }
-    // TODO: Refactor this shit so we're not repeating
-    public void setUpTestData(){
-        player = PlayerFactory.generate();
-        PartyCharacter fighter = PlayerFactory.generatePartyMember();
-        PartyCharacter wizard = PlayerFactory.generateWizard();
-        PartyCharacter thief = PlayerFactory.generateThief();
-        partySaveData.add(player);
-        partySaveData.add(fighter);
-        partySaveData.add(wizard);
-        partySaveData.add(thief);
-        initializeRuntimeParty();
-        partyBag = new Bag();
-        overWorldCoordinates = new Vector2(0,0);
-        gold = 100;
-        isPlayerDead = false;
-        currentMap = "";
-        screenID = 1;
+
+
+    public void setupGameFromPresetParty(){
+        String[] partyStrings = {"Fighter", "Wizard", "Thief"};
+        setUpPartyFromClassString(new ArrayList<>(Arrays.asList(partyStrings)));
+        setUpDefaultValues();
     }
 
-    public void SetUpClassDataFromString(ArrayList<String> partyList){
+    public void setupGameFromCustomParty(ArrayList<String> partyList){
+        setUpPartyFromClassString(partyList);
+        setUpDefaultValues();
+    }
+
+
+    public void setUpPartyFromClassString(ArrayList<String> partyList){
+        party = new HashMap<>();
         player = PlayerFactory.generate();
-        partySaveData = new ArrayList<>();
         for(int i = 0; i < partyList.size(); i++){
             String className = partyList.get(i);
             PartyCharacter chr = PlayerFactory.generateClass(className);
-            partySaveData.add(chr);
+            party.put(i, chr);
         }
-        initializeRuntimeParty();
 
+    }
+
+    public void setUpDefaultValues(){
         partyBag = new Bag();
         overWorldCoordinates = new Vector2(0,0);
         gold = 100;
@@ -110,15 +102,6 @@ public class GameState {
         return gold;
     }
 
-    public void initializeRuntimeParty() {
-
-        party = new HashMap<>();
-
-        for (int i = 0; i < partySaveData.size(); i++) {
-            party.put(i, partySaveData.get(i));
-        }
-
-    }
 
 
     public GameBuild getBuild() {
