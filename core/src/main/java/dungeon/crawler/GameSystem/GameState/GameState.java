@@ -138,13 +138,17 @@ public class GameState {
         Vector2 coords = new Vector2();
         coords.x = (float) gameSave.getOverWorldCoordinatesX();
         coords.y = (float) gameSave.getOverWorldCoordinatesY();
+        overWorldCoordinates = coords;
         List<PartyCharacterSave> partySave = gameSave.getParty();
+        party = new HashMap<>();
         for(int i = 0; i < gameSave.getParty().size(); i++){
             PartyCharacter newChar = PlayerFactory.generateFromSaveState(
                 partySave.get(i)
             );
             party.put(i, newChar);
         }
+        /* TODO: get rid of 'player', it's stupid and we don't need it anymore */
+        player = party.get(0);
         Bag bag = new Bag();
         for(Item i: PlayerFactory.returnItemsFromSave(gameSave.getBag())){
             bag.addToInventory(i);

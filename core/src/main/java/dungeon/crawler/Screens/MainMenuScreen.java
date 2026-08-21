@@ -150,12 +150,12 @@ public class MainMenuScreen extends ScreenAdapter  implements MenuInputObserver 
     public String loadGame(){
         SaveGame saveSystem = new SaveGame();
         GameState newState = saveSystem.loadGameState();
-//        if(newState == null){
-//            return "No valid save file present";
-//        }
-//
-//        game.loadGameState(newState);
-//        game.backToOverworld();
+        if(newState == null){
+            return "No valid save file present";
+        }
+
+        game.loadGameState(newState);
+        game.backToOverworld();
         return "Game loaded";
     }
 

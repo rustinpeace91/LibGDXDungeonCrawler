@@ -32,12 +32,16 @@ public class SaveGame {
             return null;
         }
 
-        String saveData = saveFile.readString();
+        try {
+            String saveData = saveFile.readString();
 
-        GameSave decodedData = GameSaveJson.decode(saveData);
-        GameState loadedGameState = new GameState();
-        loadedGameState.populateGameState(loadedGameState);
-
-        return null;
+            GameSave decodedData = GameSaveJson.decode(saveData);
+            GameState loadedGameState = new GameState();
+            loadedGameState.populateGameState(decodedData);
+            return loadedGameState;
+        } catch (Exception e) {
+            Gdx.app.log("[LOAD GAME]", e.getMessage());
+            return null;
+        }
     }
 }
