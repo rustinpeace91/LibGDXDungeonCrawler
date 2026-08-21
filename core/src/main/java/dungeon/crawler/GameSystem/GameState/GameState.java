@@ -11,6 +11,7 @@ import dungeon.crawler.GameSystem.Character.Bag;
 import dungeon.crawler.GameSystem.Character.EnemyCombatant;
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.GameSystem.GameBuild;
+import dungeon.crawler.GameSystem.SaveGame.Serialization.GameSave;
 import dungeon.crawler.GameSystem.TestData.PlayerFactory;
 
 public class GameState {
@@ -127,4 +128,11 @@ public class GameState {
     public void setBuild(GameBuild build) {
         this.build = build;
     }
+
+    public void populateGameState(GameSave gameSave){
+        gold = gameSave.getGold();
+        isPlayerDead = false;
+        currentMap = gameSave.getPlayerMap()
+    }
+
 }

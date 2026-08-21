@@ -2,6 +2,7 @@ package dungeon.crawler.GameSystem.SaveGame.Serialization;
 
 
 import dungeon.crawler.Data.Spells.SpellNames;
+import dungeon.crawler.GameSystem.Character.Inventory;
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.GameSystem.GameState.GameState;
 import dungeon.crawler.GameSystem.Inventory.Item;
@@ -27,6 +28,10 @@ public class GameSerializer {
 
         return new GameSave(
             player,
+            gameState.isPlayerDead,
+            gameState.currentMap,
+            gameState.screenID,
+            serializeInventory(gameState.partyBag),
             (int) gameState.overWorldCoordinates.x,
             (int) gameState.overWorldCoordinates.y,
             party,
@@ -70,14 +75,13 @@ public class GameSerializer {
     }
 
     private static ArrayList<String> serializeInventory(
-        PartyCharacter character
+        Inventory character
     ) {
         ArrayList<String> inventory = new ArrayList<>();
 
-        for (Item item : character.inventory.inventoryList) {
+        for (Item item : character.returnInventory()) {
             inventory.add(item.getId());
         }
-
         return inventory;
     }
 

@@ -1,4 +1,5 @@
 package dungeon.crawler.GameSystem.SaveGame;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
@@ -34,7 +35,8 @@ public class SaveGame {
         String saveData = saveFile.readString();
 
         GameSave decodedData = GameSaveJson.decode(saveData);
-
+        GameState loadedGameState = new GameState();
+        loadedGameState.populateGameState(loadedGameState);
         Gdx.app.log("[BROWSER LOAD]", "gold = " + decodedData.getGold());
         Gdx.app.log("[BROWSER LOAD]", "player = " + decodedData.getPlayer());
         Gdx.app.log("[BROWSER LOAD]", "party size = " + decodedData.getParty().size());

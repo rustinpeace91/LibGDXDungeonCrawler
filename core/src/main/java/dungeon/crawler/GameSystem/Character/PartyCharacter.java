@@ -333,4 +333,9 @@ public class PartyCharacter extends Character implements Combatant, Inventory{
     public void removeCondition(Condition condition) {
         conditions.remove(condition);
     }
+
+    @Override
+    public ArrayList<Item> returnInventory(){
+        return inventory.inventoryList;
+    }
 }
