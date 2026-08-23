@@ -1,10 +1,8 @@
 package dungeon.crawler.GameSystem.SaveGame.Serialization
 
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
-object GameSaveJson {
+object SaveJsonParser {
 
     private val json = Json {
         ignoreUnknownKeys = true

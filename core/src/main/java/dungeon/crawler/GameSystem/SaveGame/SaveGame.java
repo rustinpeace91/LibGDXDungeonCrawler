@@ -1,14 +1,10 @@
 package dungeon.crawler.GameSystem.SaveGame;
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.Json;
 import dungeon.crawler.GameSystem.GameState.GameState;
 import dungeon.crawler.GameSystem.SaveGame.Serialization.GameSave;
-import dungeon.crawler.GameSystem.SaveGame.Serialization.GameSaveJson;
+import dungeon.crawler.GameSystem.SaveGame.Serialization.SaveJsonParser;
 import dungeon.crawler.GameSystem.SaveGame.Serialization.GameSerializer;
-
-import java.util.HashMap;
 
 public class SaveGame {
     FileHandle saveFile = Gdx.files.local("savegame.json");
@@ -18,8 +14,9 @@ public class SaveGame {
     }
 
     public String saveGameState(GameState gameState){
+        /* write savegame to filesystem and return save string (for logging)*/
         GameSave save = GameSerializer.serializeGameState(gameState);
-        String saveData = GameSaveJson.encode(save);
+        String saveData = SaveJsonParser.encode(save);
         Gdx.app.log("[BROWSER SAVE]", saveData);
         saveFile.writeString(saveData, false);
         return saveData;
@@ -27,7 +24,7 @@ public class SaveGame {
     }
 
     public GameState loadGameState() {
-
+        /*load game from file system and return a GameState, or null if error*/
         if (!saveFile.exists()) {
             return null;
         }
@@ -35,7 +32,7 @@ public class SaveGame {
         try {
             String saveData = saveFile.readString();
 
-            GameSave decodedData = GameSaveJson.decode(saveData);
+            GameSave decodedData = SaveJsonParser.decode(saveData);
             GameState loadedGameState = new GameState();
             loadedGameState.populateGameState(decodedData);
             return loadedGameState;
