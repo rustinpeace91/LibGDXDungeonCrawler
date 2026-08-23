@@ -7,6 +7,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
 
 import dungeon.crawler.GameConstants;
+import dungeon.crawler.GameSystem.Character.Condition;
+import dungeon.crawler.GameSystem.Character.PartyCharacter;
+import dungeon.crawler.GameSystem.GameState.GameState;
+import dungeon.crawler.GameSystem.SaveGame.Serialization.PartyCharacterSave;
 
 public class CurrentFighterStatusScreen extends Table {
     private Label messageLabel;
@@ -14,7 +18,7 @@ public class CurrentFighterStatusScreen extends Table {
 
     public CurrentFighterStatusScreen(Skin skin, float statusScreenHeight) {
         super(skin); // Pass skin to parent Table
-        this.setSize(128f, statusScreenHeight); 
+        this.setSize(GameConstants.COMBAT_MENU_WIDTH, statusScreenHeight);
         this.statusScreenHeight = statusScreenHeight;
 
         // Set the background and gray tint
@@ -37,5 +41,23 @@ public class CurrentFighterStatusScreen extends Table {
 
     public void setText(String text) {
         messageLabel.setText(text);
+    }
+
+    public void displayCurrentCombatant(PartyCharacter character){
+        String status = character.getName() + "'s turn\n" +
+        "Class: " + character.charClass.getName() + "\n" +
+        "Stance: " + character.getStance().toString() + '\n';
+        status = status + "Conditions: \n";
+        for(Condition condition: character.getConditions()){
+            status = status + "-" + condition.toString() + "\n";
+        }
+
+        setText(status);
+    }
+
+    public void displayDefault(){
+        String status = "--";
+
+        setText(status);
     }
 }
