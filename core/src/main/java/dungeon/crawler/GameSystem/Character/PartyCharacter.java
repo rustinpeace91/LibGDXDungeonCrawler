@@ -1,5 +1,6 @@
 package dungeon.crawler.GameSystem.Character;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Random;
@@ -296,6 +297,10 @@ public class PartyCharacter extends Character implements Combatant, Inventory{
     @Override
     public boolean hasCondition(Condition condition) {
         return conditions.contains(condition);
+    }
+
+    public ArrayList<Condition> getConditions(){
+        return conditions;
     }
 
 

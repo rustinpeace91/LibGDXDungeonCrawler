@@ -40,7 +40,7 @@ public class GameState {
 
 
     public void setupGameFromPresetParty(){
-        String[] partyStrings = {"Fighter", "Wizard", "Thief"};
+        String[] partyStrings = {"Hero", "Fighter", "Wizard", "Thief"};
         setUpPartyFromClassString(new ArrayList<>(Arrays.asList(partyStrings)));
         setUpDefaultValues();
     }

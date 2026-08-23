@@ -19,6 +19,7 @@ import dungeon.crawler.Controls.GameInputHandler;
 import dungeon.crawler.Data.Spells.SpellNames;
 import dungeon.crawler.Data.Spells.SpellRegistry;
 import dungeon.crawler.GameConstants;
+import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.GameSystem.Combat.CombatLogic;
 import dungeon.crawler.GameSystem.Combat.CombatStateManager;
 import dungeon.crawler.GameSystem.Combat.EnemyRenderer;
@@ -69,6 +70,7 @@ public class CombatScreen extends ScreenAdapter
     private float worldWidth;
     private float worldHeight;
     private GameInputHandler gameInputHandler;
+    private CurrentFighterStatusScreen currentFighterScreen;
 
 
     public CombatScreen(
@@ -181,6 +183,7 @@ public class CombatScreen extends ScreenAdapter
         this.logicHandler.addListener(this);
         this.enemyRenderer.intializeEnemySprites();
         this.logicHandler.advanceState(CombatPhase.INTRO);
+        updatePartyScreen();
     }
 
     private void setUpMenu() {
@@ -221,7 +224,7 @@ public class CombatScreen extends ScreenAdapter
         this.uiStage.addActor(partyScreen);
 
         float statusScreenHeight = Math.abs(combatMenu.getHeight() - uiStage.getHeight());
-        CurrentFighterStatusScreen currentFighterScreen = new CurrentFighterStatusScreen(skin, statusScreenHeight);
+        currentFighterScreen = new CurrentFighterStatusScreen(skin, statusScreenHeight);
         currentFighterScreen.setText(
             StringUtils.format("%s\n-various\n-ailments\n-will\n-go\n-here", this.game.gameState.player.name)
         );
@@ -239,7 +242,6 @@ public class CombatScreen extends ScreenAdapter
         this.menuInputHanlder.addListener(this);
         combatMenu.setActive(false);
         menuInputHanlder.setHandlerDisabled(true);
-        updatePartyScreen();
 
     }
 
@@ -263,19 +265,38 @@ public class CombatScreen extends ScreenAdapter
         StringBuilder sb = new StringBuilder();
         game.gameState.party.forEach(
             (key, character) -> {
-                sb.append(
-                    StringUtils.format(
-                        "%s \n HP: %s \n MP: %s \n\n",
-                        character.name,
-                        String.valueOf(
-                            character.hp
-                        ),
-                        String.valueOf(character.mp)
-                    )
-                );
+                if(
+                    logicHandler.phase != null &&
+                    logicHandler.phase == CombatPhase.ACTIONSELECT &&
+                    turnTracker.getCurrentCombatant() == character
+                ){
+                    sb.append(
+                        StringUtils.format(
+                            ">%s \n HP: %s \n MP: %s \n\n",
+                            character.name,
+                            String.valueOf(
+                                character.hp
+                            ),
+                            String.valueOf(character.mp)
+                        )
+                    );
+                } else {
+                    sb.append(
+                        StringUtils.format(
+                            "%s \n HP: %s \n MP: %s \n\n",
+                            character.name,
+                            String.valueOf(
+                                character.hp
+                            ),
+                            String.valueOf(character.mp)
+                        )
+                    );
+                }
+
             }
         );
         partyScreen.setText(sb.toString());
+
     }
 
     @Override
@@ -303,6 +324,9 @@ public class CombatScreen extends ScreenAdapter
         uiStage.setKeyboardFocus(combatMenu);
         combatMenu.resetMenu();
         menuInputHanlder.setHandlerDisabled(false);
+        PartyCharacter currentChar = (PartyCharacter) turnTracker.getCurrentCombatant();
+        currentFighterScreen.displayCurrentCombatant(currentChar);
+        updatePartyScreen();
     }
 
     @Override
@@ -310,11 +334,13 @@ public class CombatScreen extends ScreenAdapter
         uiStage.setKeyboardFocus(combatMenu);
         combatMenu.initializeMenu();
         menuInputHanlder.setHandlerDisabled(false);
+
     }
 
     @Override
     public void onActionSelect(int CombatantID, CombatActionState actionState, int targetId){
         logicHandler.addAction(CombatantID, actionState, targetId);
+
     }
 
     @Override
@@ -346,6 +372,7 @@ public class CombatScreen extends ScreenAdapter
     public void onActionSelectComplete(){
         combatMenu.setActive(false);
         uiStage.setKeyboardFocus(eventScreen);
+
     }
 
     @Override
@@ -376,6 +403,17 @@ public class CombatScreen extends ScreenAdapter
         menuInputHanlder.setHandlerDisabled(true);
 
 
+    }
+
+    @Override
+    public void onPhaseChange() {
+        if(logicHandler.phase == CombatPhase.ACTIONSELECT){
+            PartyCharacter currentChar = (PartyCharacter) turnTracker.getCurrentCombatant();
+            currentFighterScreen.displayCurrentCombatant(currentChar);
+            updatePartyScreen();
+        } else {
+            currentFighterScreen.displayDefault();
+        }
     }
 
     @Override

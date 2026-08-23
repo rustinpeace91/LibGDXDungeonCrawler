@@ -131,7 +131,7 @@ public class CombatLogic {
 
     public void advanceState(CombatPhase nextPhase){
         phase =  nextPhase;
-        Gdx.app.log("StateCheck", "Current Phase: " + phase);
+        notifyOnPhaseChange();
 
     }
 
@@ -418,6 +418,11 @@ public class CombatLogic {
         combatLogicObservers.add(listener);
     }
 
+    public void notifyOnPhaseChange(){
+        for(CombatLogicObserver listener: combatLogicObservers){
+            listener.onPhaseChange();
+        }
+    }
 
     public void notifyOnActionMenuReset(){
         for(CombatLogicObserver listener: combatLogicObservers){
