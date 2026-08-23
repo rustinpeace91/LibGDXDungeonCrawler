@@ -9,6 +9,7 @@ import dungeon.crawler.GameConstants;
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.GameSystem.GameState.GameState;
 import dungeon.crawler.GameSystem.Inventory.Item;
+import dungeon.crawler.GameSystem.TestData.ItemFactory;
 import dungeon.crawler.Menu.BaseLinearMenu;
 import dungeon.crawler.Menu.OverworldSubMenu;
 import dungeon.crawler.Utils.ItemUtils;
@@ -54,10 +55,19 @@ public class ShopItemTransferOptions extends BaseLinearMenu implements Overworld
                         showPopup("Inventory completely full", 2f);
 
                     } else {
-                        ItemUtils.buyItem(gameState, selectedItem);
-                        currentCombatant.addToInventory(selectedItem);
-                        showPopup(selectedItem.getName() + " purchased!", 2f);
-                        FinishMenuComplete();
+                        /* we do this to prevent having the same object references as the shop.
+                        Not sure what would happen if we did that. Do not intend on finding out.
+                         */
+                        Item newItem=ItemUtils.buyItem(gameState, selectedItem);
+                        if(newItem == null){
+                            showPopup("An error occured purchasing this item", 2f);
+
+                        } else {
+                            currentCombatant.addToInventory(selectedItem);
+                            showPopup(selectedItem.getName() + " purchased!", 2f);
+                            FinishMenuComplete();
+                        }
+
                     }
 //                        setSubMenu(nextMenu);
 //                        openSubMenu(nextMenu);
@@ -71,10 +81,15 @@ public class ShopItemTransferOptions extends BaseLinearMenu implements Overworld
                     if(!gameState.partyBag.enoughSpace()) {
                         showPopup("Bag completely full", 2f);
                     } else {
-                        ItemUtils.buyItem(gameState, selectedItem);
-                        gameState.partyBag.addToInventory(selectedItem);
-                        showPopup(selectedItem.getName() + " purchased!", 2f);
-                        FinishMenuComplete();
+                        Item newItem=ItemUtils.buyItem(gameState, selectedItem);
+                        if(newItem == null){
+                            showPopup("An error occured purchasing this item", 2f);
+
+                        } else {
+                            gameState.partyBag.addToInventory(selectedItem);
+                            showPopup(selectedItem.getName() + " purchased!", 2f);
+                            FinishMenuComplete();
+                        }
                     }
 //                        setSubMenu(nextMenu);
 //                        openSubMenu(nextMenu);

@@ -166,7 +166,8 @@ public class MainGame extends Game implements ScreenChangeObserver,
     }
 
     public void loadGameState(GameState state){
-        state.initializeRuntimeParty();
+        /* the one thing we do not take from the Save data. ever*/
+        state.setBuild(build);
         this.gameState = state;
     }
 

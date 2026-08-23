@@ -1,5 +1,6 @@
 package dungeon.crawler.Utils;
 
+import com.badlogic.gdx.Gdx;
 import dungeon.crawler.GameConstants;
 import dungeon.crawler.GameSystem.Character.Bag;
 import dungeon.crawler.GameSystem.Character.Inventory;
@@ -9,6 +10,7 @@ import dungeon.crawler.GameSystem.Inventory.Armor;
 import dungeon.crawler.GameSystem.Inventory.Item;
 import dungeon.crawler.GameSystem.Inventory.ItemTypes.ItemType;
 import dungeon.crawler.GameSystem.Inventory.Weapon;
+import dungeon.crawler.GameSystem.TestData.ItemFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,11 +46,19 @@ public class ItemUtils {
         return Math.round(selectedItem.value * GameConstants.SHOP_MARKUP);
     }
 
-    public static void buyItem(GameState gamestate, Item selectedItem){
+    public static Item buyItem(GameState gamestate, Item selectedItem){
         int price = Math.round(selectedItem.value * GameConstants.SHOP_MARKUP);
         if(gamestate.gold > price){
             gamestate.removeGold(price);
         };
+        ItemFactory factory = new ItemFactory();
+        Item newItem = factory.createItemById(selectedItem.getId());
+        if(newItem == null){
+            gamestate.addGold(price);
+            Gdx.app.log("INVENTORY", "ERROR: An item was requested that does not exist in the registry");
+            return null;
+        }
+        return newItem;
     }
 
     public static void transferItem(Inventory sender, Inventory reciever, Item item){

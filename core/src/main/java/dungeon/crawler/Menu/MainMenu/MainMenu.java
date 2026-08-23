@@ -52,12 +52,15 @@ public class MainMenu extends BaseLinearMenu{
         this.addButton("Load", new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor){
-                if(gameState.getBuild() == GameBuild.DESKTOP){
-                    String message = main.loadGame();
-                    showPopup(message, 2f);
-                } else {
-                    showPopup("Load works in Desktop Mode only", 2f);
-                }
+                String message = main.loadGame();
+
+                showPopup(message, 2f);
+//                if(gameState.getBuild() == GameBuild.DESKTOP){
+//                    String message = main.loadGame();
+//                    showPopup(message, 2f);
+//                } else {
+//                    showPopup("Load works in Desktop Mode only", 2f);
+//                }
 
 
             }

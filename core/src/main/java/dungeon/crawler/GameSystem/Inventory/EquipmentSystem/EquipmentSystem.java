@@ -6,6 +6,9 @@ import dungeon.crawler.GameSystem.Inventory.ItemTypes.EquipmentSlot;
 import dungeon.crawler.GameSystem.Inventory.Weapon;
 import dungeon.crawler.GameSystem.Inventory.ItemTypes.ItemType;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class EquipmentSystem {
     private Weapon rightHand;
     private Armor leftHand;
@@ -156,6 +159,19 @@ public class EquipmentSystem {
                 throw new IllegalArgumentException("Unknown Equipment Slot");
         }
 
+    }
+
+    public Map<EquipmentSlot, Item> getEquippedItemsMap() {
+        /* get equipped items as a hashmap (for savegames) */
+        Map<EquipmentSlot, Item> equipped = new HashMap<>();
+
+        equipped.put(EquipmentSlot.RIGHT_HAND, rightHand);
+        equipped.put(EquipmentSlot.LEFT_HAND, leftHand);
+        equipped.put(EquipmentSlot.HEAD, head);
+        equipped.put(EquipmentSlot.BODY, body);
+        equipped.put(EquipmentSlot.FEET, feet);
+
+        return equipped;
     }
 
 

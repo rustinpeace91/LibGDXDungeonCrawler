@@ -39,6 +39,7 @@ public class Weapon extends Item{
     ) {
         super(
             name,
+            id,
             value,
             ItemType.WEAPON
         );

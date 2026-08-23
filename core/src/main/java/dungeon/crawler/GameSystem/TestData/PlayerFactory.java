@@ -1,9 +1,11 @@
 package dungeon.crawler.GameSystem.TestData;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.badlogic.gdx.Gdx;
 import dungeon.crawler.GameConstants;
 import dungeon.crawler.GameSystem.Character.Class.*;
 import dungeon.crawler.GameSystem.Character.Condition;
@@ -14,6 +16,7 @@ import static dungeon.crawler.GameConstants.PLAYER_STATS.*;
 
 import dungeon.crawler.GameSystem.Inventory.Item;
 import dungeon.crawler.GameSystem.Inventory.Weapon;
+import dungeon.crawler.GameSystem.SaveGame.Serialization.PartyCharacterSave;
 
 public class PlayerFactory{
 
@@ -31,6 +34,75 @@ public class PlayerFactory{
             default:
                 throw new IllegalArgumentException("Unknown class type: " + selector);
 
+        }
+    }
+
+    public static ClassLogic blankClassFromString(String selector){
+        // TODO: for when we implement savegames
+        switch(selector){
+            case "Hero":
+                return new WizardClass();
+            case "Fighter":
+                return new FighterClass();
+            case "Wizard":
+                return new WizardClass();
+            case "Thief":
+                return new ThiefClass();
+            default:
+                throw new IllegalArgumentException("Unknown class type: " + selector);
+        }
+    }
+
+    public static PartyCharacter generateFromSaveState(PartyCharacterSave saveState){
+        ClassLogic charClass = blankClassFromString(saveState.getCharClass());
+        PartyCharacter newChar = new PartyCharacter(
+            saveState.getName(),
+            saveState.getMaxHp(),
+            saveState.getMaxMP(),
+            saveState.getHp(),
+            saveState.getMaxMP(),
+            saveState.getXp(),
+            saveState.getStance(),
+            saveState.getConditions(),
+            saveState.isDead(),
+            saveState.getLevel(),
+            saveState.getStrength(),
+            saveState.getAgility(),
+            saveState.getIntelligence(),
+            saveState.getPerception(),
+            charClass,
+            saveState.isHero()
+        );
+        newChar.generateFist();
+        for(Item item: returnItemsFromSave(saveState.getInventory())){
+            newChar.addToInventory(item);
+        }
+        equipItemsFromInventory(newChar, saveState);
+        newChar.charClass.fillSpells(saveState.getLevel());
+        return newChar;
+
+    }
+
+    public static ArrayList<Item> returnItemsFromSave(ArrayList<String> itemList){
+        ArrayList<Item> inventory = new ArrayList<>();
+        ItemFactory factory = new ItemFactory();
+        for(String i:itemList) {
+            try{
+                inventory.add(factory.createItemById(i));
+            } catch (IllegalArgumentException exc){
+                Gdx.app.log("[LOAD GAME]", "Error.  Item " + i + " does not exist");
+            }
+        }
+        return inventory;
+    }
+
+    public static void equipItemsFromInventory(PartyCharacter character, PartyCharacterSave saveState){
+
+        for(Item i: character.returnInventory()) {
+            /* thought we were going to need a map here and not just an array. oh well*/
+            if(saveState.getEquipment().get(i.getId()) != null){
+                character.equipment.equipItem(i);
+            }
         }
     }
 

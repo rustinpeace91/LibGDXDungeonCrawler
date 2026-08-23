@@ -42,4 +42,9 @@ public class Bag implements Inventory{
         return "Bag";
     }
 
+    @Override
+    public ArrayList<Item> returnInventory(){
+        return inventory.inventoryList;
+    }
+
 }

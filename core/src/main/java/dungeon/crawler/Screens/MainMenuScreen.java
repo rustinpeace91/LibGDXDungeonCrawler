@@ -10,20 +10,16 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import dungeon.crawler.Controls.GameInputHandler;
 import dungeon.crawler.GameConstants;
 import dungeon.crawler.GameSystem.GameState.GameState;
-import dungeon.crawler.GameSystem.Inventory.Item;
 import dungeon.crawler.GameSystem.SaveGame.SaveGame;
 import dungeon.crawler.MainGame;
 import dungeon.crawler.Menu.InputHandlers.MenuInputHandler;
 import dungeon.crawler.Menu.MainMenu.MainMenu;
-import dungeon.crawler.Menu.Shop.ShopMainMenu;
-import dungeon.crawler.Menu.TestMenus.TestShopMenu;
 import dungeon.crawler.Observers.MenuInputObserver;
 
 import java.util.ArrayList;
@@ -142,12 +138,12 @@ public class MainMenuScreen extends ScreenAdapter  implements MenuInputObserver 
     }
 
     public void startGame(){
-        game.gameState.SetUpClassDataFromString(partySelection);
+        game.gameState.setupGameFromCustomParty(partySelection);
         game.startGame();
     }
 
     public void startGamePreset(){
-        game.gameState.setUpTestData();
+        game.gameState.setupGameFromPresetParty();
         game.startGame();
     }
 

@@ -6,7 +6,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
-import dungeon.crawler.GameSystem.GameBuild;
 import dungeon.crawler.GameSystem.GameState.GameState;
 import dungeon.crawler.GameSystem.SaveGame.SaveGame;
 import dungeon.crawler.Menu.BaseLinearMenu;
@@ -76,12 +75,14 @@ public class OptionsMenu extends BaseLinearMenu{
             new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    if(gameState.getBuild() == GameBuild.DESKTOP){
-                        String s = saveSystem.saveGameState(gameState);
-                        showPopup("Game Saved", 2f);
-                    } else {
-                        showPopup("Save works in Desktop Mode only", 2f);
-                    }
+                    String s = saveSystem.saveGameState(gameState);
+                    showPopup("Game Saved", 2f);
+//                    if(gameState.getBuild() == GameBuild.DESKTOP){
+//                        String s = saveSystem.saveGameState(gameState);
+//                        showPopup("Game Saved", 2f);
+//                    } else {
+//                        showPopup("Save works in Desktop Mode only", 2f);
+//                    }
 
                 }
             }

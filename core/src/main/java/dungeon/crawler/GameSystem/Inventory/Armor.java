@@ -13,6 +13,7 @@ public class Armor extends Item{
     public Armor(){};
     public Armor(
         String name,
+        String id,
         int defenseBonus,
         int value,
         ArmorTypes armorType,
@@ -20,6 +21,7 @@ public class Armor extends Item{
     ) {
         super(
             name,
+            id,
             value,
             ItemType.ARMOR
         );
