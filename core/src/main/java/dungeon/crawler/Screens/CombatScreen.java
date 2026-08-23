@@ -183,6 +183,7 @@ public class CombatScreen extends ScreenAdapter
         this.logicHandler.addListener(this);
         this.enemyRenderer.intializeEnemySprites();
         this.logicHandler.advanceState(CombatPhase.INTRO);
+        updatePartyScreen();
     }
 
     private void setUpMenu() {
@@ -241,7 +242,6 @@ public class CombatScreen extends ScreenAdapter
         this.menuInputHanlder.addListener(this);
         combatMenu.setActive(false);
         menuInputHanlder.setHandlerDisabled(true);
-        updatePartyScreen();
 
     }
 
@@ -265,16 +265,34 @@ public class CombatScreen extends ScreenAdapter
         StringBuilder sb = new StringBuilder();
         game.gameState.party.forEach(
             (key, character) -> {
-                sb.append(
-                    StringUtils.format(
-                        "%s \n HP: %s \n MP: %s \n\n",
-                        character.name,
-                        String.valueOf(
-                            character.hp
-                        ),
-                        String.valueOf(character.mp)
-                    )
-                );
+                if(
+                    logicHandler.phase != null &&
+                    logicHandler.phase == CombatPhase.ACTIONSELECT &&
+                    turnTracker.getCurrentCombatant() == character
+                ){
+                    sb.append(
+                        StringUtils.format(
+                            ">%s \n HP: %s \n MP: %s \n\n",
+                            character.name,
+                            String.valueOf(
+                                character.hp
+                            ),
+                            String.valueOf(character.mp)
+                        )
+                    );
+                } else {
+                    sb.append(
+                        StringUtils.format(
+                            "%s \n HP: %s \n MP: %s \n\n",
+                            character.name,
+                            String.valueOf(
+                                character.hp
+                            ),
+                            String.valueOf(character.mp)
+                        )
+                    );
+                }
+
             }
         );
         partyScreen.setText(sb.toString());
@@ -308,6 +326,7 @@ public class CombatScreen extends ScreenAdapter
         menuInputHanlder.setHandlerDisabled(false);
         PartyCharacter currentChar = (PartyCharacter) turnTracker.getCurrentCombatant();
         currentFighterScreen.displayCurrentCombatant(currentChar);
+        updatePartyScreen();
     }
 
     @Override
@@ -391,6 +410,7 @@ public class CombatScreen extends ScreenAdapter
         if(logicHandler.phase == CombatPhase.ACTIONSELECT){
             PartyCharacter currentChar = (PartyCharacter) turnTracker.getCurrentCombatant();
             currentFighterScreen.displayCurrentCombatant(currentChar);
+            updatePartyScreen();
         } else {
             currentFighterScreen.displayDefault();
         }
