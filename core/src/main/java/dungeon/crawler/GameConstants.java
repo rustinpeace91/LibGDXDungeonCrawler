@@ -81,6 +81,9 @@ public class GameConstants {
 
     // Backgrounds
     public static final String SHOP_BACKGROUND="Misc/storefront.jpg";
+    public static final String INTRO_SCREEN_1="EventScreens/daking.png";
+    public static final String INTRO_SCREEN_2="EventScreens/foulbeast.png";
+
 
     public static final Map<PlayerDirection, String> WALK_ANIMATIONS = Map.of(
         PlayerDirection.UP, "WalkUp",

@@ -1,14 +1,17 @@
 package dungeon.crawler;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 import com.badlogic.gdx.utils.Array;
 import dungeon.crawler.AssetManager.Assets;
 import dungeon.crawler.Controls.ControllerAdapter;
+import dungeon.crawler.Data.Events.Event;
 import dungeon.crawler.Data.Maps.MapRegistry;
 import dungeon.crawler.Data.Maps.ScreenTransitionProperties;
+import dungeon.crawler.Data.Events.EventRegistry;
 import dungeon.crawler.GameSystem.Character.EnemyCombatant;
 import dungeon.crawler.GameSystem.Combat.CombatStateManager;
 import dungeon.crawler.GameSystem.Enemies.EnemySpawner;
@@ -70,14 +73,16 @@ public class MainGame extends Game implements ScreenChangeObserver,
 //            GameConstants.GAME_SCREEN.WALK_TOWN
 //        ));
         ArrayList<String> messages = new ArrayList<String>();
-        messages.add("You done fucked up bruh");
-        messages.add("You dead");
-
+        gameState.overWorldCoordinates.x = 13f;
+        gameState.overWorldCoordinates.y = 12f;
+        gameState.currentMap = mapFile;
+        Event intro = EventRegistry.INSTANCE.get("intro");
         setScreen(new GenericEventScreen(
             this,
-            messages,
-            GameConstants.SHOP_BACKGROUND,
-            GameConstants.EVENT_MENU_MEDIUM_DIALOGUE
+            intro.getText(),
+            intro.getBackgroundImage(),
+            intro.getMessageSize(),
+            intro
         ));
     }
 
@@ -117,6 +122,23 @@ public class MainGame extends Game implements ScreenChangeObserver,
             setScreen(churchScreen);
 
         }
+    }
+
+    public void handleEventScreen(String id){
+        Event event = EventRegistry.INSTANCE.get(id);
+        if(event == null) {
+            Gdx.app.log("ERROR", "EVENT screen does not exist!");
+            backToOverworld();
+        } else {
+            setScreen(new GenericEventScreen(
+                this,
+                event.getText(),
+                event.getBackgroundImage(),
+                event.getMessageSize(),
+                event
+            ));
+        }
+
     }
 
     @Override

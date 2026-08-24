@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import dungeon.crawler.Controls.GameInputHandler;
+import dungeon.crawler.Data.Events.Event;
 import dungeon.crawler.GameConstants;
 import dungeon.crawler.GameSystem.Inventory.Item;
 import dungeon.crawler.MainGame;
@@ -29,8 +30,9 @@ import dungeon.crawler.Observers.MenuInputObserver;
 import java.util.ArrayList;
 
 public class GenericEventScreen extends ScreenAdapter  implements MenuInputObserver, EventScreenObserver {
-    private final ArrayList<String> messages;
+    private final String[] messages;
     private final Vector2 dimensions;
+    private final Event event;
     private MainGame game;
     private SpriteBatch batch;
     private Stage uiStage;
@@ -44,15 +46,17 @@ public class GenericEventScreen extends ScreenAdapter  implements MenuInputObser
 
     public GenericEventScreen(
         MainGame game,
-        ArrayList<String> messages,
+        String[] messages,
         String background_image,
-        Vector2 dimensions
+        Vector2 dimensions,
+        Event event
     ){
         this.uiStage = new Stage(new FitViewport(GameConstants.RESOLUTION_WIDTH, GameConstants.RESOLUTION_HEIGHT));
         this.game = game;
         this.batch = new SpriteBatch();
         this.messages = messages;
         this.dimensions = dimensions;
+        this.event = event;
         skin = new Skin(Gdx.files.internal(GameConstants.MENU_SKIN));
 
         this.backgroundTexture = new Texture(Gdx.files.internal(background_image));
@@ -94,8 +98,7 @@ public class GenericEventScreen extends ScreenAdapter  implements MenuInputObser
 //        );
         InputMultiplexer multiplexer = setUpInput();
         Gdx.input.setInputProcessor(multiplexer);
-        String[] array = messages.toArray(new String[0]);
-        eventScreen.addMessages(array);
+        eventScreen.addMessages(messages);
         uiStage.setKeyboardFocus(eventScreen);
 
     }
@@ -136,7 +139,7 @@ public class GenericEventScreen extends ScreenAdapter  implements MenuInputObser
     public void dispose() {
         skin.dispose();
         uiStage.dispose();
-        this.backgroundTexture .dispose();
+        this.backgroundTexture.dispose();
     }
 
     @Override
@@ -156,6 +159,10 @@ public class GenericEventScreen extends ScreenAdapter  implements MenuInputObser
 
     @Override
     public void onLastMessageRead() {
-        game.backToOverworld();
+        if(event.getFinalEvent()){
+            game.backToOverworld();
+        } else {
+            game.handleEventScreen(event.getNextId());
+        }
     }
 }
