@@ -3,10 +3,7 @@ package dungeon.crawler.Menu;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -19,14 +16,14 @@ import dungeon.crawler.GameConstants;
 import dungeon.crawler.Observers.EventScreenObserver;
 
 // Extend Table directly
-public class CombatEventScreen extends Table implements GameInputObserver {
+public class CombatEventMenu extends Table implements GameInputObserver {
     private final GameInputHandler gameInputHandler;
     private Label messageLabel;
     private boolean isShowing;
     public LinkedList<String> messageQueue;
     private ArrayList<EventScreenObserver> observers;
 
-    public CombatEventScreen(Skin skin, GameInputHandler gameInputHandler) {
+    public CombatEventMenu(Skin skin, GameInputHandler gameInputHandler) {
         super(skin); // Pass skin to parent Table
 
         // Set the background and gray tint
@@ -40,9 +37,11 @@ public class CombatEventScreen extends Table implements GameInputObserver {
         messageLabel.setAlignment(Align.center);
         this.gameInputHandler = gameInputHandler;
         // Add the label to 'this' table
-        this.add(messageLabel).width(300f).pad(30f);
+        this.add(messageLabel).width(300f).pad(50f);
         this.messageQueue = new LinkedList<>();
         this.pack();
+        this.setSize(400f, 100f);
+
         // Listen for the Enter key
 //        this.addListener(new InputListener() {
 //            @Override
@@ -68,6 +67,7 @@ public class CombatEventScreen extends Table implements GameInputObserver {
     public void setText(String text) {
         messageLabel.setText(text);
     }
+
 
     public void addListener(EventScreenObserver observer){
         observers.add(observer);

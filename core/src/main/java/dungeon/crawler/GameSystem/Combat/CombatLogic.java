@@ -2,11 +2,9 @@ package dungeon.crawler.GameSystem.Combat;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Map;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.JsonValue.ValueType;
 
 import dungeon.crawler.Data.Spells.Spell;
 import dungeon.crawler.Data.Spells.SpellNames;
@@ -20,7 +18,7 @@ import dungeon.crawler.GameSystem.GameState.CombatPhase;
 import dungeon.crawler.GameSystem.Inventory.Item;
 import dungeon.crawler.GameSystem.Leveling.LevelTable;
 import dungeon.crawler.MainGame;
-import dungeon.crawler.Menu.CombatEventScreen;
+import dungeon.crawler.Menu.CombatEventMenu;
 import dungeon.crawler.Observers.CombatLogicObserver;
 import dungeon.crawler.Utils.StringUtils;
 
@@ -28,7 +26,7 @@ public class CombatLogic {
     private final CombatStateManager combatState;
     public CombatPhase phase;
     public LinkedList<CombatAction> actionQueue;
-    public CombatEventScreen eventScreen;
+    public CombatEventMenu eventScreen;
     public ArrayList<CombatLogicObserver> combatLogicObservers;
     private PartyActionTracker turnTracker;
     private int currentCombatantID;
@@ -38,7 +36,7 @@ public class CombatLogic {
     private CombatActionHandler actionHandler;
 
     public CombatLogic(
-        CombatEventScreen eventScreen,
+        CombatEventMenu eventScreen,
         MainGame game,
         PartyActionTracker turnTracker,
         CombatStateManager combatState

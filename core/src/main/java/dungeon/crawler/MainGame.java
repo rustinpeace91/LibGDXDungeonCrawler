@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
+import com.badlogic.gdx.utils.Array;
 import dungeon.crawler.AssetManager.Assets;
 import dungeon.crawler.Controls.ControllerAdapter;
 import dungeon.crawler.Data.Maps.MapRegistry;
@@ -23,6 +24,7 @@ import dungeon.crawler.Observers.ScreenChangeObserver;
 import dungeon.crawler.Screens.*;
 
 import java.util.ArrayList;
+import java.util.Vector;
 
 public class MainGame extends Game implements ScreenChangeObserver,
     CombatScreenObserver {
@@ -59,13 +61,23 @@ public class MainGame extends Game implements ScreenChangeObserver,
     public void startGame(){
         String mapFile = GameConstants.TEST_MAP;
         gameState.updateWorldMap(mapFile);
-        setScreen(new WorldScreenRefactor(
+//        setScreen(new WorldScreenRefactor(
+//            this,
+//            spriteBatch,
+//            13f,
+//            12f,
+//            mapFile,
+//            GameConstants.GAME_SCREEN.WALK_TOWN
+//        ));
+        ArrayList<String> messages = new ArrayList<String>();
+        messages.add("You done fucked up bruh");
+        messages.add("You dead");
+
+        setScreen(new GenericEventScreen(
             this,
-            spriteBatch,
-            13f,
-            12f,
-            mapFile,
-            GameConstants.GAME_SCREEN.WALK_TOWN
+            messages,
+            GameConstants.SHOP_BACKGROUND,
+            GameConstants.EVENT_MENU_MEDIUM_DIALOGUE
         ));
     }
 
