@@ -6,29 +6,17 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import dungeon.crawler.GameConstants;
-import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.GameSystem.GameState.GameState;
 import dungeon.crawler.GameSystem.Inventory.Item;
 import dungeon.crawler.Menu.BaseLinearMenu;
-import dungeon.crawler.Menu.Combat.CombatMenu;
-import dungeon.crawler.Menu.Combat.Inventory.ItemSelectMenu;
-import dungeon.crawler.Menu.Combat.Inventory.ItemTargetSelectMenu;
 import dungeon.crawler.Menu.Observers.StatusMenuObserver;
 import dungeon.crawler.Menu.Overworld.Inventory.*;
-import dungeon.crawler.Menu.Overworld.OptionsMenu;
-import dungeon.crawler.Menu.Overworld.StatusSelectionMenu;
-import dungeon.crawler.Menu.OverworldSubMenu;
-import dungeon.crawler.Menu.ScrollableLinearMenu;
-import dungeon.crawler.Menu.Toggleable;
 import dungeon.crawler.Observers.MenuInputObserver;
 import dungeon.crawler.Observers.ScreenChangeObserver;
 import dungeon.crawler.Screens.ShopScreen;
-import dungeon.crawler.Utils.ItemUtils;
-import dungeon.crawler.Utils.StringUtils;
+import dungeon.crawler.Utils.Formulas;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ShopMainMenu extends BaseLinearMenu{
@@ -86,6 +74,16 @@ public class ShopMainMenu extends BaseLinearMenu{
                 openSubMenu(newMenu);
             }
         });
+        if(Formulas.partyCanSteal(gameState.party)){
+            this.addButton("Steal", new ChangeListener() {
+
+                @Override
+                public void changed(ChangeEvent event, Actor actor){
+                    shopscreen.handleSteal();
+                }
+            });
+        }
+
         this.addButton("Leave", new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor){
@@ -140,6 +138,7 @@ public class ShopMainMenu extends BaseLinearMenu{
             listeners.remove(listener);
         }
     }
+
 
 
 

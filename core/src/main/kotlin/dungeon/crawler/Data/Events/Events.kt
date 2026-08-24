@@ -70,6 +70,48 @@ object EventRegistry {
                 messageSize = GameConstants.EVENT_MENU_MEDIUM_DIALOGUE
             )
         )
+        register(
+            Event(
+                id = "steal_fail_1",
+                title = "You got yourself caught",
+                backgroundImage = GameConstants.STEAL_FAIL_SCREEN_1,
+                text = arrayOf(
+                    "The Thief attempts to break the window to go in the back of the store",
+                ),
+                finalEvent = false,
+                nextId= "steal_fail_2",
+                messageSize = GameConstants.EVENT_MENU_SMALL_DIALOGUE
+            )
+        )
+        register(
+            Event(
+                id = "steal_fail_2",
+                title = "You got yourself caught",
+                backgroundImage = GameConstants.STEAL_FAIL_SCREEN_2,
+                text = arrayOf(
+                    "However, a nearby horse alerts the guards to all of the noise",
+                    "The guards stomp onto the scene"
+                    ),
+                finalEvent = false,
+                nextId= "steal_fail_3",
+                messageSize = GameConstants.EVENT_MENU_SMALL_DIALOGUE
+            )
+        )
+        register(
+            Event(
+                id = "steal_fail_3",
+                title = "You got yourself caught",
+                backgroundImage = GameConstants.STEAL_FAIL_SCREEN_3,
+                text = arrayOf(
+                    "STOP! You have violated the sanctity of the King's commerce!",
+                    "You now must PAY WITH YOUR LIFE!",
+                    "Before you can react, axes behead all the thieves in your party"
+                ),
+                finalEvent = true,
+                nextId= "",
+                messageSize = GameConstants.EVENT_MENU_SMALL_DIALOGUE
+            )
+        )
     }
 
     private fun register(event: Event) {

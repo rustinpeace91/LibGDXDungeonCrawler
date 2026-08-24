@@ -106,7 +106,7 @@ public class MainGame extends Game implements ScreenChangeObserver,
             ScreenTransitionProperties worldScreenData = MapRegistry.WORLD_MAP_DATA.get(gameState.screenID);
             int shopIndex = worldScreenData.shopIndex;
             ArrayList<Item> inventory = ShopItemSpawner.spawnItems(shopIndex);
-            ShopScreen shopScreen = new ShopScreen(this, inventory);
+            ShopScreen shopScreen = new ShopScreen(this, inventory, shopIndex);
             setScreen(
                 shopScreen
             );

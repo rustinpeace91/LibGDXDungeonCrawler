@@ -14,17 +14,21 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import dungeon.crawler.Controls.GameInputHandler;
+import dungeon.crawler.Data.Items.Loot;
 import dungeon.crawler.GameConstants;
+import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.GameSystem.Inventory.Item;
 import dungeon.crawler.MainGame;
 import dungeon.crawler.Menu.InputHandlers.MenuInputHandler;
 import dungeon.crawler.Menu.Shop.ShopMainMenu;
 import dungeon.crawler.Menu.TestMenus.TestShopMenu;
 import dungeon.crawler.Observers.MenuInputObserver;
+import dungeon.crawler.Utils.Formulas;
 
 import java.util.ArrayList;
 
 public class ShopScreen extends ScreenAdapter  implements MenuInputObserver {
+    private final int shopIndex;
     private MainGame game;
     private ShopMainMenu shopMenu;
     private SpriteBatch batch;
@@ -38,12 +42,14 @@ public class ShopScreen extends ScreenAdapter  implements MenuInputObserver {
 
     public ShopScreen(
         MainGame game,
-        ArrayList<Item> inventory
+        ArrayList<Item> inventory,
+        int shopIndex
     ){
         this.uiStage = new Stage(new FitViewport(GameConstants.RESOLUTION_WIDTH, GameConstants.RESOLUTION_HEIGHT));
         this.game = game;
         this.batch = new SpriteBatch();
         this.inventory = inventory;
+        this.shopIndex = shopIndex;
         skin = new Skin(Gdx.files.internal(GameConstants.MENU_SKIN));
 
         this.backgroundTexture = new Texture(Gdx.files.internal("Misc/storefront.jpg"));
@@ -131,6 +137,20 @@ public class ShopScreen extends ScreenAdapter  implements MenuInputObserver {
 
     }
 
+    public void handleSteal(){
+        if(Formulas.stealSuccessful(game.gameState.party, shopIndex)){
+            Loot loot = Formulas.stealTreasure(game.gameState.party, inventory, shopIndex);
+            for(Item item: loot.getItems()){
+                game.gameState.partyBag.addToInventory(item);
+            }
+            game.backToOverworld();
+        } else {
+            // TODO: Handle consequences
+
+            game.handleEventScreen("steal_fail_1");
+
+        }
+    }
     public void exitShop(){
         game.onScreenChange(GameConstants.GAME_SCREEN.WALK_TOWN);
     }
