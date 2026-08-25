@@ -3,6 +3,7 @@ package dungeon.crawler.Utils;
 import com.badlogic.gdx.math.MathUtils;
 import dungeon.crawler.Data.Items.Loot;
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
+import dungeon.crawler.GameSystem.Combat.CombatUtils;
 import dungeon.crawler.GameSystem.Inventory.Item;
 
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ import java.util.Map;
 public class Formulas {
 
     public static boolean partyCanSteal(Map<Integer, PartyCharacter> party) {
-        for (Map.Entry<Integer, PartyCharacter> partyMember : party.entrySet()) {
+        for (Map.Entry<Integer, PartyCharacter> partyMember : PartyUtils.returnPartyMembers(party).entrySet()) {
             if (partyMember.getValue().charClass.canSteal()) {
                 return true;
             }
@@ -63,7 +64,7 @@ public class Formulas {
                 }
             }
         }
-        int maxGold = 20 * thievesCount * shopIndex;
+        int maxGold = 20 * thievesCount * (shopIndex + 1);
         int gold = MathUtils.random(0, maxGold);
         return new Loot(
             gold,

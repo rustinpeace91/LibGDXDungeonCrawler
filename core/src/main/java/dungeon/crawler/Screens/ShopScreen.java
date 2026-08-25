@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import dungeon.crawler.Controls.GameInputHandler;
+import dungeon.crawler.Data.Events.Event;
 import dungeon.crawler.Data.Items.Loot;
 import dungeon.crawler.GameConstants;
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
@@ -24,6 +25,7 @@ import dungeon.crawler.Menu.Shop.ShopMainMenu;
 import dungeon.crawler.Menu.TestMenus.TestShopMenu;
 import dungeon.crawler.Observers.MenuInputObserver;
 import dungeon.crawler.Utils.Formulas;
+import dungeon.crawler.Utils.PartyUtils;
 
 import java.util.ArrayList;
 
@@ -140,13 +142,31 @@ public class ShopScreen extends ScreenAdapter  implements MenuInputObserver {
     public void handleSteal(){
         if(Formulas.stealSuccessful(game.gameState.party, shopIndex)){
             Loot loot = Formulas.stealTreasure(game.gameState.party, inventory, shopIndex);
+            String lootString = "";
             for(Item item: loot.getItems()){
                 game.gameState.partyBag.addToInventory(item);
+                lootString = lootString + item.getName() + ", ";
             }
-            game.backToOverworld();
+            game.gameState.addGold(loot.getGold());
+            Event customEvent = new Event(
+                "steal_success",
+                "You got away with it",
+                GameConstants.SHOP_BACKGROUND,
+                new String[]{
+                    "After performing a magic trick to distract the shop owner, you make off with:",
+                    lootString,
+                    "And also steal " + loot.getGold() + " gold",
+                    "You got away with it. Hope you're happy"
+                },
+                true,
+                "",
+                GameConstants.EVENT_MENU_SMALL_DIALOGUE
+            );
+            game.customEventScreen(customEvent);
+//            game.backToOverworld();
         } else {
             // TODO: Handle consequences
-
+            PartyUtils.killAllThieves(game.gameState.party);
             game.handleEventScreen("steal_fail_1");
 
         }

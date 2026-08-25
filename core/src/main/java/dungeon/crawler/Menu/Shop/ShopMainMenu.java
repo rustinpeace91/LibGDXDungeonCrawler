@@ -76,7 +76,6 @@ public class ShopMainMenu extends BaseLinearMenu{
         });
         if(Formulas.partyCanSteal(gameState.party)){
             this.addButton("Steal", new ChangeListener() {
-
                 @Override
                 public void changed(ChangeEvent event, Actor actor){
                     shopscreen.handleSteal();
@@ -87,15 +86,7 @@ public class ShopMainMenu extends BaseLinearMenu{
         this.addButton("Leave", new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor){
-//                InventoryCharSelectMenu newMenu = new InventoryCharSelectMenu(
-//                    skin,
-//                    gameState,
-//                    false
-//                );
-//                setSubMenu(newMenu);
-//                openSubMenu(newMenu);
                 shopscreen.exitShop();
-
             }
         });
 

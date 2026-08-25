@@ -141,6 +141,20 @@ public class MainGame extends Game implements ScreenChangeObserver,
 
     }
 
+    public void customEventScreen(
+        Event event
+    ){
+
+        setScreen(new GenericEventScreen(
+            this,
+            event.getText(),
+            event.getBackgroundImage(),
+            event.getMessageSize(),
+            event
+        ));
+
+    }
+
     @Override
     public void onMapChange(int ScreenId){
         ScreenTransitionProperties worldScreenData = MapRegistry.WORLD_MAP_DATA.get(ScreenId);
