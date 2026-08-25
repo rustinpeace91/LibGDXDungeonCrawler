@@ -146,7 +146,8 @@ public class InventoryCharSelectMenu extends BaseLinearMenu implements Overworld
                                 gameState,
                                 gameState.partyBag,
                                 availableItems,
-                                statusMenuObserver
+                                statusMenuObserver,
+                                canSellItems
                             );
                             setSubMenu(nextMenu);
                             openSubMenu(nextMenu);
