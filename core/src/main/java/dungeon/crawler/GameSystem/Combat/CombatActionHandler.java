@@ -5,6 +5,7 @@ import dungeon.crawler.Data.Spells.SpellRegistry;
 import dungeon.crawler.Data.Spells.SpellType;
 import dungeon.crawler.GameSystem.Character.*;
 import dungeon.crawler.GameSystem.Inventory.InventorySystem.InventorySystem;
+import dungeon.crawler.Observers.CombatLogicObserver;
 import dungeon.crawler.Utils.StringUtils;
 
 import java.sql.Array;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 public class CombatActionHandler {
     private Map<Integer, PartyCharacter> playerRoster;
     private Map<Integer, EnemyCombatant> enemyRoster;
+    public ArrayList<CombatLogicObserver> combatLogicObservers = new ArrayList<>();
 
     public CombatActionHandler(
         Map<Integer, PartyCharacter> playerRoster,
@@ -73,7 +75,7 @@ public class CombatActionHandler {
         String damageText = "";
         ArrayList<String> flavorText = new ArrayList<>();
         boolean targetDead = false;
-        if(!currentAction.target.checkDeath()){
+        if(!currentAction.combatant.checkDeath()){
             switch(currentAction.action){
                 case STAND:
                     currentAction.combatant.setStance(Stance.STANDING);
@@ -82,7 +84,8 @@ public class CombatActionHandler {
                 case RUN:
                     boolean successful = canRunAway();
                     if(successful){
-                        flavorText.add(StringUtils.format("%s has stood up", currentAction.combatant.getName()));
+                        flavorText.add(StringUtils.format("The party successfully books it"));
+                        notifyOnRunaway();
                     } else {
                         flavorText.add(StringUtils.format("%s Party would have run away if it was implemented yet!", currentAction.combatant.getName()));
                     }
@@ -101,7 +104,7 @@ public class CombatActionHandler {
     }
 
     public boolean canRunAway(){
-
+        // TODO: move to formulas
         int partyAgilityModifier = CombatUtils.returnPartyAgility(playerRoster);
         int enemyModifier = 0;
         int enemyCount = 0;
@@ -219,4 +222,15 @@ public class CombatActionHandler {
             return target;
         }
     }
+
+    public void addListener(CombatLogicObserver listener){
+        combatLogicObservers.add(listener);
+    }
+
+    public void notifyOnRunaway(){
+        for(CombatLogicObserver observer: combatLogicObservers){
+            observer.onRunAway();
+        }
+    }
+
 }

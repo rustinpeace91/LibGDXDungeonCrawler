@@ -177,7 +177,7 @@ public class CombatScreen extends ScreenAdapter
         };
         eventScreen.addMessages(introText);
         this.uiStage.setKeyboardFocus(eventScreen);
-        this.logicHandler = new CombatLogic(eventScreen, game, turnTracker, combatState);
+        this.logicHandler = new CombatLogic(this, eventScreen, game, turnTracker, combatState);
         this.logicHandler.addListener(this);
         this.enemyRenderer.intializeEnemySprites();
         this.logicHandler.advanceState(CombatPhase.INTRO);
@@ -333,6 +333,9 @@ public class CombatScreen extends ScreenAdapter
         combatMenu.initializeMenu();
         menuInputHanlder.setHandlerDisabled(false);
 
+    }@Override
+    public void onRunAway() {
+        game.backToOverworld();
     }
 
     @Override

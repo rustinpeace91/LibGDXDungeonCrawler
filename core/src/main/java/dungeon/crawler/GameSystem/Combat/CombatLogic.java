@@ -20,10 +20,12 @@ import dungeon.crawler.GameSystem.Leveling.LevelTable;
 import dungeon.crawler.MainGame;
 import dungeon.crawler.Menu.CombatEventMenu;
 import dungeon.crawler.Observers.CombatLogicObserver;
+import dungeon.crawler.Screens.CombatScreen;
 import dungeon.crawler.Utils.StringUtils;
 
 public class CombatLogic {
     private final CombatStateManager combatState;
+    private final CombatScreen combatScreen;
     public CombatPhase phase;
     public LinkedList<CombatAction> actionQueue;
     public CombatEventMenu eventScreen;
@@ -36,11 +38,13 @@ public class CombatLogic {
     private CombatActionHandler actionHandler;
 
     public CombatLogic(
+        CombatScreen combatScreen,
         CombatEventMenu eventScreen,
         MainGame game,
         PartyActionTracker turnTracker,
         CombatStateManager combatState
     ){
+        this.combatScreen = combatScreen;
         this.eventScreen = eventScreen;
         this.combatLogicObservers = new ArrayList<CombatLogicObserver>();
         this.actionQueue = new LinkedList<>();
@@ -51,6 +55,7 @@ public class CombatLogic {
         this.returnFocus = false;
         this.turnTracker = turnTracker;
         this.actionHandler = new CombatActionHandler(game.gameState.party, combatState.getCurrentEnemyRoster());
+        this.actionHandler.addListener(combatScreen);
     }
     public void advanceCombat(){
         /* this is run every frame and is for actions that require to wait until messages are done
