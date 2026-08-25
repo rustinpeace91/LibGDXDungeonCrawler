@@ -112,6 +112,19 @@ object EventRegistry {
                 messageSize = GameConstants.EVENT_MENU_SMALL_DIALOGUE
             )
         )
+        register(
+            Event(
+                id = "innsleep",
+                title = "Sleep",
+                backgroundImage = GameConstants.SLEEP_SCREEN,
+                text = arrayOf(
+                    "You get a full nights sleep and wake up refreshed"
+                ),
+                finalEvent = true,
+                nextId= "",
+                messageSize = GameConstants.EVENT_MENU_SMALL_DIALOGUE
+            )
+        )
     }
 
     private fun register(event: Event) {

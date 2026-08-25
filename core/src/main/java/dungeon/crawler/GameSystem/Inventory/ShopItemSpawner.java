@@ -14,6 +14,14 @@ public class ShopItemSpawner {
         inventory.add(factory.createWeaponFromID("wooden_club"));
         inventory.add(factory.createWeaponFromID("wooden_hammer"));
         inventory.add(factory.createPotionFromID("small_health_potion"));
+
+        inventory.add(factory.createArmorFromID("leather_cap"));
+        inventory.add(factory.createArmorFromID("leather_vest"));
+        inventory.add(factory.createArmorFromID("leather_pants"));
+        inventory.add(factory.createArmorFromID("bronze_helm"));
+        inventory.add(factory.createArmorFromID("bronze_chainmail"));
+        inventory.add(factory.createArmorFromID("bronze_chainmail_pants"));
+
         return inventory;
     }
 

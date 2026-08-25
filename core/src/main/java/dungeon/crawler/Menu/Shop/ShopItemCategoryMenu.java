@@ -78,26 +78,37 @@ public class ShopItemCategoryMenu extends BaseLinearMenu implements OverworldSub
         this.addButton("Armor", new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor){
-//                InventoryCharSelectMenu newMenu = new InventoryCharSelectMenu(
-//                    skin,
-//                    gameState,
-//                    false
-//                );
-//                newMenu.setCanSellItems(true);
-//                setSubMenu(newMenu);
-//                openSubMenu(newMenu);
+                ArrayList<Item> items = ItemUtils.returnItemsByType(
+                    shopInventory,
+                    ItemType.ARMOR
+                );
+                ShopItemMenu newMenu = new ShopItemMenu(
+                    skin,
+                    gameState,
+                    items,
+                    currentCombatant,
+                    false
+                );
+                setSubMenu(newMenu);
+                openSubMenu(newMenu);
             }
         });
         this.addButton("Potions", new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor){
-//                InventoryCharSelectMenu newMenu = new InventoryCharSelectMenu(
-//                    skin,
-//                    gameState,
-//                    false
-//                );
-//                setSubMenu(newMenu);
-//                openSubMenu(newMenu);
+                ArrayList<Item> items = ItemUtils.returnItemsByType(
+                    shopInventory,
+                    ItemType.HEALTH_POTION
+                );
+                ShopItemMenu newMenu = new ShopItemMenu(
+                    skin,
+                    gameState,
+                    items,
+                    currentCombatant,
+                    false
+                );
+                setSubMenu(newMenu);
+                openSubMenu(newMenu);
             }
         });
         this.pack();

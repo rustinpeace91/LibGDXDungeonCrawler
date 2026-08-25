@@ -14,11 +14,12 @@ public class Armor extends Item{
     public Armor(
         String name,
         String id,
-        int defenseBonus,
         int value,
         ArmorTypes armorType,
-        EquipmentSlot slot
-    ) {
+        EquipmentSlot slot,
+        int defenseBonus
+
+        ) {
         super(
             name,
             id,

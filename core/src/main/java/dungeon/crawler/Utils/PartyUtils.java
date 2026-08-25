@@ -47,6 +47,15 @@ public class PartyUtils {
         return filteredCombatants;
     }
 
+    public static void partyLongRest(Map<Integer, PartyCharacter> party){
+        for (Map.Entry<Integer, PartyCharacter> combatant : party.entrySet()) {
+            if (!combatant.getValue().checkDeath()) {
+                PartyCharacter character = combatant.getValue();
+                character.longRest();
+            }
+        }
+    }
+
     public static void killAllThieves(Map<Integer, PartyCharacter> party){
         for (Map.Entry<Integer, PartyCharacter> partyMember : party.entrySet()) {
             if(partyMember.getValue().charClass.canSteal()){

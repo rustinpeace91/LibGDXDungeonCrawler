@@ -80,13 +80,20 @@ public class GameConstants {
     public static final String SKIN_BACKGROUND_DEFAULT = "default-round";
 
     // Backgrounds
+    public static final String MAIN_MENU_BACKGROUND="Misc/DQTitlePOC.png";
     public static final String SHOP_BACKGROUND="Misc/storefront.jpg";
+    public static final String INN_BACKGROUND="Misc/inn.jpg";
+    public static final String CHURCH_BACKGROUND="Misc/church.jpg";
+
+    // Event backgrounds
     public static final String INTRO_SCREEN_1="EventScreens/daking.jpg";
     public static final String INTRO_SCREEN_2="EventScreens/foulbeast.png";
     public static final String STEAL_FAIL_SCREEN_1="EventScreens/fistglass.jpg";
 
     public static final String STEAL_FAIL_SCREEN_2="EventScreens/horsedetect.png";
     public static final String STEAL_FAIL_SCREEN_3="EventScreens/guarddetect.png";
+    public static final String SLEEP_SCREEN="EventScreens/sleep.png";
+
 
 
     public static final Map<PlayerDirection, String> WALK_ANIMATIONS = Map.of(

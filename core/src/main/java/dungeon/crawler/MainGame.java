@@ -91,7 +91,11 @@ public class MainGame extends Game implements ScreenChangeObserver,
 
         // this.gameState.currentEnemyRoster.put(2, enemy)
         if(screen == GameConstants.GAME_SCREEN.INN){
-            InnScreen Inn = new InnScreen(this, this);
+            ScreenTransitionProperties worldScreenData = MapRegistry.WORLD_MAP_DATA.get(gameState.screenID);
+
+            int shopIndex = worldScreenData.shopIndex;
+
+            InnScreen Inn = new InnScreen(this,  shopIndex);
             setScreen(Inn);
 
         }

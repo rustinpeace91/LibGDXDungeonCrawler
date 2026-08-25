@@ -73,4 +73,8 @@ public class Formulas {
 
     }
 
+    public static int innPrice(int shopIndex){
+        return (shopIndex + 1) * 2 * 20;
+    }
+
 }

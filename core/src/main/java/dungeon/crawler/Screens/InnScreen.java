@@ -1,53 +1,153 @@
 package dungeon.crawler.Screens;
 
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Scaling;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import dungeon.crawler.Controls.GameInputHandler;
+import dungeon.crawler.Data.Events.Event;
+import dungeon.crawler.Data.Items.Loot;
 import dungeon.crawler.GameConstants;
-import dungeon.crawler.GameSystem.Character.Combatant;
 import dungeon.crawler.GameSystem.Character.PartyCharacter;
+import dungeon.crawler.GameSystem.Inventory.Item;
 import dungeon.crawler.MainGame;
-import dungeon.crawler.Observers.ScreenChangeObserver;
+import dungeon.crawler.Menu.InnMainMenu;
+import dungeon.crawler.Menu.InputHandlers.MenuInputHandler;
+import dungeon.crawler.Menu.Shop.ShopMainMenu;
+import dungeon.crawler.Menu.TestMenus.TestShopMenu;
+import dungeon.crawler.Observers.MenuInputObserver;
+import dungeon.crawler.Utils.Formulas;
+import dungeon.crawler.Utils.PartyUtils;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
 
-public class InnScreen extends SplashScreen{
+public class InnScreen extends ScreenAdapter  implements MenuInputObserver {
+    private final int shopIndex;
+    private MainGame game;
+    private InnMainMenu innMenu;
+    private SpriteBatch batch;
+    private Stage uiStage;
+    private MenuInputHandler menuInputHandler;
+
+    private int price;
+
+    private Texture backgroundTexture;
+
+    private Skin skin;
+    private GameInputHandler gameInputHandler;
+
     public InnScreen(
         MainGame game,
-        ScreenChangeObserver listener
+        int shopIndex
     ){
-        super(game, listener);
+        this.uiStage = new Stage(new FitViewport(GameConstants.RESOLUTION_WIDTH, GameConstants.RESOLUTION_HEIGHT));
+        this.game = game;
+        this.batch = new SpriteBatch();
+        this.shopIndex = shopIndex;
+        this.price = Formulas.innPrice(shopIndex);
+        skin = new Skin(Gdx.files.internal(GameConstants.MENU_SKIN));
+
+        this.backgroundTexture = new Texture(Gdx.files.internal(GameConstants.INN_BACKGROUND));
+        // 1. Load the PNG
+        Texture texture = new Texture(Gdx.files.internal(GameConstants.INN_BACKGROUND));
+
+        // 2. Wrap it in an Image actor
+        Image imageActor = new Image(texture);
+
+
+
+        // 3. Position and add it
+        // imageActor.setPosition(100, 100);
+        imageActor.setScaling(Scaling.stretch); // This forces it to stretch to the actor's bounds
+
+        // 2. Tell it to fill the entire stage
+        imageActor.setFillParent(true);
+
+        uiStage.addActor(imageActor);
     }
 
     @Override
     public void show(){
-        timeAmount = 3.0f;
-        if(game.gameState.gold >= 10){
-            textDisplay = "You sleep in the inn for 10 gold";
-            // TODO: bad, use setter
-            this.game.gameState.gold = this.game.gameState.gold - 10;
+        gameInputHandler = new GameInputHandler();
+        game.getControllerAdapter().attach(gameInputHandler);
 
-            for (Map.Entry<Integer, PartyCharacter> combatant : this.game.gameState.party.entrySet()) {
-                if (!combatant.getValue().checkDeath()) {
-                    PartyCharacter character = combatant.getValue();
-                    character.longRest();
-                }
-            }
-        } else {
-            textDisplay = "You are too broke to sleep in the inn";
-        }
-        Vector2 newCoords = new Vector2();
-        newCoords.y = this.game.gameState.overWorldCoordinates. y - 1;
-        newCoords.x = this.game.gameState.overWorldCoordinates. x;
+        innMenu = new InnMainMenu(
+            skin,
+            this,
+            game.gameState,
+            price
+        );
+        this.uiStage.addActor(innMenu);
+        this.menuInputHandler = new MenuInputHandler(
+            uiStage,
+            innMenu,
+            gameInputHandler
+        );
+        InputMultiplexer multiplexer = setUpInput();
+        Gdx.input.setInputProcessor(multiplexer);
+    }
+    public InputMultiplexer setUpInput() {
+        InputMultiplexer multiplexer = new InputMultiplexer();
+        // --- Configure the InputMultiplexer ---
+        this.menuInputHandler.addListener(this);
 
-        this.game.gameState.updateWorldCoordinates(newCoords);
-        Timer.schedule(new Timer.Task() {
-            @Override
-            public void run() {
-                if (listener != null) listener.onScreenChange(GameConstants.GAME_SCREEN.WALK_TOWN);
-            }
-        }, timeAmount);
+        multiplexer.addProcessor(gameInputHandler);
+        multiplexer.addProcessor(uiStage);
+        // 6. Tell LibGDX to use the multiplexer for all input events
+        return multiplexer;
     }
 
+    @Override
+    public void render(float delta){
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        // 2. Draw directly to the screen (Manual Layer)
+        batch.begin();
+        // Draws the image at x=100, y=100 with its original size
+        // batch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        batch.end();
+
+
+        // Update and Draw the Stage
+        uiStage.act(delta);
+        uiStage.draw();
+        // input(delta);
+    }
+
+    @Override
+    public void onMenuToggled(boolean menuVisible){};
+
+
+    @Override
+    public void dispose() {
+        skin.dispose();
+        uiStage.dispose();
+        this.backgroundTexture .dispose();
+    }
+
+    @Override
+    public void hide(){
+        game.getControllerAdapter().detach();
+
+    }
+
+    public void handleSleep(){
+        this.game.gameState.removeGold(price);
+        PartyUtils.partyLongRest(this.game.gameState.party);
+        game.handleEventScreen("innsleep");
+    }
+
+    public void exitShop(){
+        game.onScreenChange(GameConstants.GAME_SCREEN.WALK_TOWN);
+    }
 }

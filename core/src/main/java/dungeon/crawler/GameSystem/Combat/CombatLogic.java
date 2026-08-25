@@ -391,7 +391,7 @@ public class CombatLogic {
             partyMember.xp = partyMember.xp + xpForEach;
 
             int nextLevel = partyMember.level + 1;
-            if(partyMember.xp >= LevelTable.getRequiredXp(nextLevel)){
+            if(partyMember.xp >= LevelTable.getRequiredXPForLevel(nextLevel)){
                 ArrayList<String> messages = partyMember.LevelUp(nextLevel);
                 eventScreen.addMessages(messages.toArray(new String[0]));
             }
