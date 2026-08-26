@@ -19,7 +19,7 @@ String initialState,
 PlayerPositionHandler playerPositionHandler
 ) {
 Map<String, Animation<TextureRegion>> animations = buildWalkAnim();
-PlayerAnimatedSprite sprite = new PlayerAnimatedSprite(        
+PlayerAnimatedSprite sprite = new PlayerAnimatedSprite(
 animations,
 playerPositionHandler,
         initialState,
@@ -39,20 +39,20 @@ return sprite;
 
     animationMap.put(
     GameConstants.WALK_ANIMATIONS.get(PlayerDirection.DOWN),
-    AnimationBuilder.createAnimationByRow(fullSheet, 3, 4, 1, GameConstants.FRAME_DURATION)
+    AnimationBuilder.createAnimationByRow(fullSheet, 4, 4, 1, GameConstants.FRAME_DURATION)
     );
     // TODO: Use Constants
     animationMap.put(
         GameConstants.WALK_ANIMATIONS.get(PlayerDirection.LEFT),
-AnimationBuilder.createAnimationByRow(fullSheet, 3, 4, 2, GameConstants.FRAME_DURATION)
+AnimationBuilder.createAnimationByRow(fullSheet, 4, 4, 2, GameConstants.FRAME_DURATION)
     );
     animationMap.put(
         GameConstants.WALK_ANIMATIONS.get(PlayerDirection.RIGHT),
-    AnimationBuilder.createAnimationByRow(fullSheet, 3, 4, 3, GameConstants.FRAME_DURATION)
+    AnimationBuilder.createAnimationByRow(fullSheet, 4, 4, 3, GameConstants.FRAME_DURATION)
     );
     animationMap.put(
         GameConstants.WALK_ANIMATIONS.get(PlayerDirection.UP),
-    AnimationBuilder.createAnimationByRow(fullSheet, 3, 4, 4, GameConstants.FRAME_DURATION)
+    AnimationBuilder.createAnimationByRow(fullSheet, 4, 4, 4, GameConstants.FRAME_DURATION)
     );
     return animationMap;
 

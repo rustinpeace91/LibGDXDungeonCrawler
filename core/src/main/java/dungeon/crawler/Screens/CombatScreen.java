@@ -83,38 +83,27 @@ public class CombatScreen extends ScreenAdapter
         // 1. Setup Stage and Table
         // this.uiStage = new Stage(new ScreenViewport());
         this.uiStage = new Stage(new FitViewport(GameConstants.RESOLUTION_WIDTH, GameConstants.RESOLUTION_HEIGHT));
+
+
+        this.backgroundTexture = new Texture(Gdx.files.internal("libgfieldPOC.png"));
+        // 1. Load the PNG
+        Texture texture = new Texture(Gdx.files.internal("libgfieldPOC.png"));
+
+        // 2. Wrap it in an Image actor
+        Image imageActor = new Image(texture);
+
+        imageActor.setScaling(Scaling.stretch); // This forces it to stretch to the actor's bounds
+        imageActor.setFillParent(true);
+//        uiStage.addActor(imageActor);
         this.enemyStage = new Stage(new FitViewport(GameConstants.RESOLUTION_WIDTH, GameConstants.RESOLUTION_HEIGHT));
+
         this.enemyRenderer = new EnemyRenderer(this.game.gameState, combatState, this.enemyStage);
         // 2. Load your Skin (ensure path is correct)
         this.skin = new Skin(Gdx.files.internal(GameConstants.MENU_SKIN));
 
 
         this.batch = new SpriteBatch();
-        this.backgroundTexture = new Texture(Gdx.files.internal("libgfieldPOC.png"));
-            // 1. Load the PNG
-        Texture texture = new Texture(Gdx.files.internal("libgfieldPOC.png"));
 
-        // 2. Wrap it in an Image actor
-        Image imageActor = new Image(texture);
-
-
-
-        // 3. Position and add it
-        // imageActor.setPosition(100, 100);
-        imageActor.setScaling(Scaling.stretch); // This forces it to stretch to the actor's bounds
-
-        // 2. Tell it to fill the entire stage
-        imageActor.setFillParent(true);
-
-//        uiStage.addActor(imageActor);
-
-
-        // Position the rat relative to the screen size
-        // Example: 20% from the left, 15% from the bottom
-
-
-        // 4. Add to Table
-        // uiStage.addActor(table);
 
 
     }
