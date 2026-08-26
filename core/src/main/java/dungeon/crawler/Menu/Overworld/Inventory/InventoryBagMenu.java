@@ -23,6 +23,7 @@ import java.util.ArrayList;
 
 public class InventoryBagMenu extends ScrollableLinearMenu<Item>  implements OverworldSubMenu {
 
+    private final boolean canSellItems;
     private GameState gameState;
     private ArrayList<Item> availableItems;
     private final StatusMenuObserver statusMenuObserver;
@@ -34,14 +35,15 @@ public class InventoryBagMenu extends ScrollableLinearMenu<Item>  implements Ove
         GameState gameState,
         Bag bag,
         ArrayList<Item> availableItems,
-        StatusMenuObserver statusMenuObserver
+        StatusMenuObserver statusMenuObserver,
+        boolean canSellItems
     ){
         super(skin);
         this.gameState = gameState;
         this.bag = bag;
         this.availableItems = availableItems;
         this.statusMenuObserver = statusMenuObserver;
-
+        this.canSellItems = canSellItems;
         this.initializeButtons();
     }
 
@@ -65,7 +67,8 @@ public class InventoryBagMenu extends ScrollableLinearMenu<Item>  implements Ove
                             skin,
                             gameState,
                             bag,
-                            item
+                            item,
+                            canSellItems
                         );
                         setSubMenu(nextMenu);
                         openSubMenu(nextMenu);

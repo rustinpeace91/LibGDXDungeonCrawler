@@ -1,4 +1,4 @@
-package dungeon.crawler.Menu.Shop;
+package dungeon.crawler.Menu;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -13,75 +13,45 @@ import dungeon.crawler.Menu.Observers.StatusMenuObserver;
 import dungeon.crawler.Menu.Overworld.Inventory.*;
 import dungeon.crawler.Observers.MenuInputObserver;
 import dungeon.crawler.Observers.ScreenChangeObserver;
+import dungeon.crawler.Screens.InnScreen;
 import dungeon.crawler.Screens.ShopScreen;
 import dungeon.crawler.Utils.Formulas;
+import dungeon.crawler.Utils.PartyUtils;
+import dungeon.crawler.Utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShopMainMenu extends BaseLinearMenu{
+public class InnMainMenu extends BaseLinearMenu implements OverworldSubMenu{
     private final List<MenuInputObserver> listeners = new ArrayList<>();
     protected final GameState gameState;
-    private final ArrayList<Item> shopInventory;
-    private final StatusMenuObserver statusMenuObserver;
+    private final int price;
+    public BaseLinearMenu asCombatMenu(){return this;}
 
-    public ShopMainMenu (
+    public InnMainMenu (
         Skin skin,
-        ShopScreen shopscreen,
+        InnScreen shopscreen,
         GameState gameState,
-        ArrayList<Item> shopInventory
+        int price
     ) {
         super(
             skin
         );
         this.gameState = gameState;
-        this.shopInventory = shopInventory;
-        this.statusMenuObserver = new StatusMenuObserver();
-        this.addButton("Buy", new ChangeListener() {
+        this.price = price;
+        setTitle("Inn.\n" + price + " gold per night");
+        this.addButton("Sleep", new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor){
-                ShopCharSelectMenu newMenu = new ShopCharSelectMenu(
-                    skin,
-                    gameState,
-                    shopInventory
-                );
-                setSubMenu(newMenu);
-                openSubMenu(newMenu);
-            }
-        });
-        this.addButton("Sell", new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor){
-                InventoryCharSelectMenu newMenu = new InventoryCharSelectMenu(
-                    skin,
-                    gameState,
-                    false
-                );
-                newMenu.setCanSellItems(true);
-                setSubMenu(newMenu);
-                openSubMenu(newMenu);
-            }
-        });
-        this.addButton("Party Inventory", new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor){
-                InventoryCharSelectMenu newMenu = new InventoryCharSelectMenu(
-                    skin,
-                    gameState,
-                    false
-                );
-                setSubMenu(newMenu);
-                openSubMenu(newMenu);
-            }
-        });
-        if(Formulas.partyCanSteal(gameState.party)){
-            this.addButton("Steal", new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor){
-                    shopscreen.handleSteal();
+                if(gameState.gold >= price){
+                    shopscreen.handleSleep();
+                } else {
+                    showPopup("Not enough gold!", 2f);
                 }
-            });
-        }
+                returnToParentMenu();
+            }
+        });
+
 
         this.addButton("Leave", new ChangeListener() {
             @Override

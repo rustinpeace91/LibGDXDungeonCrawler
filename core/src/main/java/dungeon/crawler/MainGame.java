@@ -1,13 +1,17 @@
 package dungeon.crawler;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
+import com.badlogic.gdx.utils.Array;
 import dungeon.crawler.AssetManager.Assets;
 import dungeon.crawler.Controls.ControllerAdapter;
+import dungeon.crawler.Data.Events.Event;
 import dungeon.crawler.Data.Maps.MapRegistry;
 import dungeon.crawler.Data.Maps.ScreenTransitionProperties;
+import dungeon.crawler.Data.Events.EventRegistry;
 import dungeon.crawler.GameSystem.Character.EnemyCombatant;
 import dungeon.crawler.GameSystem.Combat.CombatStateManager;
 import dungeon.crawler.GameSystem.Enemies.EnemySpawner;
@@ -23,6 +27,7 @@ import dungeon.crawler.Observers.ScreenChangeObserver;
 import dungeon.crawler.Screens.*;
 
 import java.util.ArrayList;
+import java.util.Vector;
 
 public class MainGame extends Game implements ScreenChangeObserver,
     CombatScreenObserver {
@@ -59,13 +64,25 @@ public class MainGame extends Game implements ScreenChangeObserver,
     public void startGame(){
         String mapFile = GameConstants.TEST_MAP;
         gameState.updateWorldMap(mapFile);
-        setScreen(new WorldScreenRefactor(
+//        setScreen(new WorldScreenRefactor(
+//            this,
+//            spriteBatch,
+//            13f,
+//            12f,
+//            mapFile,
+//            GameConstants.GAME_SCREEN.WALK_TOWN
+//        ));
+        ArrayList<String> messages = new ArrayList<String>();
+        gameState.overWorldCoordinates.x = 13f;
+        gameState.overWorldCoordinates.y = 12f;
+        gameState.currentMap = mapFile;
+        Event intro = EventRegistry.INSTANCE.get("intro");
+        setScreen(new GenericEventScreen(
             this,
-            spriteBatch,
-            13f,
-            12f,
-            mapFile,
-            GameConstants.GAME_SCREEN.WALK_TOWN
+            intro.getText(),
+            intro.getBackgroundImage(),
+            intro.getMessageSize(),
+            intro
         ));
     }
 
@@ -74,7 +91,11 @@ public class MainGame extends Game implements ScreenChangeObserver,
 
         // this.gameState.currentEnemyRoster.put(2, enemy)
         if(screen == GameConstants.GAME_SCREEN.INN){
-            InnScreen Inn = new InnScreen(this, this);
+            ScreenTransitionProperties worldScreenData = MapRegistry.WORLD_MAP_DATA.get(gameState.screenID);
+
+            int shopIndex = worldScreenData.shopIndex;
+
+            InnScreen Inn = new InnScreen(this,  shopIndex);
             setScreen(Inn);
 
         }
@@ -89,7 +110,7 @@ public class MainGame extends Game implements ScreenChangeObserver,
             ScreenTransitionProperties worldScreenData = MapRegistry.WORLD_MAP_DATA.get(gameState.screenID);
             int shopIndex = worldScreenData.shopIndex;
             ArrayList<Item> inventory = ShopItemSpawner.spawnItems(shopIndex);
-            ShopScreen shopScreen = new ShopScreen(this, inventory);
+            ShopScreen shopScreen = new ShopScreen(this, inventory, shopIndex);
             setScreen(
                 shopScreen
             );
@@ -105,6 +126,37 @@ public class MainGame extends Game implements ScreenChangeObserver,
             setScreen(churchScreen);
 
         }
+    }
+
+    public void handleEventScreen(String id){
+        Event event = EventRegistry.INSTANCE.get(id);
+        if(event == null) {
+            Gdx.app.log("ERROR", "EVENT screen does not exist!");
+            backToOverworld();
+        } else {
+            setScreen(new GenericEventScreen(
+                this,
+                event.getText(),
+                event.getBackgroundImage(),
+                event.getMessageSize(),
+                event
+            ));
+        }
+
+    }
+
+    public void customEventScreen(
+        Event event
+    ){
+
+        setScreen(new GenericEventScreen(
+            this,
+            event.getText(),
+            event.getBackgroundImage(),
+            event.getMessageSize(),
+            event
+        ));
+
     }
 
     @Override

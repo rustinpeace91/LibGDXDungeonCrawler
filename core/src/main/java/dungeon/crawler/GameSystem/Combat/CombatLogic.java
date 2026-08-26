@@ -2,11 +2,9 @@ package dungeon.crawler.GameSystem.Combat;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Map;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.JsonValue.ValueType;
 
 import dungeon.crawler.Data.Spells.Spell;
 import dungeon.crawler.Data.Spells.SpellNames;
@@ -20,15 +18,17 @@ import dungeon.crawler.GameSystem.GameState.CombatPhase;
 import dungeon.crawler.GameSystem.Inventory.Item;
 import dungeon.crawler.GameSystem.Leveling.LevelTable;
 import dungeon.crawler.MainGame;
-import dungeon.crawler.Menu.CombatEventScreen;
+import dungeon.crawler.Menu.CombatEventMenu;
 import dungeon.crawler.Observers.CombatLogicObserver;
+import dungeon.crawler.Screens.CombatScreen;
 import dungeon.crawler.Utils.StringUtils;
 
 public class CombatLogic {
     private final CombatStateManager combatState;
+    private final CombatScreen combatScreen;
     public CombatPhase phase;
     public LinkedList<CombatAction> actionQueue;
-    public CombatEventScreen eventScreen;
+    public CombatEventMenu eventScreen;
     public ArrayList<CombatLogicObserver> combatLogicObservers;
     private PartyActionTracker turnTracker;
     private int currentCombatantID;
@@ -38,11 +38,13 @@ public class CombatLogic {
     private CombatActionHandler actionHandler;
 
     public CombatLogic(
-        CombatEventScreen eventScreen,
+        CombatScreen combatScreen,
+        CombatEventMenu eventScreen,
         MainGame game,
         PartyActionTracker turnTracker,
         CombatStateManager combatState
     ){
+        this.combatScreen = combatScreen;
         this.eventScreen = eventScreen;
         this.combatLogicObservers = new ArrayList<CombatLogicObserver>();
         this.actionQueue = new LinkedList<>();
@@ -53,6 +55,7 @@ public class CombatLogic {
         this.returnFocus = false;
         this.turnTracker = turnTracker;
         this.actionHandler = new CombatActionHandler(game.gameState.party, combatState.getCurrentEnemyRoster());
+        this.actionHandler.addListener(combatScreen);
     }
     public void advanceCombat(){
         /* this is run every frame and is for actions that require to wait until messages are done
@@ -393,7 +396,7 @@ public class CombatLogic {
             partyMember.xp = partyMember.xp + xpForEach;
 
             int nextLevel = partyMember.level + 1;
-            if(partyMember.xp >= LevelTable.getRequiredXp(nextLevel)){
+            if(partyMember.xp >= LevelTable.getRequiredXPForLevel(nextLevel)){
                 ArrayList<String> messages = partyMember.LevelUp(nextLevel);
                 eventScreen.addMessages(messages.toArray(new String[0]));
             }

@@ -1,19 +1,30 @@
 package dungeon.crawler.GameSystem.Inventory;
 
 
+import com.badlogic.gdx.Gdx;
+import dungeon.crawler.Data.Items.ShopItemConfig;
 import dungeon.crawler.GameSystem.TestData.ItemFactory;
 
 import java.util.*;
 
+
 public class ShopItemSpawner {
     public static ArrayList<Item> spawnItems(int shopIndex) {
-        ArrayList<Item> inventory = new ArrayList<>();
         ItemFactory factory = new ItemFactory();
-        inventory.add(factory.createWeaponFromID("iron_sword"));
-        inventory.add(factory.createWeaponFromID("wooden_staff"));
-        inventory.add(factory.createWeaponFromID("wooden_club"));
-        inventory.add(factory.createWeaponFromID("wooden_hammer"));
-        inventory.add(factory.createPotionFromID("small_health_potion"));
+
+        ArrayList<Item> inventory = new ArrayList<Item>();
+        List<String> inventoryIDs = ShopItemConfig.registry.get(shopIndex);
+        if(inventoryIDs == null){
+            inventoryIDs = ShopItemConfig.registry.get(0);
+            Gdx.app.log("[ERROR]", "Shop Index provided that has not been created yet");
+        }
+        for(String itemName: inventoryIDs){
+            try{
+                inventory.add(factory.createItemById(itemName));
+            } catch (Exception e) {
+                Gdx.app.log("[ERROR]", "error creating Shop inventory: " + e.getMessage());
+            }
+        }
         return inventory;
     }
 

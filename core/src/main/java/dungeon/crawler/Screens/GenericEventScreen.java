@@ -7,85 +7,105 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import dungeon.crawler.Controls.GameInputHandler;
+import dungeon.crawler.Data.Events.Event;
 import dungeon.crawler.GameConstants;
-import dungeon.crawler.GameSystem.GameState.GameState;
-import dungeon.crawler.GameSystem.SaveGame.SaveGame;
+import dungeon.crawler.GameSystem.Inventory.Item;
 import dungeon.crawler.MainGame;
+import dungeon.crawler.Menu.CombatEventMenu;
 import dungeon.crawler.Menu.InputHandlers.MenuInputHandler;
-import dungeon.crawler.Menu.MainMenu.MainMenu;
+import dungeon.crawler.Menu.Shop.ShopMainMenu;
+import dungeon.crawler.Menu.TestMenus.TestShopMenu;
+import dungeon.crawler.Observers.EventScreenObserver;
 import dungeon.crawler.Observers.MenuInputObserver;
 
 import java.util.ArrayList;
 
-public class MainMenuScreen extends ScreenAdapter  implements MenuInputObserver {
+public class GenericEventScreen extends ScreenAdapter  implements MenuInputObserver, EventScreenObserver {
+    private final String[] messages;
+    private final Vector2 dimensions;
+    private final Event event;
     private MainGame game;
-    private MainMenu mainMenu;
     private SpriteBatch batch;
     private Stage uiStage;
     private MenuInputHandler menuInputHandler;
-    private GameInputHandler gameInputHandler;
-    private Skin skin;
 
     private Texture backgroundTexture;
-    private ArrayList<String> partySelection;
+    private ArrayList<Item> inventory;
+    private Skin skin;
+    private GameInputHandler gameInputHandler;
+    private CombatEventMenu eventScreen;
 
-    public MainMenuScreen(
-        MainGame game
+    public GenericEventScreen(
+        MainGame game,
+        String[] messages,
+        String background_image,
+        Vector2 dimensions,
+        Event event
     ){
         this.uiStage = new Stage(new FitViewport(GameConstants.RESOLUTION_WIDTH, GameConstants.RESOLUTION_HEIGHT));
         this.game = game;
         this.batch = new SpriteBatch();
-        this.partySelection = new ArrayList<>();
-        this.backgroundTexture = new Texture(Gdx.files.internal(GameConstants.MAIN_MENU_BACKGROUND));
+        this.messages = messages;
+        this.dimensions = dimensions;
+        this.event = event;
+        skin = new Skin(Gdx.files.internal(GameConstants.MENU_SKIN));
+
+        this.backgroundTexture = new Texture(Gdx.files.internal(background_image));
         // 1. Load the PNG
-        Texture texture = new Texture(Gdx.files.internal(GameConstants.MAIN_MENU_BACKGROUND));
+        Texture texture = new Texture(Gdx.files.internal(background_image));
 
         // 2. Wrap it in an Image actor
         Image imageActor = new Image(texture);
 
 
 
-        // 3. Position and add it
-        // imageActor.setPosition(100, 100);
+
         imageActor.setScaling(Scaling.stretch); // This forces it to stretch to the actor's bounds
 
-        // 2. Tell it to fill the entire stage
         imageActor.setFillParent(true);
 
         uiStage.addActor(imageActor);
-        resetClassString();
     }
 
     @Override
     public void show(){
-        skin = new Skin(Gdx.files.internal(GameConstants.MENU_SKIN));
         gameInputHandler = new GameInputHandler();
         game.getControllerAdapter().attach(gameInputHandler);
-        mainMenu = new MainMenu(
-            skin,
-            game.gameState,
-            this
+
+        eventScreen = new CombatEventMenu(this.skin, gameInputHandler);
+        gameInputHandler.addListener(eventScreen);
+        eventScreen.setPosition(
+            (uiStage.getWidth() - eventScreen.getWidth()) / 2f,
+            10f
         );
-        this.uiStage.addActor(mainMenu);
-        this.menuInputHandler = new MenuInputHandler(
-            uiStage,
-            mainMenu,
-            gameInputHandler
-        );
+        eventScreen.setSize(dimensions.x, dimensions.y);
+        this.uiStage.addActor(eventScreen);
+        eventScreen.addListener(this);
+
+
+//        this.menuInputHandler = new MenuInputHandler(
+//            uiStage,
+//            gameInputHandler
+//        );
         InputMultiplexer multiplexer = setUpInput();
         Gdx.input.setInputProcessor(multiplexer);
+        eventScreen.addMessages(messages);
+        uiStage.setKeyboardFocus(eventScreen);
+
     }
     public InputMultiplexer setUpInput() {
         InputMultiplexer multiplexer = new InputMultiplexer();
         // --- Configure the InputMultiplexer ---
-        this.menuInputHandler.addListener(this);
+//        this.menuInputHandler.addListener(this);
 
         multiplexer.addProcessor(gameInputHandler);
         multiplexer.addProcessor(uiStage);
@@ -114,49 +134,12 @@ public class MainMenuScreen extends ScreenAdapter  implements MenuInputObserver 
     @Override
     public void onMenuToggled(boolean menuVisible){};
 
-    public void addClassString(String name){
-        partySelection.add(name);
-    }
 
-    public void resetClassString(){
-        partySelection = new ArrayList<>();
-        partySelection.add("Hero");
-    }
-
-    public void removeLastClassString(){
-        if (
-            partySelection != null &&
-            !partySelection.isEmpty() &&
-            partySelection.size() > 1
-        ) {
-            partySelection.remove(partySelection.size() - 1);
-        }
-    }
-
-    public ArrayList<String> getPartySelection(){
-        return partySelection;
-    }
-
-    public void startGame(){
-        game.gameState.setupGameFromCustomParty(partySelection);
-        game.startGame();
-    }
-
-    public void startGamePreset(){
-        game.gameState.setupGameFromPresetParty();
-        game.startGame();
-    }
-
-    public String loadGame(){
-        SaveGame saveSystem = new SaveGame();
-        GameState newState = saveSystem.loadGameState();
-        if(newState == null){
-            return "No valid save file present";
-        }
-
-        game.loadGameState(newState);
-        game.backToOverworld();
-        return "Game loaded";
+    @Override
+    public void dispose() {
+        skin.dispose();
+        uiStage.dispose();
+        this.backgroundTexture.dispose();
     }
 
     @Override
@@ -164,11 +147,22 @@ public class MainMenuScreen extends ScreenAdapter  implements MenuInputObserver 
         game.getControllerAdapter().detach();
 
     }
-    @Override
-    public void dispose() {
-        skin.dispose();
 
-        uiStage.dispose();
-        this.backgroundTexture .dispose();
+    public void exitShop(){
+        game.onScreenChange(GameConstants.GAME_SCREEN.WALK_TOWN);
+    }
+
+    @Override
+    public void onFirstMessageAdded() {
+
+    }
+
+    @Override
+    public void onLastMessageRead() {
+        if(event.getFinalEvent()){
+            game.backToOverworld();
+        } else {
+            game.handleEventScreen(event.getNextId());
+        }
     }
 }

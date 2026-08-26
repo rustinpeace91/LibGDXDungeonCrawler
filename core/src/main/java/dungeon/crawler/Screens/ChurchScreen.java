@@ -47,9 +47,9 @@ public class ChurchScreen extends ScreenAdapter  implements MenuInputObserver {
         this.batch = new SpriteBatch();
         this.shopIndex= shopIndex;
 
-        this.backgroundTexture = new Texture(Gdx.files.internal("Misc/storefront.jpg"));
+        this.backgroundTexture = new Texture(Gdx.files.internal(GameConstants.CHURCH_BACKGROUND));
         // 1. Load the PNG
-        Texture texture = new Texture(Gdx.files.internal("Misc/storefront.jpg"));
+        Texture texture = new Texture(Gdx.files.internal(GameConstants.CHURCH_BACKGROUND));
 
         // 2. Wrap it in an Image actor
         Image imageActor = new Image(texture);

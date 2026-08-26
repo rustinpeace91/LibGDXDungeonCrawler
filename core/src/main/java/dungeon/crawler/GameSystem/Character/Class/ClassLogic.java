@@ -17,6 +17,7 @@ public interface ClassLogic{
     public ArrayList<SpellNames> getSpellNames();
     public MagicSystem getMagicSystem();
     public boolean isMagicUser();
+    public boolean canSteal();
     public int getBaseHP();
     public int getBaseMP();
     public int getLevelUpHP();

@@ -3,6 +3,8 @@ package dungeon.crawler.Data.Items
 import dungeon.crawler.Data.Enemies.EnemyParams
 import dungeon.crawler.GameSystem.Character.Condition
 import dungeon.crawler.GameSystem.Combat.Elemental
+import dungeon.crawler.GameSystem.Inventory.ItemTypes.ArmorTypes
+import dungeon.crawler.GameSystem.Inventory.ItemTypes.EquipmentSlot
 import dungeon.crawler.GameSystem.Inventory.ItemTypes.Handed
 import dungeon.crawler.GameSystem.Inventory.ItemTypes.ItemType
 import dungeon.crawler.GameSystem.Inventory.ItemTypes.WeaponTypes
@@ -39,6 +41,15 @@ data class PotionParams(
     val itemType: ItemType,
     val level: Int,
     val cureStatus: Condition
+)
+
+data class ArmorParams(
+    val name: String,
+    val id: String,
+    val value: Int,
+    val armorType: ArmorTypes,
+    val slot: EquipmentSlot,
+    val defenseBonus: Int
 )
 
 class Registry<T> {
@@ -164,6 +175,78 @@ object ItemDataInitializer {
                 ItemType.HEALTH_POTION,
                 1,
                 Condition.NOEFFECT
+            )
+        )
+        return registry;
+    }
+
+    @JvmStatic
+    fun initializeArmorData(): Registry<ArmorParams> {
+        val registry = Registry<ArmorParams>()
+        registry.register(
+            "leather_cap",
+            ArmorParams(
+                "Leather Cap",
+                "leather_cap",
+                40,
+                ArmorTypes.LIGHT,
+                EquipmentSlot.HEAD,
+                1
+            )
+        )
+        registry.register(
+            "leather_vest",
+            ArmorParams(
+                "Leather Vest",
+                "leather_vest",
+                80,
+                ArmorTypes.LIGHT,
+                EquipmentSlot.BODY,
+                2
+            )
+        )
+        registry.register(
+            "leather_pants",
+            ArmorParams(
+                "Leather Pants",
+                "leather_pants",
+                80,
+                ArmorTypes.LIGHT,
+                EquipmentSlot.BODY,
+                2
+            )
+        )
+        registry.register(
+            "bronze_helm",
+            ArmorParams(
+                "Bronze Helm",
+                "bronze_helm",
+                80,
+                ArmorTypes.MEDIUM,
+                EquipmentSlot.HEAD,
+                3
+            )
+        )
+        registry.register(
+            "bronze_chainmail",
+            ArmorParams(
+                "Bronze Chainmail",
+                "bronze_chainmail",
+                120,
+                ArmorTypes.MEDIUM,
+                EquipmentSlot.BODY,
+                5
+            )
+        )
+        registry.register(
+            "bronze_chainmail_pants",
+            ArmorParams(
+                "Bronze Chain Pants",
+                "bronze_chainmail_pants",
+                120,
+                ArmorTypes.MEDIUM,
+                EquipmentSlot.BODY,
+                5
             )
         )
         return registry;

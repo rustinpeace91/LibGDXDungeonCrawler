@@ -9,5 +9,5 @@ public interface CombatLogicObserver {
     public void onLoss();
     public void onVictory();
     public void onActionMenuReset();
-
+    public void onRunAway();
 }

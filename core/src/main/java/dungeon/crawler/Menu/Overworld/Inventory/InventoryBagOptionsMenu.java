@@ -22,6 +22,7 @@ import java.util.Arrays;
 
 public class InventoryBagOptionsMenu extends BaseLinearMenu implements OverworldSubMenu {
     private final GameState gameState;
+    private final boolean canSellItems;
     private Bag bag;
     private final Item selectedItem;
 
@@ -30,12 +31,14 @@ public class InventoryBagOptionsMenu extends BaseLinearMenu implements Overworld
         Skin skin,
         GameState gameState,
         Bag bag,
-        Item selectedItem
+        Item selectedItem,
+        boolean canSellItems
     ){
         super(skin);
         this.gameState = gameState;
         this.bag = bag;
         this.selectedItem = selectedItem;
+        this.canSellItems = canSellItems;
         this.initializeButtons();
     }
 
@@ -48,7 +51,26 @@ public class InventoryBagOptionsMenu extends BaseLinearMenu implements Overworld
         String title = selectedItem.getName();
         setTitle(title);
         this.initializeArrow();
+        if(canSellItems){
 
+            this.addButton("Sell",
+                new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        gameState.addGold(selectedItem.value);
+                        // unequip is safe. returns blank if not equippable
+                        bag.removeFromInventory(selectedItem);
+                        showPopup(StringUtils.format(
+                            "%s sold a %s for %s gold",
+                            bag.getName(),
+                            selectedItem.getName(),
+                            String.valueOf(selectedItem.value)
+                        ), 1.5f);
+                        FinishMenuComplete();
+                    }
+                }
+            );
+        }
         this.addButton("Transfer",
             new ChangeListener() {
                 @Override

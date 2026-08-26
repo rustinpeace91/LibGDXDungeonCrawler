@@ -95,6 +95,9 @@ public class FighterClass implements ClassLogic{
     public boolean isMagicUser() {
         // TODO Auto-generated method stub
         return false;
+    }@Override
+    public boolean canSteal() {
+        return false;
     }
 
     @Override

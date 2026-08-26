@@ -1,7 +1,9 @@
 package dungeon.crawler;
 
 import java.util.Map;
+import java.util.Vector;
 
+import com.badlogic.gdx.math.Vector2;
 import dungeon.crawler.GameSystem.Inventory.ItemTypes.ItemType;
 import dungeon.crawler.Player.PlayerDirection;
 public class GameConstants {
@@ -76,6 +78,24 @@ public class GameConstants {
     public static final String MENU_SKIN = "skins/defaultmodded/uiskinaltered.json";
     public static final String EXPLOSION_SPRITES = "Sprites/Explosion/Explosion.png";
     public static final String SKIN_BACKGROUND_DEFAULT = "default-round";
+
+    // Backgrounds
+    public static final String MAIN_MENU_BACKGROUND="Misc/DQTitlePOC.png";
+    public static final String SHOP_BACKGROUND="Misc/storefront.jpg";
+    public static final String INN_BACKGROUND="Misc/inn.jpg";
+    public static final String CHURCH_BACKGROUND="Misc/church.jpg";
+
+    // Event backgrounds
+    public static final String INTRO_SCREEN_1="EventScreens/daking.jpg";
+    public static final String INTRO_SCREEN_2="EventScreens/foulbeast.png";
+    public static final String STEAL_FAIL_SCREEN_1="EventScreens/fistglass.jpg";
+
+    public static final String STEAL_FAIL_SCREEN_2="EventScreens/horsedetect.png";
+    public static final String STEAL_FAIL_SCREEN_3="EventScreens/guarddetect.png";
+    public static final String SLEEP_SCREEN="EventScreens/sleep.png";
+
+
+
     public static final Map<PlayerDirection, String> WALK_ANIMATIONS = Map.of(
         PlayerDirection.UP, "WalkUp",
         PlayerDirection.RIGHT, "WalkRight",
@@ -93,6 +113,12 @@ public class GameConstants {
     public static final int MAX_PLAYER_INVENTORY_SPACE = 15;
     public static final int MAX_PLAYER_BAG_SPACE = 128;
     public static final float SHOP_MARKUP = 4f;
+
+
+    // EVENT MENU DIMENSIONS
+    public static final Vector2 EVENT_MENU_SMALL_DIALOGUE= new Vector2(400f, 100f);
+    public static final Vector2 EVENT_MENU_MEDIUM_DIALOGUE= new Vector2(400f, 300f);
+
 
 
     // COMBAT MENU DIMENSIONS

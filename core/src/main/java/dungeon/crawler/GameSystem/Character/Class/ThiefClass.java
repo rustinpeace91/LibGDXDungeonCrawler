@@ -93,6 +93,9 @@ public class ThiefClass implements ClassLogic{
     public boolean isMagicUser() {
         // TODO Auto-generated method stub
         return false;
+    }@Override
+    public boolean canSteal() {
+        return true;
     }
 
     @Override

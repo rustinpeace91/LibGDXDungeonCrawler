@@ -124,6 +124,9 @@ public class WizardClass implements ClassLogic{
     public boolean isMagicUser() {
         // TODO Auto-generated method stub
         return true;
+    }@Override
+    public boolean canSteal() {
+        return false;
     }
 
     @Override

@@ -9,9 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
@@ -29,7 +27,7 @@ import dungeon.crawler.GameSystem.GameState.CombatPhase;
 import dungeon.crawler.GameSystem.Inventory.Item;
 import dungeon.crawler.MainGame;
 import dungeon.crawler.Menu.Combat.CombatMenu;
-import dungeon.crawler.Menu.CombatEventScreen;
+import dungeon.crawler.Menu.CombatEventMenu;
 import dungeon.crawler.Menu.CombatPartyOrderScreen;
 import dungeon.crawler.Menu.CurrentFighterStatusScreen;
 import dungeon.crawler.Menu.InputHandlers.MenuInputHandler;
@@ -59,7 +57,7 @@ public class CombatScreen extends ScreenAdapter
     private PartyActionTracker turnTracker;
     private SpellRegistry spellRegistry;
 
-    private CombatEventScreen  eventScreen;
+    private CombatEventMenu eventScreen;
     private CombatMenu combatMenu;
     private CombatPartyOrderScreen partyScreen;
     private EnemyRenderer enemyRenderer;
@@ -179,7 +177,7 @@ public class CombatScreen extends ScreenAdapter
         };
         eventScreen.addMessages(introText);
         this.uiStage.setKeyboardFocus(eventScreen);
-        this.logicHandler = new CombatLogic(eventScreen, game, turnTracker, combatState);
+        this.logicHandler = new CombatLogic(this, eventScreen, game, turnTracker, combatState);
         this.logicHandler.addListener(this);
         this.enemyRenderer.intializeEnemySprites();
         this.logicHandler.advanceState(CombatPhase.INTRO);
@@ -209,7 +207,7 @@ public class CombatScreen extends ScreenAdapter
         combatMenu.setPosition(x, y);
         this.uiStage.addActor(combatMenu);
 
-        eventScreen = new CombatEventScreen(this.skin, gameInputHandler);
+        eventScreen = new CombatEventMenu(this.skin, gameInputHandler);
         gameInputHandler.addListener(eventScreen);
         eventScreen.setPosition(
             (uiStage.getWidth() - eventScreen.getWidth()) / 2f,
@@ -335,6 +333,9 @@ public class CombatScreen extends ScreenAdapter
         combatMenu.initializeMenu();
         menuInputHanlder.setHandlerDisabled(false);
 
+    }@Override
+    public void onRunAway() {
+        game.backToOverworld();
     }
 
     @Override
