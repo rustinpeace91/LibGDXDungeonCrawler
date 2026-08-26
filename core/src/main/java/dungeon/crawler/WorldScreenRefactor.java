@@ -288,6 +288,9 @@ PlayerPositionObserver {
         } else {
             game.gameState.setTileDifficulty(props.get("tile_difficulty", Integer.class));
         }
+        if(props.containsKey("boss_fight")){
+            notifyScreenChange(GameConstants.GAME_SCREEN.BOSS_FIGHT);
+        }
         // this.game.gameState.screenID = this.screenID;
         if(overWorld){
             float roll = MathUtils.random();

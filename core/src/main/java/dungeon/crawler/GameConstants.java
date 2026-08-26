@@ -15,7 +15,8 @@ public class GameConstants {
         INN,
         TEST_SCREEN,
         SHOP_SCREEN,
-        CHURCH_SCREEN
+        CHURCH_SCREEN,
+        BOSS_FIGHT
     };
 
     public enum PLAYER_STATS {
@@ -34,7 +35,7 @@ public class GameConstants {
     }
 
     public static final int MAX_PARTY_SIZE=4;
-    public static final String[] AVAILABLE_CLASSES = {"Fighter", "Thief", "Wizard"};
+    public static final String[] AVAILABLE_CLASSES = {"Fighter", "Thief", "Wizard", "Ninja", "Barbarian"};
 
     // ITEM STATS
     public static final ItemType[] USABLE_ITEMS = new ItemType[]{
@@ -73,7 +74,7 @@ public class GameConstants {
 
     public static final String SAVE_FILE_PATH = "savegame.json";
     public static final String TEST_MAP = "Maps/testmap.tmx";
-    public static final String CURRENT_SPRITE = "Sprites/real_sheet.png";
+    public static final String CURRENT_SPRITE = "Sprites/real_sheet2.png";
     // public static final String MENU_SKIN = "skins/plainjames_modded/plainjames.json";
     public static final String MENU_SKIN = "skins/defaultmodded/uiskinaltered.json";
     public static final String EXPLOSION_SPRITES = "Sprites/Explosion/Explosion.png";

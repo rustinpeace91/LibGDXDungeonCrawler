@@ -23,11 +23,13 @@ import dungeon.crawler.GameSystem.Magic.MagicSystem;
 
 public class WizardClass implements ClassLogic{
 
+    private final CharClassID id;
     private String name;
     private MagicSystem magicSystem;
 
     public WizardClass(){
         this.name = "Wizard";
+        this.id = CharClassID.WIZARD;
         this.magicSystem = new MagicSystem();
     }
 

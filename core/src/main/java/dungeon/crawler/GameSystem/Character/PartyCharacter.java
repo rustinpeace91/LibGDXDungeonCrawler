@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Random;
 
+import com.badlogic.gdx.Gdx;
 import dungeon.crawler.GameConstants;
 import static dungeon.crawler.GameConstants.PLAYER_STATS.AGILITY;
 import static dungeon.crawler.GameConstants.PLAYER_STATS.INTELLIGENCE;
@@ -319,8 +320,9 @@ public class PartyCharacter extends Character implements Combatant, Inventory{
 
     @Override
     public void spendMp(int amount) {
-        if(mp - amount < maxMP){
+        if(mp - amount < 0){
             mp = 0;
+            Gdx.app.log("[ERROR]", "Game allowed more magic points to be casted then wizard has");
             // log something here this should never happen
         } else{
             mp = mp - amount;
