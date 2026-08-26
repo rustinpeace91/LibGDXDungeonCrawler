@@ -18,6 +18,7 @@ import dungeon.crawler.GameConstants;
 import dungeon.crawler.GameSystem.GameState.GameState;
 import dungeon.crawler.GameSystem.SaveGame.SaveGame;
 import dungeon.crawler.MainGame;
+import dungeon.crawler.Menu.GenericMessageDisplay;
 import dungeon.crawler.Menu.InputHandlers.MenuInputHandler;
 import dungeon.crawler.Menu.MainMenu.MainMenu;
 import dungeon.crawler.Observers.MenuInputObserver;
@@ -35,6 +36,7 @@ public class MainMenuScreen extends ScreenAdapter  implements MenuInputObserver 
 
     private Texture backgroundTexture;
     private ArrayList<String> partySelection;
+    private GenericMessageDisplay messageDisplay;
 
     public MainMenuScreen(
         MainGame game
@@ -44,6 +46,7 @@ public class MainMenuScreen extends ScreenAdapter  implements MenuInputObserver 
         this.batch = new SpriteBatch();
         this.partySelection = new ArrayList<>();
         this.backgroundTexture = new Texture(Gdx.files.internal(GameConstants.MAIN_MENU_BACKGROUND));
+
         // 1. Load the PNG
         Texture texture = new Texture(Gdx.files.internal(GameConstants.MAIN_MENU_BACKGROUND));
 
@@ -66,6 +69,14 @@ public class MainMenuScreen extends ScreenAdapter  implements MenuInputObserver 
     @Override
     public void show(){
         skin = new Skin(Gdx.files.internal(GameConstants.MENU_SKIN));
+        messageDisplay = new GenericMessageDisplay(skin);
+        messageDisplay.setText(
+            "\nControls:\n" +
+            "Menu Up/Down: Arrow Keys\n" +
+            "Select/Forward: Enter\n" +
+            "Cancel/Back: Backspace\n" +
+            "Toggle game menu: E\n"
+        );
         gameInputHandler = new GameInputHandler();
         game.getControllerAdapter().attach(gameInputHandler);
         mainMenu = new MainMenu(
@@ -74,6 +85,12 @@ public class MainMenuScreen extends ScreenAdapter  implements MenuInputObserver 
             this
         );
         this.uiStage.addActor(mainMenu);
+        messageDisplay.setSize(GameConstants.EVENT_MENU_SMALL_DIALOGUE.x, GameConstants.EVENT_MENU_SMALL_DIALOGUE.y);
+        messageDisplay.setPosition(
+            (uiStage.getWidth() - messageDisplay.getWidth()) / 2f,
+            10f
+        );
+        uiStage.addActor(messageDisplay);
         this.menuInputHandler = new MenuInputHandler(
             uiStage,
             mainMenu,
@@ -167,7 +184,6 @@ public class MainMenuScreen extends ScreenAdapter  implements MenuInputObserver 
     @Override
     public void dispose() {
         skin.dispose();
-
         uiStage.dispose();
         this.backgroundTexture .dispose();
     }

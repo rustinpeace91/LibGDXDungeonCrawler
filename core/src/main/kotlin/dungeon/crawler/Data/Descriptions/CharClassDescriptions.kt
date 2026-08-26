@@ -24,6 +24,25 @@ class CharClassDescriptions {
                     - Basic, Light
                 Notes:
                     - Can steal from stores
+            """.trimIndent(),
+            "Ninja" to """
+                An even shadier mysterious stranger known for kicking people in the face
+
+                Weapons Available:
+                    - Staffs and fists only
+                Armor Available:
+                    - Basic
+                Notes:
+                    - Can steal from stores
+            """.trimIndent(),
+            "Barbarian" to """
+                A fighter that trades accuracy and weapon proficiency for
+                higher damage
+
+                Weapons Available:
+                    - Staff, Club, Axe, Hammer, Spear, Greatsword
+                Armor Available:
+                    - Basic, Light
             """.trimIndent()
         )
 
