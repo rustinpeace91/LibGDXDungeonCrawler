@@ -84,6 +84,23 @@ object DataInitializer {
                 "skeleton swings like a madman"
             )
         )
+        registry.registerEnemy(
+            "boss",
+            EnemyParams(
+                "boss",
+                "boss",
+                3,
+                2000,
+                2,
+                5000,
+                0,
+                5000,
+                0,
+                20,
+                Pair(10, 500),
+                "Dragon Breathes Fire"
+            )
+        )
         return registry;
     }
 }

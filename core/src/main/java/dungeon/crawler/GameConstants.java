@@ -15,7 +15,8 @@ public class GameConstants {
         INN,
         TEST_SCREEN,
         SHOP_SCREEN,
-        CHURCH_SCREEN
+        CHURCH_SCREEN,
+        BOSS_FIGHT
     };
 
     public enum PLAYER_STATS {

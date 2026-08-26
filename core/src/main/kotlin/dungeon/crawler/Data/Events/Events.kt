@@ -125,6 +125,25 @@ object EventRegistry {
                 messageSize = GameConstants.EVENT_MENU_SMALL_DIALOGUE
             )
         )
+
+        // end
+        register(
+            Event(
+                id = "ending",
+                title = "YOU DID IT",
+                backgroundImage = GameConstants.INTRO_SCREEN_1,
+                text = arrayOf(
+                    "You have freed this great land from the wrath of the mighty dragon " +
+                    "We thank you for your valiance in the face of danger! Villages will no longer cower " +
+                    "under the threat of flames.  You will be greatly rewarded",
+                    "A large plot of land will be comissioned for you to lord over " +
+                    "40 Oxen shall graze at your farmlands and your fields shall prosper!"
+                ),
+                finalEvent = true,
+                nextId= "",
+                messageSize = GameConstants.EVENT_MENU_MEDIUM_DIALOGUE
+            )
+        )
     }
 
     private fun register(event: Event) {

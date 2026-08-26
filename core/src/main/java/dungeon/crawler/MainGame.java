@@ -27,6 +27,8 @@ import dungeon.crawler.Observers.ScreenChangeObserver;
 import dungeon.crawler.Screens.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 public class MainGame extends Game implements ScreenChangeObserver,
@@ -102,8 +104,17 @@ public class MainGame extends Game implements ScreenChangeObserver,
         if(screen == GameConstants.GAME_SCREEN.WALK_TOWN){
             backToOverworld();
         }
-        else if(screen == GameConstants.GAME_SCREEN.COMBAT){
+        else if(screen == GameConstants.GAME_SCREEN.COMBAT) {
             CombatStateManager combatState = new CombatStateManager(EnemySpawner.spawnEnemies(gameState));
+            CombatScreen combatScreen = new CombatScreen(this, combatState);
+            setScreen(combatScreen);
+        }
+        else if(screen == GameConstants.GAME_SCREEN.BOSS_FIGHT){
+            Map<Integer, EnemyCombatant> enemies = new HashMap<>();
+            EnemyFactory factory = new EnemyFactory();
+            factory.createEnemyFromID("boss");
+            CombatStateManager combatState = new CombatStateManager();
+            combatState.setFinalBossFight(true);
             CombatScreen combatScreen = new CombatScreen(this, combatState);
             setScreen(combatScreen);
         } else if(screen == GameConstants.GAME_SCREEN.SHOP_SCREEN){
@@ -181,6 +192,11 @@ public class MainGame extends Game implements ScreenChangeObserver,
     @Override
     public void onCombatVictory(){
         backToOverworld();
+    }
+
+    @Override
+    public void onBossVictory() {
+        handleEventScreen("ending");
     }
 
     @Override
