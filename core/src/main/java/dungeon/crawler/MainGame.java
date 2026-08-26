@@ -112,8 +112,8 @@ public class MainGame extends Game implements ScreenChangeObserver,
         else if(screen == GameConstants.GAME_SCREEN.BOSS_FIGHT){
             Map<Integer, EnemyCombatant> enemies = new HashMap<>();
             EnemyFactory factory = new EnemyFactory();
-            factory.createEnemyFromID("boss");
-            CombatStateManager combatState = new CombatStateManager();
+            enemies.put(0, factory.createEnemyFromID("boss"));
+            CombatStateManager combatState = new CombatStateManager(enemies);
             combatState.setFinalBossFight(true);
             CombatScreen combatScreen = new CombatScreen(this, combatState);
             setScreen(combatScreen);

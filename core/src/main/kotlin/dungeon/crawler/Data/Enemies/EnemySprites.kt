@@ -42,10 +42,10 @@ class EnemySpriteRegistry{
         )
         enemySpriteMap["boss"]  = EnemySpriteParams(
             id = "boss",
-            frame1 = "Sprites/Enemies/spooderanim/frame1.png",
-            frame2 = "Sprites/Enemies/spooderanim/frame2.png",
-            width = 200f,
-            height = 150f
+            frame1 = "Sprites/Enemies/dragonanim/frame1.png",
+            frame2 = "Sprites/Enemies/dragonanim/frame2.png",
+            width = 500f,
+            height = 300f
         )
     }
 }

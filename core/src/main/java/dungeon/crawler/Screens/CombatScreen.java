@@ -429,6 +429,7 @@ public class CombatScreen extends ScreenAdapter
         Gdx.app.log("Combat", "Sending signal to victory");
         if(combatState.isFinalBossFight()){
             combatScreenObserver.onBossVictory();
+            return;
         }
         combatScreenObserver.onCombatVictory();
 

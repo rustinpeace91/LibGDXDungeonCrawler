@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.10" tiledversion="1.12.0" name="overworld" tilewidth="16" tileheight="16" tilecount="480" columns="30">
+<tileset version="1.10" tiledversion="1.12.2" name="overworld" tilewidth="16" tileheight="16" tilecount="480" columns="30">
  <image source="../Tiles/world.png" trans="ff678b" width="480" height="256"/>
  <tile id="120">
   <properties>
@@ -19,6 +19,11 @@
  <tile id="210">
   <properties>
    <property name="blocked" type="bool" value="true"/>
+  </properties>
+ </tile>
+ <tile id="249">
+  <properties>
+   <property name="boss_fight" type="int" value="1"/>
   </properties>
  </tile>
  <tile id="362">
@@ -69,6 +74,11 @@
  <tile id="425">
   <properties>
    <property name="blocked" type="bool" value="true"/>
+  </properties>
+ </tile>
+ <tile id="438">
+  <properties>
+   <property name="boss_fight" type="int" value="1"/>
   </properties>
  </tile>
  <tile id="453">

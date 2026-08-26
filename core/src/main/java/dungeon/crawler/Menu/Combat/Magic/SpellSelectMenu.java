@@ -16,6 +16,7 @@ import dungeon.crawler.Data.Spells.SpellRegistry;
 import dungeon.crawler.Data.Spells.SpellType;
 import dungeon.crawler.GameConstants;
 import dungeon.crawler.GameSystem.Character.Combatant;
+import dungeon.crawler.GameSystem.Character.PartyCharacter;
 import dungeon.crawler.GameSystem.Combat.CombatStateManager;
 import dungeon.crawler.GameSystem.Combat.CombatUtils;
 import dungeon.crawler.GameSystem.GameState.GameState;
@@ -29,13 +30,13 @@ public class SpellSelectMenu extends ScrollableLinearMenu<SpellNames> implements
     private CombatStateManager combatState;
     private GameState gameState;
     private CombatMenu combatMenu;
-    private Combatant currentCombatant;
+    private PartyCharacter currentCombatant;
     private final ArrayList<SpellNames> spellList;
 
     public SpellSelectMenu(
         Skin skin,
         GameState gameState,
-        Combatant currentCombatant,
+        PartyCharacter currentCombatant,
         ArrayList<SpellNames> spellList,
         CombatStateManager combatState
 
@@ -70,19 +71,23 @@ public class SpellSelectMenu extends ScrollableLinearMenu<SpellNames> implements
                 new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
-                        if(spell.getType() == SpellType.AOE_DEFENSE || spell.getType() == SpellType.AOE_OFFENSE){
-                            returnToParentMenu();
-                            combatMenu.handleCastAction(spellID, -1);
+                        if(spell.getCost() > currentCombatant.getMp()){
+                            showPopup("Not enough MP to cast!", 2f);
                         } else {
-                            BaseLinearMenu nextMenu = new SpellTargetSelectMenu(
-                                skin,
-                                gameState,
-                                spell,
-                                SpellSelectMenu.this,
-                                combatState
-                            );
-                            setSubMenu(nextMenu);
-                            openSubMenu(nextMenu);
+                            if(spell.getType() == SpellType.AOE_DEFENSE || spell.getType() == SpellType.AOE_OFFENSE){
+                                returnToParentMenu();
+                                combatMenu.handleCastAction(spellID, -1);
+                            } else {
+                                BaseLinearMenu nextMenu = new SpellTargetSelectMenu(
+                                    skin,
+                                    gameState,
+                                    spell,
+                                    SpellSelectMenu.this,
+                                    combatState
+                                );
+                                setSubMenu(nextMenu);
+                                openSubMenu(nextMenu);
+                            }
                         }
                     }
                 }

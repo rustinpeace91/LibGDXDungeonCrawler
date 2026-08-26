@@ -92,15 +92,32 @@ object DataInitializer {
                 3,
                 2000,
                 2,
-                5000,
+                5,
                 0,
-                5000,
+                5,
                 0,
-                20,
-                Pair(10, 500),
+                2,
+                Pair(10, 50),
                 "Dragon Breathes Fire"
             )
         )
+//        registry.registerEnemy(
+//            "boss",
+//            EnemyParams(
+//                "boss",
+//                "boss",
+//                3,
+//                2000,
+//                2,
+//                5000,
+//                0,
+//                5000,
+//                0,
+//                20,
+//                Pair(10, 500),
+//                "Dragon Breathes Fire"
+//            )
+//        )
         return registry;
     }
 }
