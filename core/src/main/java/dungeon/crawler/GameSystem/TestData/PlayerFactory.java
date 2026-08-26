@@ -31,6 +31,10 @@ public class PlayerFactory{
                 return generateWizard();
             case "Thief":
                 return generateThief();
+            case "Ninja":
+                return generateNinja();
+            case "Barbarian":
+                return generateBarbarian();
             default:
                 throw new IllegalArgumentException("Unknown class type: " + selector);
 
@@ -48,6 +52,10 @@ public class PlayerFactory{
                 return new WizardClass();
             case "Thief":
                 return new ThiefClass();
+            case "Ninja":
+                return new NinjaClass();
+            case "Barbarian":
+                return new BarbarianClass();
             default:
                 throw new IllegalArgumentException("Unknown class type: " + selector);
         }
@@ -133,9 +141,9 @@ public class PlayerFactory{
             true
         );
         pc.generateFist();
-        Item sword = items.createWeaponFromID("iron_sword");
-        pc.addToInventory(sword);
-        pc.equip(sword);
+        Weapon bow = items.createWeaponFromID("wooden_club");
+        pc.addToInventory(bow);
+        pc.equip(bow);
         pc.addToInventory(items.createPotionFromID("small_health_potion"));
 
         pc.charClass.fillSpells(1);
@@ -149,10 +157,10 @@ public class PlayerFactory{
         Map<GameConstants.PLAYER_STATS, Integer> statMap = fc.returnBaseStats();
         PartyCharacter pc = new PartyCharacter(
             "Fighter",
-            45,
-            0,
-            45,
-            10,
+            fc.getBaseHP(),
+            fc.getBaseMP(),
+            fc.getBaseHP(),
+            fc.getBaseMP(),
             0,
             Stance.STANDING,
             new ArrayList<Condition>(),
@@ -166,7 +174,9 @@ public class PlayerFactory{
             false
         );
         pc.generateFist();
-        pc.equip(items.createWeaponFromID("iron_sword"));
+        Weapon bow = items.createWeaponFromID("wooden_club");
+        pc.addToInventory(bow);
+        pc.equip(bow);
         return pc;
     }
 
@@ -175,10 +185,10 @@ public class PlayerFactory{
         Map<GameConstants.PLAYER_STATS, Integer> statMap = fc.returnBaseStats();
         PartyCharacter pc = new PartyCharacter(
             "Wizard",
-            15,
-            0,
-            15,
-            20,
+            fc.getBaseHP(),
+            fc.getBaseMP(),
+            fc.getBaseHP(),
+            fc.getBaseMP(),
             0,
             Stance.STANDING,
             new ArrayList<Condition>(),
@@ -204,10 +214,10 @@ public class PlayerFactory{
         Map<GameConstants.PLAYER_STATS, Integer> statMap = tc.returnBaseStats();
         PartyCharacter pc = new PartyCharacter(
             "Thief",
-            15,
-            0,
-            15,
-            0,
+            tc.getBaseHP(),
+            tc.getBaseMP(),
+            tc.getBaseHP(),
+            tc.getBaseMP(),
             0,
             Stance.STANDING,
             new ArrayList<Condition>(),
@@ -228,6 +238,64 @@ public class PlayerFactory{
         return pc;
 
     }
+
+    public static PartyCharacter generateNinja() {
+        ItemFactory items = new ItemFactory();
+        NinjaClass tc = new NinjaClass();
+        Map<GameConstants.PLAYER_STATS, Integer> statMap = tc.returnBaseStats();
+        PartyCharacter pc = new PartyCharacter(
+            "Ninja",
+            tc.getBaseHP(),
+            tc.getBaseMP(),
+            tc.getBaseHP(),
+            tc.getBaseMP(),
+            0,
+            Stance.STANDING,
+            new ArrayList<Condition>(),
+            false,
+            1,
+            statMap.get(STRENGTH),
+            statMap.get(AGILITY),
+            statMap.get(INTELLIGENCE),
+            statMap.get(PERCEPTION),
+            tc,
+            false
+        );
+        pc.generateFist();
+        return pc;
+
+    }
+
+    public static PartyCharacter generateBarbarian() {
+        ItemFactory items = new ItemFactory();
+        BarbarianClass fc = new BarbarianClass();
+        Map<GameConstants.PLAYER_STATS, Integer> statMap = fc.returnBaseStats();
+        PartyCharacter pc = new PartyCharacter(
+            "Barbarian",
+            fc.getBaseHP(),
+            fc.getBaseMP(),
+            fc.getBaseHP(),
+            fc.getBaseMP(),
+            0,
+            Stance.STANDING,
+            new ArrayList<Condition>(),
+            false,
+            1,
+            statMap.get(STRENGTH),
+            statMap.get(AGILITY),
+            statMap.get(INTELLIGENCE),
+            statMap.get(PERCEPTION),
+            fc,
+            false
+        );
+        Weapon bow = items.createWeaponFromID("wooden_club");
+        pc.addToInventory(bow);
+        pc.equip(bow);
+        return pc;
+    }
+
+
+
 
 
 }

@@ -1,42 +1,39 @@
 package dungeon.crawler.GameSystem.Character.Class;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
 
 import dungeon.crawler.Data.Spells.SpellNames;
 import dungeon.crawler.GameConstants;
+import dungeon.crawler.GameSystem.Inventory.ItemTypes.ArmorTypes;
+import dungeon.crawler.GameSystem.Inventory.ItemTypes.WeaponTypes;
+import dungeon.crawler.GameSystem.Magic.MagicSystem;
+
+import java.util.*;
+
 import static dungeon.crawler.GameConstants.PLAYER_STATS.AGILITY;
 import static dungeon.crawler.GameConstants.PLAYER_STATS.INTELLIGENCE;
 import static dungeon.crawler.GameConstants.PLAYER_STATS.PERCEPTION;
 import static dungeon.crawler.GameConstants.PLAYER_STATS.STRENGTH;
 import static dungeon.crawler.GameSystem.Inventory.ItemTypes.ArmorTypes.*;
+import static dungeon.crawler.GameSystem.Inventory.ItemTypes.ArmorTypes.HEAVY;
 import static dungeon.crawler.GameSystem.Inventory.ItemTypes.WeaponTypes.*;
+import static dungeon.crawler.GameSystem.Inventory.ItemTypes.WeaponTypes.LONGBOW;
 
-import dungeon.crawler.GameSystem.Inventory.ItemTypes.ArmorTypes;
-import dungeon.crawler.GameSystem.Inventory.ItemTypes.WeaponTypes;
-import dungeon.crawler.GameSystem.Magic.MagicSystem;
-
-public class HeroClass implements ClassLogic{
-    private final CharClassID id;
+public class NinjaClass implements ClassLogic{
     private String name;
-    private MagicSystem magicSystem;
-    public HeroClass(){
+    private CharClassID id;
+    public NinjaClass(){
 
-        this.name = "Hero";
-        this.id = CharClassID.HERO;
-        this.magicSystem = new MagicSystem();
+        this.name = "Ninja";
+        this.id = CharClassID.NINJA;
     }
 
     @Override
     public Map<GameConstants.PLAYER_STATS, Integer> returnBaseStats() {
         Map<GameConstants.PLAYER_STATS, Integer> statMap = new HashMap<>();
-        statMap.put(STRENGTH, 10);
-        statMap.put(AGILITY, 10);
-        statMap.put(INTELLIGENCE, 10);
-        statMap.put(PERCEPTION, 10);
+        statMap.put(STRENGTH, 12);
+        statMap.put(AGILITY, 14);
+        statMap.put(INTELLIGENCE, 6);
+        statMap.put(PERCEPTION, 12);
         return statMap;
     }
 
@@ -46,12 +43,12 @@ public class HeroClass implements ClassLogic{
 
         Random random = new Random();
         statMap.put(STRENGTH, random.nextInt(2) + 1);
-        statMap.put(AGILITY, 0);
+        statMap.put(AGILITY, random.nextInt(2) + 1);
         statMap.put(INTELLIGENCE, 0);
-        statMap.put(PERCEPTION, random.nextInt(3) + 1);
+        statMap.put(PERCEPTION, random.nextInt(2) + 1);
 
         GameConstants.PLAYER_STATS[] otherStats = new  GameConstants.PLAYER_STATS[]{
-            INTELLIGENCE, AGILITY
+            INTELLIGENCE, PERCEPTION
         };
 
 
@@ -61,10 +58,16 @@ public class HeroClass implements ClassLogic{
 
     }
 
-    private Map<Integer, ArrayList<SpellNames>> getHeroSpellLevels(){
-        Map<Integer, ArrayList<SpellNames>> map = new HashMap<>();
-        map.put(1, new ArrayList<>(Arrays.asList(SpellNames.HEALMINOR, SpellNames.FIREBOLT)));
-        return map;
+    @Override
+    public int getBaseMP() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public int getLevelUpMP() {
+        // TODO Auto-generated method stub
+        return 0;
     }
 
     @Override
@@ -75,7 +78,7 @@ public class HeroClass implements ClassLogic{
     @Override
     public int getBaseHP() {
         // TODO Auto-generated method stub
-        return 30;
+        return 18;
     }
 
     @Override
@@ -85,42 +88,24 @@ public class HeroClass implements ClassLogic{
     }
 
     @Override
-    public int getBaseMP() {
-        // TODO Auto-generated method stub
-        return 10;
-    }
-
-    @Override
-    public int getLevelUpMP() {
-        // TODO Auto-generated method stub
-        return 5;
-    }
-
-    @Override
     public MagicSystem getMagicSystem() {
         // TODO Auto-generated method stub
-        return magicSystem;
+        return null;
     }
 
     @Override
     public boolean isMagicUser() {
         // TODO Auto-generated method stub
-        return true;
+        return false;
     }@Override
     public boolean canSteal() {
-        return false;
+        return true;
     }
 
     @Override
-    public void fillSpells(int level){
-        ArrayList<SpellNames> spells = new ArrayList();
-        Map<Integer, ArrayList<SpellNames>> spellMap = getHeroSpellLevels();
-        for(int i = 1; i <= level; i++){
-            if(spellMap.containsKey(i)){
-                spells.addAll(spellMap.get(i));
-            }
-        }
-        magicSystem.setSpells(spells);
+    public void fillSpells(int level) {
+        // TODO Auto-generated method stub
+
     }
 
     @Override
@@ -131,9 +116,7 @@ public class HeroClass implements ClassLogic{
     @Override
     public ArrayList<ArmorTypes> getArmorRestrictions() {
         ArmorTypes[] types = {
-            BASIC,
-            LIGHT,
-            MEDIUM
+            BASIC
         };
         ArrayList<ArmorTypes> typeList = new ArrayList<ArmorTypes>(Arrays.asList(types));
         return typeList;
@@ -142,15 +125,7 @@ public class HeroClass implements ClassLogic{
     @Override
     public ArrayList<WeaponTypes> getWeaponRestrictions() {
         WeaponTypes[] types = {
-            SHORTSWORD,
-            LONGSWORD,
-            GREATSWORD,
-            STAFF,
-            CLUB,
-            SPEAR,
-            SLING,
-            CROSSBOW,
-            SHORTBOW
+            STAFF
         };
         ArrayList<WeaponTypes> typeList = new ArrayList<WeaponTypes>(Arrays.asList(types));
         return typeList;

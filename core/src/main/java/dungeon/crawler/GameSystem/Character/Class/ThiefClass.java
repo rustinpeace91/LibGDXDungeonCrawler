@@ -19,8 +19,11 @@ import static dungeon.crawler.GameSystem.Inventory.ItemTypes.WeaponTypes.LONGBOW
 
 public class ThiefClass implements ClassLogic{
     private String name;
+    private CharClassID id;
     public ThiefClass(){
+
         this.name = "Thief";
+        this.id = CharClassID.THIEF;
     }
 
     @Override
@@ -74,13 +77,13 @@ public class ThiefClass implements ClassLogic{
     @Override
     public int getBaseHP() {
         // TODO Auto-generated method stub
-        return 20;
+        return 15;
     }
 
     @Override
     public int getLevelUpHP() {
         // TODO Auto-generated method stub
-        return 12;
+        return 8;
     }
 
     @Override

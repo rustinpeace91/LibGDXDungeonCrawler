@@ -21,8 +21,11 @@ import dungeon.crawler.GameSystem.Magic.MagicSystem;
 
 public class FighterClass implements ClassLogic{
     private String name;
+    private CharClassID id;
     public FighterClass(){
+
         this.name = "Fighter";
+        this.id = CharClassID.FIGHTER;
     }
 
     @Override
@@ -59,13 +62,13 @@ public class FighterClass implements ClassLogic{
     @Override
     public int getBaseMP() {
         // TODO Auto-generated method stub
-        return 10;
+        return 0;
     }
 
     @Override
     public int getLevelUpMP() {
         // TODO Auto-generated method stub
-        return 10;
+        return 0;
     }
 
     @Override
@@ -76,7 +79,7 @@ public class FighterClass implements ClassLogic{
     @Override
     public int getBaseHP() {
         // TODO Auto-generated method stub
-        return 48;
+        return 45;
     }
 
     @Override

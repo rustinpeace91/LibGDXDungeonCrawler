@@ -34,7 +34,7 @@ public class GameConstants {
     }
 
     public static final int MAX_PARTY_SIZE=4;
-    public static final String[] AVAILABLE_CLASSES = {"Fighter", "Thief", "Wizard"};
+    public static final String[] AVAILABLE_CLASSES = {"Fighter", "Thief", "Wizard", "Ninja", "Barbarian"};
 
     // ITEM STATS
     public static final ItemType[] USABLE_ITEMS = new ItemType[]{
