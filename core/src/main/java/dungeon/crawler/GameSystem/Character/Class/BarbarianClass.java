@@ -132,9 +132,7 @@ public class BarbarianClass implements ClassLogic{
             CLUB,
             AXE,
             HAMMER,
-            SPEAR,
-            SLING,
-            CROSSBOW
+            SPEAR
         };
         ArrayList<WeaponTypes> typeList = new ArrayList<WeaponTypes>(Arrays.asList(types));
         return typeList;

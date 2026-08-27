@@ -117,7 +117,7 @@ public class GameConstants {
 
 
     // EVENT MENU DIMENSIONS
-    public static final Vector2 EVENT_MENU_SMALL_DIALOGUE= new Vector2(400f, 100f);
+    public static final Vector2 EVENT_MENU_SMALL_DIALOGUE= new Vector2(400f, 120f);
     public static final Vector2 EVENT_MENU_MEDIUM_DIALOGUE= new Vector2(400f, 300f);
 
 
